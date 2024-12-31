@@ -1,0 +1,515 @@
+---
+title: "Introduction and the Grammar of Graphics"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-01-13
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+```
+
+## Who am I?
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+::: {style="font-size: 110%;"}
+
+- Assistant Teaching Professor
+
+- Finished Phd in Statistics @ CMU in May 2022
+
+- Previously BS in Statistics @ CMU in 2015
+
+- Research interests: sports analytics, natural language processing, clustering, selective inference
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {style="font-size: 110%;"}
+
+- Industry experience: finance before returning to grad school and also as data scientist in professional sports
+
+:::
+
+![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ39g_SwznuMDYPPmAVsaRuhPctwPi5ST4bts0Nvn12qIofKksncq3KvY-2aktspD1aO78&usqp=CAU){fig-align="center" width=125%}
+
+:::
+
+::::
+
+---
+
+## Why do we visualize data?
+
+```{r}
+#| echo: false
+library(datasauRus)
+library(tidyverse)
+datasaurus_dozen |>
+  filter(dataset %in% unique(datasaurus_dozen$dataset)[1:9]) |>
+  ggplot(aes(x = x, y = y))+
+  geom_point() +
+  theme_bw() +
+  theme(legend.position = "none",
+        strip.text = element_blank()) +
+  facet_wrap(~dataset, ncol = 3) 
+```
+
+
+---
+
+### **Always visualize your data** before analyzing it!
+
+![](https://upload.wikimedia.org/wikipedia/commons/e/ec/Anscombe%27s_quartet_3.svg){fig-align="center"}
+
+---
+
+## Course Structure
+
+:::: {.columns}
+
+::: {.column width="45%"}
+
+::: {style="font-size: 80%;"}
+
+**Lectures on Mondays/Wednesdays**
+
+- All slides and demos posted on [https://ryurko.github.io/statds-36315-spring25/](https://ryurko.github.io/statds-36315-spring25/)
+
+- **Participate and ask questions!**
+
+**Weekly homeworks due Wednesdays by 11:59 PM ET**
+
+**Weekly Friday labs due Saturdays by 11:59 AM ET**
+
+:::
+
+:::
+
+::: {.column width="45%"}
+
+::: {.fragment}
+
+::: {style="font-size: 80%;"}
+
+**Two Graphics Critiques of Data Viz in the Wild (due Feb 28 and Mar 31)**
+
+**Take-home exam on Wednesday, Feb 26th**
+
+**Final project with individual and group grade**
+
+- Work in teams on dataset you choose
+
+- In-class presentations during final week of class
+
+- Public facing HTML report due during finals week
+
+
+:::
+
+:::
+
+:::
+
+::::
+
+---
+
+## Course logistics
+
+::: {style="font-size: 80%;"}
+
+- __All homework/lab assignments will be in Quarto__. You’ll generate a PDF, which you’ll submit on Gradescope
+
+- Make sure R and RStudio are installed on your computer! 
+
+- __HW0 due Wednesday Jan 15 at 11:59 PM ET__: install R/RStudio, install/load `tidyverse`, render to PDF, and post to Gradescope
+
+  - Have any installation issues? Post to the course Piazza!
+
+- __Piazza__: all questions about course material, HWs, exam, and projects
+
+  - __Do NOT share code on Piazza__
+
+- **Only email for address administrative/logistic issues**
+
+- __Lab attendance on Friday is mandatory__ - submit lab assignment but don’t attend __YOU LOSE 20PTS!__
+
+  - Questions about lab assignments will only be answered during lab
+  
+  - **If you need to miss a lab due to illness, interviews, emergencies, etc., email me 48 hours in advance**
+
+:::
+
+---
+
+## IMPORTANT: HW0 is due Thursday night
+
+
+As seen in today's Canvas announcement - **you must submit HW0 by Thursday night!**
+
+  + This is just to make sure you have everything installed correctly and can render `.qmd` files to PDF
+
+**Read through all of the directions in HW0 carefully!**
+
+You will stop saving your workspace upon exiting R Studio!
+
+**You will need to be set-up for the first lab on Friday**
+
+
+---
+
+## Course Objectives (read the syllabus)
+ 
+**Learn useful principles for making appropriate statistical graphics.**
+
+**Critique existing graphs and remake better ones.**
+
+**Visualize statistical analyses to facilitate communication.**
+
+**Pinpoint the statistical claims you can/cannot make from graphics.**
+
+**Write and speak publicly about statistical graphics.**
+
+**Practice tidy data manipulation in `R` using the `tidyverse`**
+
+**Practice reproducible workflows with Quarto**
+
+---
+
+## What do I mean by `tidy` data?
+
+Data are often stored in __tabular__ (or matrix) form:
+
+```{r}
+library(palmerpenguins)
+penguins |> slice(1:5)
+```
+
+
+---
+
+## [The Grammar of Graphics](https://link.springer.com/book/10.1007/0-387-28695-0)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+Originally defined by Leland Wilkinson
+
+::: {style="font-size: 75%;"}
+
+1. __data__
+
+2. __geometries__: type of geometric objects to represent data, e.g., points, lines
+
+3. __aesthetics__: visual characteristics of geometric objects to represent data, e.g., position, size
+
+4. __scales__: how each aesthetic is converted into values on the graph, e.g., color scales
+
+5. __stats__: statistical transformations to  summarize data, e.g., counts, means, regression lines
+
+6. __facets__: split data and view as multiple graphs
+
+7. __coordinate system__: 2D space the data are projected onto, e.g., Cartesian coordinates
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {.fragment}
+
+[Hadley Wickham](http://hadley.nz/) [created](http://vita.had.co.nz/papers/layered-grammar.pdf) [`ggplot2`](https://ggplot2.tidyverse.org/)
+
+::: {style="font-size: 80%;"}
+
+1. `data`
+
+2. `geom`
+
+3. `aes`: mappings of columns to geometric objects
+
+4. `scale`: one scale for each `aes` variable
+
+5. `stat`
+
+6. `facet`
+
+7. `coord`
+
+8. `labs`: labels/guides for each variable and other parts of the plot, e.g., title, subtitle, caption
+
+9. `theme`: customization of plot layout
+
+:::
+
+:::
+
+:::
+
+::::
+
+---
+
+## Start with the `data`
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+Access `ggplot2` from the `tidyverse`:
+
+```{r}
+#| eval: false
+#| code-line-numbers: "2"
+library(tidyverse)
+ggplot(data = penguins)
+```
+
+:::
+
+::: {.column width="50%"}
+
+Or equivalently using `|>`:
+
+```{r}
+#| label: init-plot
+#| eval: false
+#| code-line-numbers: "2"
+penguins |>
+  ggplot()
+```
+
+:::
+
+::::
+
+. . .
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: init-plot
+```
+
+---
+
+## Need to add geometric objects!
+
+:::: {.columns}
+
+::: {.column width="45%"}
+
+
+```{r}
+#| label: geom-plot
+#| eval: false
+#| code-line-numbers: "2-4"
+penguins |>
+  ggplot(aes(x = bill_length_mm, 
+             y = bill_depth_mm)) + 
+  geom_point()
+```
+
+:::
+
+::: {.column width="55%"}
+
+```{r}
+#| eval: false
+#| code-line-numbers: "2-3"
+penguins %>%
+  ggplot(mapping = aes(x = bill_length_mm,
+                       y = bill_depth_mm)) + 
+  geom_point() 
+```
+
+:::
+
+::::
+
+. . .
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: geom-plot
+```
+
+
+---
+
+## Modify scale, add statistical summary, and so on...
+
+```{r}
+#| code-line-numbers: "5,7,9,11,12,13,15,17,18"
+#| output-location: slide
+penguins %>%
+  ggplot(aes(x = bill_length_mm,
+             y = bill_depth_mm)) + 
+  # Adjust alpha of points
+  geom_point(alpha = 0.5) +
+  # Add smooth regression line
+  stat_smooth(method = "lm") + 
+  # Flip the x-axis scale
+  scale_x_reverse() + 
+  # Change title & axes labels 
+  labs(x = "Bill length (mm)", 
+       y = "Bill depth (mm)", 
+       title = "Clustering of penguins bills") + 
+  # Change the theme:
+  theme_bw() +
+  # Update font size of text:
+  theme(axis.title = element_text(size = 12),
+        plot.title = element_text(size = 16))
+  
+```
+
+
+---
+
+## In the beginning...
+
+::: {style="font-size: 80%;"}
+
+**Michael Florent van Langren published the first (known) statistical graphic in 1644**
+
+![](https://upload.wikimedia.org/wikipedia/commons/6/66/Grados_de_la_Longitud.jpg){fig-align="center" width=80%}
+
++ Plots different estimates of the longitudinal distance between Toledo, Spain and Rome, Italy
+
++ i.e., visualization of collected data to aid in estimation of parameter
+
+:::
+
+. . .
+
+![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDU0fPHI7y9TstYN0hASi7wlDcBUDnNoTS8yNjXehDAZVJ17glqqGBI7Wxt6y_wdgyyw&usqp=CAU){fig-align="center" width=80%}
+
+
+---
+
+## [John Snow](https://www.theguardian.com/news/datablog/2013/mar/15/john-snow-cholera-map) Knows Something About Cholera
+
+![](https://media.nationalgeographic.org/assets/photos/000/276/27636.jpg){fig-align="center" width=80%}
+
+
+---
+
+## [Charles Minard's](https://www.datavis.ca/gallery/minard/minard.pdf) Map of Napoleon's Russian Disaster
+
+![](https://datavizblog.files.wordpress.com/2013/05/map-full-size1.png){fig-align="center" width=90%}
+
+---
+
+## [Florence Nightingale's](https://www.datavis.ca/gallery/flo.php) Rose Diagram 
+
+![](https://daily.jstor.org/wp-content/uploads/2020/08/florence_nightingagle_data_visualization_visionary_1050x700.jpg){fig-align="center" width=75%}
+
+
+---
+
+## [Milestones in Data Visualization History](https://friendly.github.io/HistDataVis/)
+
+![](https://friendly.github.io/HistDataVis/figs-web/07_1-mileyears3.png){fig-align="center" width=80%}
+
+---
+
+## [Edward Tufte's](https://www.edwardtufte.com/tufte/) Principles of Data Visualization
+
+***Graphics***: visually display measured quantities by combining points, lines, coordinate systems, numbers, symbols, words, shading, color
+
+***Often our goal is to show data and/or communicate a story***
+
+. . .
+
++ Induce viewer to think about substance, __not graphical methodology__
+
++ Make large, complex datasets more coherent 
+
++ Encourage comparison of different pieces of data
+
++ __Describe, explore, and identify relationships__
+
++ __Avoid data distortion and data decoration__
+
++ Use consistent graph design
+
+. . .
+
+***Avoid graphs that lead to misleading conclusions!***
+
+---
+
+## How to Fail this Class:
+
+![](https://socviz.co/assets/ch-01-chartjunk-life-expectancy.png){fig-align="center" width=65%}
+
+---
+
+## What about this spiral?
+
+![](https://github.com/ryurko/SURE22-examples/blob/main/figures/lecture_examples/nyt_ex.png?raw=true){fig-align="center" width=125%}
+
+. . .
+
+***[Requires distortion](https://junkcharts.typepad.com/junk_charts/nyt/)***
+
+---
+
+## Recap and next steps
+
++ Discussed the importance of data visualization in your role as a statistician / data scientist
+
++ Walked through course logistics (**READ THE SYLLABUS**)
+
++ Introduced the **Grammar of Graphics** and `ggplot2` basics
+
++ Discussed data visualization principles and the role of infographics
+
+. . .
+
++ **Complete HW0 by Wednesday night!** Confirms you have everything installed and can [render `.qmd` files to PDF via `tinytex`](https://quarto.org/docs/output-formats/pdf-basics.html)
+
+. . .
+
++ **Next time**: 1D Categorical Data
+
++ Recommended reading: 
+
+  + [CW Chapter 2 Visualizing data: Mapping data onto aesthetics](https://clauswilke.com/dataviz/aesthetic-mapping.html), [CW Chapter 17 The principle of proportional ink](https://clauswilke.com/dataviz/proportional-ink.html)
+
+  + [KH Chapter 1 Look at data](https://socviz.co/lookatdata.html#lookatdata), [KH Chapter 3 Make a plot](https://socviz.co/makeplot.html#makeplot)
+
+
+
+
+
+

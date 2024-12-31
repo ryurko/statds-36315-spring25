@@ -4,6 +4,6 @@ title: "Lectures"
 
 | Lecture   | Date    | Title                                | Materials                              |
 |-----------|---------|--------------------------------------|----------------------------------------|
-| 1         | Jan 13  | Introduction and Grammar of Graphics | TBA        |
+| 1         | Jan 13  | Introduction and Grammar of Graphics | [slides](lectures/01-intro.qmd)        |
 
 
