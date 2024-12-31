@@ -66,11 +66,158 @@
     "text": "Putting it all together…\nAs your own exercise, create a tidy dataset where each row == an island with the following variables:\n\nnumber of penguins,\nnumber of unique species on the island (see help(unique)),\naverage body_mass_g,\nvariance (see help(var)) of bill_depth_mm\n\nPrior to making those variables, make sure to filter missings and also only consider female penguins. Then arrange the islands in order of the average body_mass_g:\n\n# INSERT YOUR CODE HERE"
   },
   {
+    "objectID": "lectures/01-intro.html#who-am-i",
+    "href": "lectures/01-intro.html#who-am-i",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Who am I?",
+    "text": "Who am I?\n\n\n\n\nAssistant Teaching Professor\nFinished Phd in Statistics @ CMU in May 2022\nPreviously BS in Statistics @ CMU in 2015\nResearch interests: sports analytics, natural language processing, clustering, selective inference\n\n\n\n\n\nIndustry experience: finance before returning to grad school and also as data scientist in professional sports"
+  },
+  {
+    "objectID": "lectures/01-intro.html#why-do-we-visualize-data",
+    "href": "lectures/01-intro.html#why-do-we-visualize-data",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Why do we visualize data?",
+    "text": "Why do we visualize data?"
+  },
+  {
+    "objectID": "lectures/01-intro.html#course-structure",
+    "href": "lectures/01-intro.html#course-structure",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Course Structure",
+    "text": "Course Structure\n\n\n\nLectures on Mondays/Wednesdays\n\nAll slides and demos posted on https://ryurko.github.io/statds-36315-spring25/\nParticipate and ask questions!\n\nWeekly homeworks due Wednesdays by 11:59 PM ET\nWeekly Friday labs due Saturdays by 11:59 AM ET\n\n\n\n\nTwo Graphics Critiques of Data Viz in the Wild (due Feb 28 and Mar 31)\nTake-home exam on Wednesday, Feb 26th\nFinal project with individual and group grade\n\nWork in teams on dataset you choose\nIn-class presentations during final week of class\nPublic facing HTML report due during finals week"
+  },
+  {
+    "objectID": "lectures/01-intro.html#course-logistics",
+    "href": "lectures/01-intro.html#course-logistics",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Course logistics",
+    "text": "Course logistics\n\n\nAll homework/lab assignments will be in Quarto. You’ll generate a PDF, which you’ll submit on Gradescope\nMake sure R and RStudio are installed on your computer!\nHW0 due Wednesday Jan 15 at 11:59 PM ET: install R/RStudio, install/load tidyverse, render to PDF, and post to Gradescope\n\nHave any installation issues? Post to the course Piazza!\n\nPiazza: all questions about course material, HWs, exam, and projects\n\nDo NOT share code on Piazza\n\nOnly email for address administrative/logistic issues\nLab attendance on Friday is mandatory - submit lab assignment but don’t attend YOU LOSE 20PTS!\n\nQuestions about lab assignments will only be answered during lab\nIf you need to miss a lab due to illness, interviews, emergencies, etc., email me 48 hours in advance"
+  },
+  {
+    "objectID": "lectures/01-intro.html#important-hw0-is-due-thursday-night",
+    "href": "lectures/01-intro.html#important-hw0-is-due-thursday-night",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "IMPORTANT: HW0 is due Thursday night",
+    "text": "IMPORTANT: HW0 is due Thursday night\nAs seen in today’s Canvas announcement - you must submit HW0 by Thursday night!\n\nThis is just to make sure you have everything installed correctly and can render .qmd files to PDF\n\nRead through all of the directions in HW0 carefully!\nYou will stop saving your workspace upon exiting R Studio!\nYou will need to be set-up for the first lab on Friday"
+  },
+  {
+    "objectID": "lectures/01-intro.html#course-objectives-read-the-syllabus",
+    "href": "lectures/01-intro.html#course-objectives-read-the-syllabus",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Course Objectives (read the syllabus)",
+    "text": "Course Objectives (read the syllabus)\nLearn useful principles for making appropriate statistical graphics.\nCritique existing graphs and remake better ones.\nVisualize statistical analyses to facilitate communication.\nPinpoint the statistical claims you can/cannot make from graphics.\nWrite and speak publicly about statistical graphics.\nPractice tidy data manipulation in R using the tidyverse\nPractice reproducible workflows with Quarto"
+  },
+  {
+    "objectID": "lectures/01-intro.html#what-do-i-mean-by-tidy-data",
+    "href": "lectures/01-intro.html#what-do-i-mean-by-tidy-data",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "What do I mean by tidy data?",
+    "text": "What do I mean by tidy data?\nData are often stored in tabular (or matrix) form:\n\nlibrary(palmerpenguins)\npenguins |&gt; slice(1:5)\n\n# A tibble: 5 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;"
+  },
+  {
+    "objectID": "lectures/01-intro.html#the-grammar-of-graphics",
+    "href": "lectures/01-intro.html#the-grammar-of-graphics",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "The Grammar of Graphics",
+    "text": "The Grammar of Graphics\n\n\nOriginally defined by Leland Wilkinson\n\n\ndata\ngeometries: type of geometric objects to represent data, e.g., points, lines\naesthetics: visual characteristics of geometric objects to represent data, e.g., position, size\nscales: how each aesthetic is converted into values on the graph, e.g., color scales\nstats: statistical transformations to summarize data, e.g., counts, means, regression lines\nfacets: split data and view as multiple graphs\ncoordinate system: 2D space the data are projected onto, e.g., Cartesian coordinates\n\n\n\n\nHadley Wickham created ggplot2\n\n\ndata\ngeom\naes: mappings of columns to geometric objects\nscale: one scale for each aes variable\nstat\nfacet\ncoord\nlabs: labels/guides for each variable and other parts of the plot, e.g., title, subtitle, caption\ntheme: customization of plot layout"
+  },
+  {
+    "objectID": "lectures/01-intro.html#start-with-the-data",
+    "href": "lectures/01-intro.html#start-with-the-data",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Start with the data",
+    "text": "Start with the data\n\n\nAccess ggplot2 from the tidyverse:\n\nlibrary(tidyverse)\nggplot(data = penguins)\n\n\nOr equivalently using |&gt;:\n\npenguins |&gt;\n  ggplot()"
+  },
+  {
+    "objectID": "lectures/01-intro.html#need-to-add-geometric-objects",
+    "href": "lectures/01-intro.html#need-to-add-geometric-objects",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Need to add geometric objects!",
+    "text": "Need to add geometric objects!\n\n\n\npenguins |&gt;\n  ggplot(aes(x = bill_length_mm, \n             y = bill_depth_mm)) + \n  geom_point()\n\n\n\npenguins %&gt;%\n  ggplot(mapping = aes(x = bill_length_mm,\n                       y = bill_depth_mm)) + \n  geom_point()"
+  },
+  {
+    "objectID": "lectures/01-intro.html#modify-scale-add-statistical-summary-and-so-on",
+    "href": "lectures/01-intro.html#modify-scale-add-statistical-summary-and-so-on",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Modify scale, add statistical summary, and so on…",
+    "text": "Modify scale, add statistical summary, and so on…\n\npenguins %&gt;%\n  ggplot(aes(x = bill_length_mm,\n             y = bill_depth_mm)) + \n  # Adjust alpha of points\n  geom_point(alpha = 0.5) +\n  # Add smooth regression line\n  stat_smooth(method = \"lm\") + \n  # Flip the x-axis scale\n  scale_x_reverse() + \n  # Change title & axes labels \n  labs(x = \"Bill length (mm)\", \n       y = \"Bill depth (mm)\", \n       title = \"Clustering of penguins bills\") + \n  # Change the theme:\n  theme_bw() +\n  # Update font size of text:\n  theme(axis.title = element_text(size = 12),\n        plot.title = element_text(size = 16))"
+  },
+  {
+    "objectID": "lectures/01-intro.html#modify-scale-add-statistical-summary-and-so-on-output",
+    "href": "lectures/01-intro.html#modify-scale-add-statistical-summary-and-so-on-output",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Modify scale, add statistical summary, and so on…",
+    "text": "Modify scale, add statistical summary, and so on…"
+  },
+  {
+    "objectID": "lectures/01-intro.html#in-the-beginning",
+    "href": "lectures/01-intro.html#in-the-beginning",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "In the beginning…",
+    "text": "In the beginning…\n\nMichael Florent van Langren published the first (known) statistical graphic in 1644\n\n\n\n\n\n\nPlots different estimates of the longitudinal distance between Toledo, Spain and Rome, Italy\ni.e., visualization of collected data to aid in estimation of parameter"
+  },
+  {
+    "objectID": "lectures/01-intro.html#john-snow-knows-something-about-cholera",
+    "href": "lectures/01-intro.html#john-snow-knows-something-about-cholera",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "John Snow Knows Something About Cholera",
+    "text": "John Snow Knows Something About Cholera"
+  },
+  {
+    "objectID": "lectures/01-intro.html#charles-minards-map-of-napoleons-russian-disaster",
+    "href": "lectures/01-intro.html#charles-minards-map-of-napoleons-russian-disaster",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Charles Minard’s Map of Napoleon’s Russian Disaster",
+    "text": "Charles Minard’s Map of Napoleon’s Russian Disaster"
+  },
+  {
+    "objectID": "lectures/01-intro.html#florence-nightingales-rose-diagram",
+    "href": "lectures/01-intro.html#florence-nightingales-rose-diagram",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Florence Nightingale’s Rose Diagram",
+    "text": "Florence Nightingale’s Rose Diagram"
+  },
+  {
+    "objectID": "lectures/01-intro.html#milestones-in-data-visualization-history",
+    "href": "lectures/01-intro.html#milestones-in-data-visualization-history",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Milestones in Data Visualization History",
+    "text": "Milestones in Data Visualization History"
+  },
+  {
+    "objectID": "lectures/01-intro.html#edward-tuftes-principles-of-data-visualization",
+    "href": "lectures/01-intro.html#edward-tuftes-principles-of-data-visualization",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Edward Tufte’s Principles of Data Visualization",
+    "text": "Edward Tufte’s Principles of Data Visualization\nGraphics: visually display measured quantities by combining points, lines, coordinate systems, numbers, symbols, words, shading, color\nOften our goal is to show data and/or communicate a story\n\n\nInduce viewer to think about substance, not graphical methodology\nMake large, complex datasets more coherent\nEncourage comparison of different pieces of data\nDescribe, explore, and identify relationships\nAvoid data distortion and data decoration\nUse consistent graph design\n\n\n\nAvoid graphs that lead to misleading conclusions!"
+  },
+  {
+    "objectID": "lectures/01-intro.html#how-to-fail-this-class",
+    "href": "lectures/01-intro.html#how-to-fail-this-class",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "How to Fail this Class:",
+    "text": "How to Fail this Class:"
+  },
+  {
+    "objectID": "lectures/01-intro.html#what-about-this-spiral",
+    "href": "lectures/01-intro.html#what-about-this-spiral",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "What about this spiral?",
+    "text": "What about this spiral?\n\n\nRequires distortion"
+  },
+  {
+    "objectID": "lectures/01-intro.html#recap-and-next-steps",
+    "href": "lectures/01-intro.html#recap-and-next-steps",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Recap and next steps",
+    "text": "Recap and next steps\n\nDiscussed the importance of data visualization in your role as a statistician / data scientist\nWalked through course logistics (READ THE SYLLABUS)\nIntroduced the Grammar of Graphics and ggplot2 basics\nDiscussed data visualization principles and the role of infographics\n\n\n\nComplete HW0 by Wednesday night! Confirms you have everything installed and can render .qmd files to PDF via tinytex\n\n\n\n\nNext time: 1D Categorical Data\nRecommended reading:\n\nCW Chapter 2 Visualizing data: Mapping data onto aesthetics, CW Chapter 17 The principle of proportional ink\nKH Chapter 1 Look at data, KH Chapter 3 Make a plot"
+  },
+  {
     "objectID": "lectures.html",
     "href": "lectures.html",
     "title": "Lectures",
     "section": "",
-    "text": "Lecture\nDate\nTitle\nMaterials\n\n\n\n\n1\nJan 13\nIntroduction and Grammar of Graphics\nTBA",
+    "text": "Lecture\nDate\nTitle\nMaterials\n\n\n\n\n1\nJan 13\nIntroduction and Grammar of Graphics\nslides",
     "crumbs": [
       "Lectures"
     ]
