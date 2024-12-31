@@ -1,0 +1,35 @@
+---
+title: "Statistical Graphics and Visualization 36-315"
+---
+
+This is the companion website for Statistical Graphics and Visualization 36-315. While all of the assignments will be posted on Canvas, this website provides an alternative way to access lecture materials and additional demo files (see the see side-bar).
+
+__Lectures are on Mondays and Wednesdays from 12 - 12:50 PM, located in DH A302.__
+
+Office hours schedule:
+
+| Name                 | Office hours       | Location        |
+|----------------------|--------------------|-----------------|
+| Prof Yurko           | TBA  | Baker Hall 132D |
+| Anna Rosengart       | TBA  | Zoom            |
+
+There are no required textbooks for this course, but the following are useful free resources that I will sometimes refer to as recommended reading:
+
++ [R for Data Science](https://r4ds.hadley.nz/)
+
++ [Data Visualization: A Practical Introduction](https://socviz.co/index.html#preface)
+
++ [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/index.html)
+
++ [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/)
+
+And the following are interesting data visualization websites:
+
++ [FlowingData](https://flowingdata.com/)
+
++ [History of Data Visualization](https://friendly.github.io/HistDataVis/)
+
++ [Friends Don't Let Friends Make Bad Graphs](https://github.com/cxli233/FriendsDontLetFriends)
+
+
+

@@ -1,0 +1,9 @@
+---
+title: "Lectures"
+---
+
+| Lecture   | Date    | Title                                | Materials                              |
+|-----------|---------|--------------------------------------|----------------------------------------|
+| 1         | Jan 13  | Introduction and Grammar of Graphics | TBA        |
+
+
