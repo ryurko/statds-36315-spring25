@@ -168,16 +168,16 @@ datasaurus_dozen |>
 
 ---
 
-## IMPORTANT: HW0 is due Thursday night
+## IMPORTANT: HW0 is due Wednesday night
 
 
-As seen in today's Canvas announcement - **you must submit HW0 by Thursday night!**
+As seen in today's Canvas announcement - **you must submit HW0 by Wednesday night!**
 
   + This is just to make sure you have everything installed correctly and can render `.qmd` files to PDF
 
 **Read through all of the directions in HW0 carefully!**
 
-You will stop saving your workspace upon exiting R Studio!
+You will stop saving your workspace upon exiting RStudio!
 
 **You will need to be set-up for the first lab on Friday**
 
