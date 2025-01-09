@@ -94,11 +94,11 @@
     "text": "Course logistics\n\n\nAll homework/lab assignments will be in Quarto. You’ll generate a PDF, which you’ll submit on Gradescope\nMake sure R and RStudio are installed on your computer!\nHW0 due Wednesday Jan 15 at 11:59 PM ET: install R/RStudio, install/load tidyverse, render to PDF, and post to Gradescope\n\nHave any installation issues? Post to the course Piazza!\n\nPiazza: all questions about course material, HWs, exam, and projects\n\nDo NOT share code on Piazza\n\nOnly email for address administrative/logistic issues\nLab attendance on Friday is mandatory - submit lab assignment but don’t attend YOU LOSE 20PTS!\n\nQuestions about lab assignments will only be answered during lab\nIf you need to miss a lab due to illness, interviews, emergencies, etc., email me 48 hours in advance"
   },
   {
-    "objectID": "lectures/01-intro.html#important-hw0-is-due-thursday-night",
-    "href": "lectures/01-intro.html#important-hw0-is-due-thursday-night",
+    "objectID": "lectures/01-intro.html#important-hw0-is-due-wednesday-night",
+    "href": "lectures/01-intro.html#important-hw0-is-due-wednesday-night",
     "title": "Introduction and the Grammar of Graphics",
-    "section": "IMPORTANT: HW0 is due Thursday night",
-    "text": "IMPORTANT: HW0 is due Thursday night\nAs seen in today’s Canvas announcement - you must submit HW0 by Thursday night!\n\nThis is just to make sure you have everything installed correctly and can render .qmd files to PDF\n\nRead through all of the directions in HW0 carefully!\nYou will stop saving your workspace upon exiting R Studio!\nYou will need to be set-up for the first lab on Friday"
+    "section": "IMPORTANT: HW0 is due Wednesday night",
+    "text": "IMPORTANT: HW0 is due Wednesday night\nAs seen in today’s Canvas announcement - you must submit HW0 by Wednesday night!\n\nThis is just to make sure you have everything installed correctly and can render .qmd files to PDF\n\nRead through all of the directions in HW0 carefully!\nYou will stop saving your workspace upon exiting RStudio!\nYou will need to be set-up for the first lab on Friday"
   },
   {
     "objectID": "lectures/01-intro.html#course-objectives-read-the-syllabus",
