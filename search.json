@@ -10,60 +10,14 @@
     ]
   },
   {
-    "objectID": "demos/01-into-tidyverse.html",
-    "href": "demos/01-into-tidyverse.html",
-    "title": "Demo 01: Into the tidyverse",
+    "objectID": "lectures.html",
+    "href": "lectures.html",
+    "title": "Lectures",
     "section": "",
-    "text": "(Broadly speaking) EDA = questions about data + wrangling + visualization\nR for Data Science: “EDA is a state of mind”, an iterative cycle:\n\ngenerate questions\nanswer via transformations and visualizations\n\nExample of questions?\n\nWhat type of variation do the variables display?\nWhat type of relationships exist between variables?\n\nGoal: develop understanding and become familiar with your data\n\nEDA is NOT a replacement for statistical inference and learning\nEDA is an important and necessary step to build intuition\n\nWe tackle the challenges of EDA with a data science workflow. An example of this according to Hadley Wickham in R for Data Science:\n\n\n\n\n\nAspects of data wrangling:\n\nimport: reading in data (e.g., read_csv())\ntidy: rows = observations, columns = variables (i.e. tabular data)\ntransform: filter observations, create new variables, summarize, etc."
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#what-is-exploratory-data-analysis-eda",
-    "href": "demos/01-into-tidyverse.html#what-is-exploratory-data-analysis-eda",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "",
-    "text": "(Broadly speaking) EDA = questions about data + wrangling + visualization\nR for Data Science: “EDA is a state of mind”, an iterative cycle:\n\ngenerate questions\nanswer via transformations and visualizations\n\nExample of questions?\n\nWhat type of variation do the variables display?\nWhat type of relationships exist between variables?\n\nGoal: develop understanding and become familiar with your data\n\nEDA is NOT a replacement for statistical inference and learning\nEDA is an important and necessary step to build intuition\n\nWe tackle the challenges of EDA with a data science workflow. An example of this according to Hadley Wickham in R for Data Science:\n\n\n\n\n\nAspects of data wrangling:\n\nimport: reading in data (e.g., read_csv())\ntidy: rows = observations, columns = variables (i.e. tabular data)\ntransform: filter observations, create new variables, summarize, etc."
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#working-with-penguins",
-    "href": "demos/01-into-tidyverse.html#working-with-penguins",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Working with penguins",
-    "text": "Working with penguins\nIn R, there are many libraries or packages/groups of programs that are not permanently stored in R, so we have to load them when we want to use them. You can load an R package by typing library(package_name). (Sometimes we need to download/install the package first, as described in HW0.)\nThroughout this demo we will use the palmerpenguins dataset. To access the data, you will need to install the palmerpenguins package:\n\ninstall.packages(\"palmerpenguins\")\n\nImport the penguins dataset by loading the palmerpenguins package using the library function and then access the data with the data() function:\n\nlibrary(palmerpenguins) \ndata(penguins)\n\nView some basic info about the penguins dataset:\n\n# displays same info as c(nrow(penguins), ncol(penguins))\ndim(penguins) \n\n[1] 344   8\n\nclass(penguins)\n\n[1] \"tbl_df\"     \"tbl\"        \"data.frame\"\n\n\ntbl (pronounced tibble) is the tidyverse way of storing tabular data, like a spreadsheet or data.frame\nI assure you that you’ll run into errors as you code in R; in fact, my attitude as a coder is that something is wrong if I never get any errors while working on a project. When you run into an error, your first reaction may be to panic and post a question to Piazza. However, checking help documentation in R can be a great way to figure out what’s going wrong. (For good or bad, I end up having to read help documentation almost every day of my life - because, well, I regularly make mistakes in R.)\nLook at the help documentation for penguins by typing help(penguins) in the Console. What are the names of the variables in this dataset? How many observations are in this dataset?\n\nhelp(penguins)\n\nYou should always look at your data before doing anything: view the first 6 (by default) rows with head()\n\nhead(penguins) # Try just typing penguins into your console, what happens?\n\n# A tibble: 6 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n6 Adelie  Torgersen           39.3          20.6               190        3650\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;\n\n\nIs our penguins dataset tidy?\n\nEach row = a single penguin\nEach column = different measurement about the penguins (can print out column names directly with colnames(penguins) or names(penguins))\n\nWe’ll now explore differences among the penguins using the tidyverse."
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#let-the-data-wrangling-begin",
-    "href": "demos/01-into-tidyverse.html#let-the-data-wrangling-begin",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Let the data wrangling begin…",
-    "text": "Let the data wrangling begin…\nFirst, load the tidyverse for exploring the data - and do NOT worry about the warning messages that will pop-up! Warning messages will tell you when other packages that are loaded may have functions replaced with the most recent package you’ve loaded. In general though, you should just be concerned when an error message pops up (errors are different than warnings!).\n\nlibrary(tidyverse)\n\nWarning: package 'ggplot2' was built under R version 4.2.3\n\n\nWarning: package 'tidyr' was built under R version 4.2.3\n\n\nWarning: package 'readr' was built under R version 4.2.3\n\n\nWarning: package 'dplyr' was built under R version 4.2.3\n\n\nWarning: package 'stringr' was built under R version 4.2.3\n\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.0     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.1\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\n\nWe’ll start by summarizing continuous (e.g., bill_length_mm, flipper_length_mm) and categorical (e.g., species, island) variables in different ways.\nWe can compute summary statistics for continuous variables with the summary() function:\n\nsummary(penguins$bill_length_mm)\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's \n  32.10   39.23   44.45   43.92   48.50   59.60       2 \n\n\nCompute counts of categorical variables with table() function:\n\ntable(\"island\" = penguins$island) # be careful it ignores NA values!\n\nisland\n   Biscoe     Dream Torgersen \n      168       124        52 \n\n\nHow do we remove the penguins with missing bill_length_mm values? Within the tidyverse, dplyr is a package with functions for data wrangling (because it’s within the tidyverse that means you do NOT have to load it separately with library(dplyr) after using library(tidyverse)!). It’s considered a “grammar of data manipulation”: dplyr functions are verbs, datasets are nouns.\nWe can filter() our dataset to choose observations meeting conditions:\n\nclean_penguins &lt;- filter(penguins, !is.na(bill_length_mm))\n# Use help(is.na) to see what it returns. And then observe \n# that the ! operator means to negate what comes after it.\n# This means !TRUE == FALSE (i.e., opposite of TRUE is equal to FALSE).\nnrow(penguins) - nrow(clean_penguins) # Difference in rows\n\n[1] 2\n\n\nIf we want to only consider a subset of columns in our data, we can select() variables of interest:\n\nsel_penguins &lt;- select(clean_penguins, species, island, bill_length_mm, flipper_length_mm)\nhead(sel_penguins, n = 3)\n\n# A tibble: 3 × 4\n  species island    bill_length_mm flipper_length_mm\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;             &lt;int&gt;\n1 Adelie  Torgersen           39.1               181\n2 Adelie  Torgersen           39.5               186\n3 Adelie  Torgersen           40.3               195\n\n\nWe can arrange() our dataset to sort observations by variables:\n\nbill_penguins &lt;- arrange(sel_penguins, desc(bill_length_mm)) # use desc() for descending order\nhead(bill_penguins, n = 3)\n\n# A tibble: 3 × 4\n  species   island bill_length_mm flipper_length_mm\n  &lt;fct&gt;     &lt;fct&gt;           &lt;dbl&gt;             &lt;int&gt;\n1 Gentoo    Biscoe           59.6               230\n2 Chinstrap Dream            58                 181\n3 Gentoo    Biscoe           55.9               228\n\n\nWe can summarize() our dataset to one row based on functions of variables:\n\nsummarize(bill_penguins, max(bill_length_mm), median(flipper_length_mm))\n\n# A tibble: 1 × 2\n  `max(bill_length_mm)` `median(flipper_length_mm)`\n                  &lt;dbl&gt;                       &lt;dbl&gt;\n1                  59.6                         197\n\n\nWe can mutate() our dataset to create new variables:\n\nnew_penguins &lt;- mutate(bill_penguins, \n                       bill_flipper_ratio = bill_length_mm / flipper_length_mm,\n                       flipper_bill_ratio = flipper_length_mm / bill_length_mm)\nhead(new_penguins, n = 1)\n\n# A tibble: 1 × 6\n  species island bill_length_mm flipper_length_mm bill_flipper_ratio\n  &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;             &lt;int&gt;              &lt;dbl&gt;\n1 Gentoo  Biscoe           59.6               230              0.259\n# ℹ 1 more variable: flipper_bill_ratio &lt;dbl&gt;\n\n\nHow do we perform several of these actions?\n\nhead(arrange(select(mutate(filter(penguins, !is.na(flipper_length_mm)), bill_flipper_ratio = bill_length_mm / flipper_length_mm), species, island, bill_flipper_ratio), desc(bill_flipper_ratio)), n = 1)\n\n# A tibble: 1 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n\n\nThat’s awfully annoying to do, and also difficult to read…"
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#enter-the-pipeline",
-    "href": "demos/01-into-tidyverse.html#enter-the-pipeline",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Enter the pipeline",
-    "text": "Enter the pipeline\nThe |&gt; (pipe) operator is used in the to chain commands together. Note: you can also use the tidyverse pipe %&gt;% (from magrittr), but |&gt; is the built-in pipe that is native to new versions of R without loading the tidyverse.\n|&gt; directs the data analyis pipeline: output of one function pipes into input of the next function\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  mutate(bill_flipper_ratio = bill_length_mm / flipper_length_mm) |&gt;\n  select(species, island, bill_flipper_ratio) |&gt;\n  arrange(desc(bill_flipper_ratio)) |&gt;\n  head(n = 5)\n\n# A tibble: 5 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n2 Chinstrap Dream               0.275\n3 Chinstrap Dream               0.270\n4 Chinstrap Dream               0.270\n5 Chinstrap Dream               0.268"
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#more-pipeline-actions",
-    "href": "demos/01-into-tidyverse.html#more-pipeline-actions",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "More pipeline actions!",
-    "text": "More pipeline actions!\nInstead of head(), we can slice() our dataset to choose the observations based on the position\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  mutate(bill_flipper_ratio = bill_length_mm / flipper_length_mm) |&gt;\n  select(species, island, bill_flipper_ratio) |&gt;\n  arrange(desc(bill_flipper_ratio)) |&gt;\n  slice(c(1, 2, 10, 100))\n\n# A tibble: 4 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n2 Chinstrap Dream               0.275\n3 Chinstrap Dream               0.264\n4 Gentoo    Biscoe              0.227"
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#grouped-operations",
-    "href": "demos/01-into-tidyverse.html#grouped-operations",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Grouped operations",
-    "text": "Grouped operations\nWe group_by() to split our dataset into groups based on a variable’s values\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  group_by(island) |&gt;\n  summarize(n_penguins = n(), #counts number of rows in group\n            ave_flipper_length = mean(flipper_length_mm), \n            sum_bill_depth = sum(bill_depth_mm),\n            .groups = \"drop\") |&gt; # all levels of grouping dropping\n  arrange(desc(n_penguins)) |&gt;\n  slice(1:5)\n\n# A tibble: 3 × 4\n  island    n_penguins ave_flipper_length sum_bill_depth\n  &lt;fct&gt;          &lt;int&gt;              &lt;dbl&gt;          &lt;dbl&gt;\n1 Biscoe           167               210.          2651.\n2 Dream            124               193.          2275.\n3 Torgersen         51               191.           940.\n\n\n\ngroup_by() is only useful in a pipeline (e.g. with summarize()), and pay attention to its behavior\nspecify the .groups field to decide if observations remain grouped or not after summarizing (you can also use ungroup() for this as well)"
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#putting-it-all-together",
-    "href": "demos/01-into-tidyverse.html#putting-it-all-together",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Putting it all together…",
-    "text": "Putting it all together…\nAs your own exercise, create a tidy dataset where each row == an island with the following variables:\n\nnumber of penguins,\nnumber of unique species on the island (see help(unique)),\naverage body_mass_g,\nvariance (see help(var)) of bill_depth_mm\n\nPrior to making those variables, make sure to filter missings and also only consider female penguins. Then arrange the islands in order of the average body_mass_g:\n\n# INSERT YOUR CODE HERE"
+    "text": "Lecture\nDate\nTitle\nMaterials\n\n\n\n\n1\nJan 13\nIntroduction and Grammar of Graphics\nslides\n\n\n2\nJan 15\n1D Categorical Data\nslides",
+    "crumbs": [
+      "Lectures"
+    ]
   },
   {
     "objectID": "lectures/01-intro.html#who-am-i",
@@ -213,14 +167,172 @@
     "text": "Recap and next steps\n\nDiscussed the importance of data visualization in your role as a statistician / data scientist\nWalked through course logistics (READ THE SYLLABUS)\nIntroduced the Grammar of Graphics and ggplot2 basics\nDiscussed data visualization principles and the role of infographics\n\n\n\nComplete HW0 by Wednesday night! Confirms you have everything installed and can render .qmd files to PDF via tinytex\n\n\n\n\nNext time: 1D Categorical Data\nRecommended reading:\n\nCW Chapter 2 Visualizing data: Mapping data onto aesthetics, CW Chapter 17 The principle of proportional ink\nKH Chapter 1 Look at data, KH Chapter 3 Make a plot"
   },
   {
-    "objectID": "lectures.html",
-    "href": "lectures.html",
-    "title": "Lectures",
+    "objectID": "lectures/02-1dcat.html#announcements-previously-and-today",
+    "href": "lectures/02-1dcat.html#announcements-previously-and-today",
+    "title": "1D Categorical Data",
+    "section": "Announcements, previously, and today…",
+    "text": "Announcements, previously, and today…\n\nComplete HW0 by tonight! Confirms you have everything installed and can render .qmd files to PDF via tinytex\nOffice hours will be announced soon… (I’ll be in my office BH 132D today at 2:30 PM)\n\n\n\nDiscussed the importance of data visualization in your role as a statistician / data scientist\nIntroduced the Grammar of Graphics as a framework for building visualizations\nDiscussed historical examples and principles of visualization to keep in mind\n\n\n\nTODAY: 1D Categorical Data\n\nBriefly talk about variable types\nWalk through different graphs for visualizing 1D categorical data"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#reminder-tidy-data-structure",
+    "href": "lectures/02-1dcat.html#reminder-tidy-data-structure",
+    "title": "1D Categorical Data",
+    "section": "Reminder: tidy data structure",
+    "text": "Reminder: tidy data structure\nData are often stored in tabular (or matrix) form:\n\n\n# A tibble: 5 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;\n\n\n\nEach row == unit of observation, e.g., penguins\nEach column == variable/measurement about each observation, e.g., flipper_length_mm\nKnown as a data.frame in base R and tibble in the tidyverse\nTwo main variable types: quantitative and categorical"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#variable-types",
+    "href": "lectures/02-1dcat.html#variable-types",
+    "title": "1D Categorical Data",
+    "section": "Variable Types",
+    "text": "Variable Types\n\nMost visualizations are about understanding the distribution of different variables (which are stored in columns of tabular/matrix data)\nThe variable type often dictates the type of graphs you should make\nThere are two main types of variables:"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#d-categorical-data",
+    "href": "lectures/02-1dcat.html#d-categorical-data",
+    "title": "1D Categorical Data",
+    "section": "1D Categorical Data",
+    "text": "1D Categorical Data\nTwo different versions of categorical:\n\nNominal: coded with arbitrary numbers, i.e., no real order\n\n\nExamples: race, gender, species, text\n\n\n\nOrdinal: levels with a meaningful order\n\n\nExamples: education level, grades, ranks\n\n\n\nNOTE: R and ggplot considers a categorical variable to be factor\n\nR will always treat categorical variables as ordinal! Defaults to alphabetical…\nWe will need to manually define the factor levels"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#d-categorical-data-structure",
+    "href": "lectures/02-1dcat.html#d-categorical-data-structure",
+    "title": "1D Categorical Data",
+    "section": "1D categorical data structure",
+    "text": "1D categorical data structure\n\nObservations are collected into a vector \\((x_1, \\dots, x_n)\\), where \\(n\\) is number of observations\nEach observed value \\(x_i\\) can only belong to one category level \\(\\{ C_1, C_2, \\dots \\}\\)\n\n\nLook at penguins data from the palmerpenguins package, focusing on species:\n\nlibrary(palmerpenguins)\nhead(penguins$species)\n\n[1] Adelie Adelie Adelie Adelie Adelie Adelie\nLevels: Adelie Chinstrap Gentoo\n\n\nHow could we summarize these data? What information would you report?\n\n\n\ntable(penguins$species)\n\n\n   Adelie Chinstrap    Gentoo \n      152        68       124"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#area-plots",
+    "href": "lectures/02-1dcat.html#area-plots",
+    "title": "1D Categorical Data",
+    "section": "Area plots",
+    "text": "Area plots\n\n\nEach area corresponds to one categorical level\nArea is proportional to counts/frequencies/percentages\nDifferences between areas correspond to differences between counts/frequencies/percentages"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#bar-charts",
+    "href": "lectures/02-1dcat.html#bar-charts",
+    "title": "1D Categorical Data",
+    "section": "Bar charts",
+    "text": "Bar charts\n\nlibrary(tidyverse)\npenguins |&gt;\n  ggplot(aes(x = species)) +\n  geom_bar()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#behind-the-scenes-statistical-summaries",
+    "href": "lectures/02-1dcat.html#behind-the-scenes-statistical-summaries",
+    "title": "1D Categorical Data",
+    "section": "Behind the scenes: statistical summaries",
+    "text": "Behind the scenes: statistical summaries\n\nFrom Chapter 3 of R for Data Science"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#spine-charts---height-version",
+    "href": "lectures/02-1dcat.html#spine-charts---height-version",
+    "title": "1D Categorical Data",
+    "section": "Spine charts - height version",
+    "text": "Spine charts - height version\n\npenguins |&gt;\n  ggplot(aes(fill = species, x = \"\")) +\n  geom_bar()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#spine-charts---width-version",
+    "href": "lectures/02-1dcat.html#spine-charts---width-version",
+    "title": "1D Categorical Data",
+    "section": "Spine charts - width version",
+    "text": "Spine charts - width version\n\npenguins |&gt;\n  ggplot(aes(fill = species, x = \"\")) +\n  geom_bar() +\n  coord_flip()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#so-you-want-to-make-pie-charts",
+    "href": "lectures/02-1dcat.html#so-you-want-to-make-pie-charts",
+    "title": "1D Categorical Data",
+    "section": "So you want to make pie charts…",
+    "text": "So you want to make pie charts…\n\npenguins |&gt; \n  ggplot(aes(fill = species, x = \"\")) + \n  geom_bar(aes(y = after_stat(count))) +\n  coord_polar(theta = \"y\") +\n  theme_void()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#friends-dont-let-friends-make-pie-charts",
+    "href": "lectures/02-1dcat.html#friends-dont-let-friends-make-pie-charts",
+    "title": "1D Categorical Data",
+    "section": "Friends Don’t Let Friends Make Pie Charts",
+    "text": "Friends Don’t Let Friends Make Pie Charts"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#waffle-charts-are-cooler-anyway",
+    "href": "lectures/02-1dcat.html#waffle-charts-are-cooler-anyway",
+    "title": "1D Categorical Data",
+    "section": "Waffle charts are cooler anyway…",
+    "text": "Waffle charts are cooler anyway…\n\nlibrary(waffle)\npenguins |&gt;\n  group_by(species) |&gt; \n  summarize(count = n(), .groups = \"drop\") |&gt; \n  ggplot(aes(fill = species, values = count)) +\n  geom_waffle(n_rows = 20, color = \"white\", flip = TRUE) +\n  coord_equal() +\n  theme_void()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#florence-nightingales-rose-diagram",
+    "href": "lectures/02-1dcat.html#florence-nightingales-rose-diagram",
+    "title": "1D Categorical Data",
+    "section": "Florence Nightingale’s Rose Diagram",
+    "text": "Florence Nightingale’s Rose Diagram"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#rose-diagrams",
+    "href": "lectures/02-1dcat.html#rose-diagrams",
+    "title": "1D Categorical Data",
+    "section": "Rose diagrams",
+    "text": "Rose diagrams\n\npenguins |&gt; \n  ggplot(aes(x = species)) + \n  geom_bar(fill = \"darkblue\") +\n  coord_polar() +\n  scale_y_sqrt()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#recap-and-next-steps",
+    "href": "lectures/02-1dcat.html#recap-and-next-steps",
+    "title": "1D Categorical Data",
+    "section": "Recap and next steps",
+    "text": "Recap and next steps\n\n\n1D Categorical Data: look at counts, frequencies, percentages\nArea plots, where area \\(\\propto\\) counts/frequencies/percentages:\n\nBar charts (you should pretty much always just make a bar chart)\nSpine charts (will be more useful with more variables)\nPie charts (DON’T DO IT)\nRose diagrams (temporal or directional context can justify usage)\n\n\n\n\n\n\nComplete HW0 by TONIGHT! Confirms you have everything installed and can render .qmd files to PDF via tinytex\nHW1 is due in two weeks, no class on Monday\n\n\n\n\n\n\nNext time: quantify and display uncertainty for 1D categorical data\nRecommended reading:\n\nCW Chapter 10 Visualizing proportions, CW Chapter 16.2 Visualizing the uncertainty of point estimates, CW Chapter 11 Visualizing nested proportions"
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html",
+    "href": "demos/01-into-tidyverse.html",
+    "title": "Demo 01: Into the tidyverse",
     "section": "",
-    "text": "Lecture\nDate\nTitle\nMaterials\n\n\n\n\n1\nJan 13\nIntroduction and Grammar of Graphics\nslides",
-    "crumbs": [
-      "Lectures"
-    ]
+    "text": "(Broadly speaking) EDA = questions about data + wrangling + visualization\nR for Data Science: “EDA is a state of mind”, an iterative cycle:\n\ngenerate questions\nanswer via transformations and visualizations\n\nExample of questions?\n\nWhat type of variation do the variables display?\nWhat type of relationships exist between variables?\n\nGoal: develop understanding and become familiar with your data\n\nEDA is NOT a replacement for statistical inference and learning\nEDA is an important and necessary step to build intuition\n\nWe tackle the challenges of EDA with a data science workflow. An example of this according to Hadley Wickham in R for Data Science:\n\n\n\n\n\nAspects of data wrangling:\n\nimport: reading in data (e.g., read_csv())\ntidy: rows = observations, columns = variables (i.e. tabular data)\ntransform: filter observations, create new variables, summarize, etc."
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#what-is-exploratory-data-analysis-eda",
+    "href": "demos/01-into-tidyverse.html#what-is-exploratory-data-analysis-eda",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "",
+    "text": "(Broadly speaking) EDA = questions about data + wrangling + visualization\nR for Data Science: “EDA is a state of mind”, an iterative cycle:\n\ngenerate questions\nanswer via transformations and visualizations\n\nExample of questions?\n\nWhat type of variation do the variables display?\nWhat type of relationships exist between variables?\n\nGoal: develop understanding and become familiar with your data\n\nEDA is NOT a replacement for statistical inference and learning\nEDA is an important and necessary step to build intuition\n\nWe tackle the challenges of EDA with a data science workflow. An example of this according to Hadley Wickham in R for Data Science:\n\n\n\n\n\nAspects of data wrangling:\n\nimport: reading in data (e.g., read_csv())\ntidy: rows = observations, columns = variables (i.e. tabular data)\ntransform: filter observations, create new variables, summarize, etc."
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#working-with-penguins",
+    "href": "demos/01-into-tidyverse.html#working-with-penguins",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Working with penguins",
+    "text": "Working with penguins\nIn R, there are many libraries or packages/groups of programs that are not permanently stored in R, so we have to load them when we want to use them. You can load an R package by typing library(package_name). (Sometimes we need to download/install the package first, as described in HW0.)\nThroughout this demo we will use the palmerpenguins dataset. To access the data, you will need to install the palmerpenguins package:\n\ninstall.packages(\"palmerpenguins\")\n\nImport the penguins dataset by loading the palmerpenguins package using the library function and then access the data with the data() function:\n\nlibrary(palmerpenguins) \ndata(penguins)\n\nView some basic info about the penguins dataset:\n\n# displays same info as c(nrow(penguins), ncol(penguins))\ndim(penguins) \n\n[1] 344   8\n\nclass(penguins)\n\n[1] \"tbl_df\"     \"tbl\"        \"data.frame\"\n\n\ntbl (pronounced tibble) is the tidyverse way of storing tabular data, like a spreadsheet or data.frame\nI assure you that you’ll run into errors as you code in R; in fact, my attitude as a coder is that something is wrong if I never get any errors while working on a project. When you run into an error, your first reaction may be to panic and post a question to Piazza. However, checking help documentation in R can be a great way to figure out what’s going wrong. (For good or bad, I end up having to read help documentation almost every day of my life - because, well, I regularly make mistakes in R.)\nLook at the help documentation for penguins by typing help(penguins) in the Console. What are the names of the variables in this dataset? How many observations are in this dataset?\n\nhelp(penguins)\n\nYou should always look at your data before doing anything: view the first 6 (by default) rows with head()\n\nhead(penguins) # Try just typing penguins into your console, what happens?\n\n# A tibble: 6 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n6 Adelie  Torgersen           39.3          20.6               190        3650\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;\n\n\nIs our penguins dataset tidy?\n\nEach row = a single penguin\nEach column = different measurement about the penguins (can print out column names directly with colnames(penguins) or names(penguins))\n\nWe’ll now explore differences among the penguins using the tidyverse."
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#let-the-data-wrangling-begin",
+    "href": "demos/01-into-tidyverse.html#let-the-data-wrangling-begin",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Let the data wrangling begin…",
+    "text": "Let the data wrangling begin…\nFirst, load the tidyverse for exploring the data - and do NOT worry about the warning messages that will pop-up! Warning messages will tell you when other packages that are loaded may have functions replaced with the most recent package you’ve loaded. In general though, you should just be concerned when an error message pops up (errors are different than warnings!).\n\nlibrary(tidyverse)\n\nWarning: package 'ggplot2' was built under R version 4.2.3\n\n\nWarning: package 'tidyr' was built under R version 4.2.3\n\n\nWarning: package 'readr' was built under R version 4.2.3\n\n\nWarning: package 'dplyr' was built under R version 4.2.3\n\n\nWarning: package 'stringr' was built under R version 4.2.3\n\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.0     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.1\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\n\nWe’ll start by summarizing continuous (e.g., bill_length_mm, flipper_length_mm) and categorical (e.g., species, island) variables in different ways.\nWe can compute summary statistics for continuous variables with the summary() function:\n\nsummary(penguins$bill_length_mm)\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's \n  32.10   39.23   44.45   43.92   48.50   59.60       2 \n\n\nCompute counts of categorical variables with table() function:\n\ntable(\"island\" = penguins$island) # be careful it ignores NA values!\n\nisland\n   Biscoe     Dream Torgersen \n      168       124        52 \n\n\nHow do we remove the penguins with missing bill_length_mm values? Within the tidyverse, dplyr is a package with functions for data wrangling (because it’s within the tidyverse that means you do NOT have to load it separately with library(dplyr) after using library(tidyverse)!). It’s considered a “grammar of data manipulation”: dplyr functions are verbs, datasets are nouns.\nWe can filter() our dataset to choose observations meeting conditions:\n\nclean_penguins &lt;- filter(penguins, !is.na(bill_length_mm))\n# Use help(is.na) to see what it returns. And then observe \n# that the ! operator means to negate what comes after it.\n# This means !TRUE == FALSE (i.e., opposite of TRUE is equal to FALSE).\nnrow(penguins) - nrow(clean_penguins) # Difference in rows\n\n[1] 2\n\n\nIf we want to only consider a subset of columns in our data, we can select() variables of interest:\n\nsel_penguins &lt;- select(clean_penguins, species, island, bill_length_mm, flipper_length_mm)\nhead(sel_penguins, n = 3)\n\n# A tibble: 3 × 4\n  species island    bill_length_mm flipper_length_mm\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;             &lt;int&gt;\n1 Adelie  Torgersen           39.1               181\n2 Adelie  Torgersen           39.5               186\n3 Adelie  Torgersen           40.3               195\n\n\nWe can arrange() our dataset to sort observations by variables:\n\nbill_penguins &lt;- arrange(sel_penguins, desc(bill_length_mm)) # use desc() for descending order\nhead(bill_penguins, n = 3)\n\n# A tibble: 3 × 4\n  species   island bill_length_mm flipper_length_mm\n  &lt;fct&gt;     &lt;fct&gt;           &lt;dbl&gt;             &lt;int&gt;\n1 Gentoo    Biscoe           59.6               230\n2 Chinstrap Dream            58                 181\n3 Gentoo    Biscoe           55.9               228\n\n\nWe can summarize() our dataset to one row based on functions of variables:\n\nsummarize(bill_penguins, max(bill_length_mm), median(flipper_length_mm))\n\n# A tibble: 1 × 2\n  `max(bill_length_mm)` `median(flipper_length_mm)`\n                  &lt;dbl&gt;                       &lt;dbl&gt;\n1                  59.6                         197\n\n\nWe can mutate() our dataset to create new variables:\n\nnew_penguins &lt;- mutate(bill_penguins, \n                       bill_flipper_ratio = bill_length_mm / flipper_length_mm,\n                       flipper_bill_ratio = flipper_length_mm / bill_length_mm)\nhead(new_penguins, n = 1)\n\n# A tibble: 1 × 6\n  species island bill_length_mm flipper_length_mm bill_flipper_ratio\n  &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;             &lt;int&gt;              &lt;dbl&gt;\n1 Gentoo  Biscoe           59.6               230              0.259\n# ℹ 1 more variable: flipper_bill_ratio &lt;dbl&gt;\n\n\nHow do we perform several of these actions?\n\nhead(arrange(select(mutate(filter(penguins, !is.na(flipper_length_mm)), bill_flipper_ratio = bill_length_mm / flipper_length_mm), species, island, bill_flipper_ratio), desc(bill_flipper_ratio)), n = 1)\n\n# A tibble: 1 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n\n\nThat’s awfully annoying to do, and also difficult to read…"
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#enter-the-pipeline",
+    "href": "demos/01-into-tidyverse.html#enter-the-pipeline",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Enter the pipeline",
+    "text": "Enter the pipeline\nThe |&gt; (pipe) operator is used in the to chain commands together. Note: you can also use the tidyverse pipe %&gt;% (from magrittr), but |&gt; is the built-in pipe that is native to new versions of R without loading the tidyverse.\n|&gt; directs the data analyis pipeline: output of one function pipes into input of the next function\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  mutate(bill_flipper_ratio = bill_length_mm / flipper_length_mm) |&gt;\n  select(species, island, bill_flipper_ratio) |&gt;\n  arrange(desc(bill_flipper_ratio)) |&gt;\n  head(n = 5)\n\n# A tibble: 5 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n2 Chinstrap Dream               0.275\n3 Chinstrap Dream               0.270\n4 Chinstrap Dream               0.270\n5 Chinstrap Dream               0.268"
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#more-pipeline-actions",
+    "href": "demos/01-into-tidyverse.html#more-pipeline-actions",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "More pipeline actions!",
+    "text": "More pipeline actions!\nInstead of head(), we can slice() our dataset to choose the observations based on the position\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  mutate(bill_flipper_ratio = bill_length_mm / flipper_length_mm) |&gt;\n  select(species, island, bill_flipper_ratio) |&gt;\n  arrange(desc(bill_flipper_ratio)) |&gt;\n  slice(c(1, 2, 10, 100))\n\n# A tibble: 4 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n2 Chinstrap Dream               0.275\n3 Chinstrap Dream               0.264\n4 Gentoo    Biscoe              0.227"
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#grouped-operations",
+    "href": "demos/01-into-tidyverse.html#grouped-operations",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Grouped operations",
+    "text": "Grouped operations\nWe group_by() to split our dataset into groups based on a variable’s values\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  group_by(island) |&gt;\n  summarize(n_penguins = n(), #counts number of rows in group\n            ave_flipper_length = mean(flipper_length_mm), \n            sum_bill_depth = sum(bill_depth_mm),\n            .groups = \"drop\") |&gt; # all levels of grouping dropping\n  arrange(desc(n_penguins)) |&gt;\n  slice(1:5)\n\n# A tibble: 3 × 4\n  island    n_penguins ave_flipper_length sum_bill_depth\n  &lt;fct&gt;          &lt;int&gt;              &lt;dbl&gt;          &lt;dbl&gt;\n1 Biscoe           167               210.          2651.\n2 Dream            124               193.          2275.\n3 Torgersen         51               191.           940.\n\n\n\ngroup_by() is only useful in a pipeline (e.g. with summarize()), and pay attention to its behavior\nspecify the .groups field to decide if observations remain grouped or not after summarizing (you can also use ungroup() for this as well)"
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#putting-it-all-together",
+    "href": "demos/01-into-tidyverse.html#putting-it-all-together",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Putting it all together…",
+    "text": "Putting it all together…\nAs your own exercise, create a tidy dataset where each row == an island with the following variables:\n\nnumber of penguins,\nnumber of unique species on the island (see help(unique)),\naverage body_mass_g,\nvariance (see help(var)) of bill_depth_mm\n\nPrior to making those variables, make sure to filter missings and also only consider female penguins. Then arrange the islands in order of the average body_mass_g:\n\n# INSERT YOUR CODE HERE"
   },
   {
     "objectID": "index.html",
