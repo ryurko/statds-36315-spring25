@@ -1,0 +1,307 @@
+---
+title: "1D Categorical Data"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-01-15
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+```
+
+## Announcements, previously, and today...
+
++ **Complete HW0 by tonight!** Confirms you have everything installed and can [render `.qmd` files to PDF via `tinytex`](https://quarto.org/docs/output-formats/pdf-basics.html)
+
++ Office hours will be announced soon... (I'll be in my office BH 132D today at 2:30 PM)
+
+. . .
+
++ Discussed the importance of data visualization in your role as a statistician / data scientist
+
++ Introduced the **Grammar of Graphics** as a framework for building visualizations
+
++ Discussed historical examples and principles of visualization to keep in mind
+
+. . .
+
+**TODAY: 1D Categorical Data**
+
++ Briefly talk about variable types
+
++ Walk through different graphs for visualizing 1D categorical data
+
+---
+
+## Reminder: `tidy` data structure
+
+Data are often stored in __tabular__ (or matrix) form:
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+library(tidyverse)
+library(palmerpenguins)
+penguins |> slice(1:5)
+```
+
++ Each row `==` unit of observation, e.g., penguins
+
++ Each column `==` variable/measurement about each observation, e.g., `flipper_length_mm`
+
++ Known as a `data.frame` in base `R` and `tibble` in the `tidyverse`
+
++ Two main variable types: quantitative and categorical
+
+---
+
+## Variable Types
+
++ Most visualizations are about understanding the distribution of different variables (which are stored in columns of tabular/matrix data)
+
++ The __variable type__ often dictates the type of graphs you should make
+
++ There are two main types of variables:
+
+<!--
+
+1. __Quantitative__
+
+  + Discrete (i.e., counts, usually recorded as whole numbers), examples: number of likes/retweets, number of times word is used
+  
+  + Continuous (any real number), examples: income, age, miles run, heart rate
+  
+  + In `R` these are usually classified as `integer` or `numeric`
+  
+
+2. __Categorical__
+
+Today: Discuss what to do when you have a single column of categorical data (i.e., 1D categorical data)
+
+-->
+
+---
+
+## 1D Categorical Data
+
+Two different versions of categorical:
+
+1. **Nominal**: coded with arbitrary numbers, i.e., no real order
+
++ Examples: race, gender, species, text
+
+. . .
+
+2. **Ordinal**: levels with a meaningful order
+
++ Examples: education level, grades, ranks
+  
+. . .
+
+__NOTE__: `R` and `ggplot` considers a categorical variable to be `factor`
+
++ `R` will always treat categorical variables as ordinal! Defaults to alphabetical...
+  
++ We will need to manually define the `factor` levels
+
+---
+
+## 1D categorical data structure
+
++ Observations are collected into a vector $(x_1, \dots, x_n)$, where $n$ is number of observations
+
++ Each observed value $x_i$ can only belong to one category level $\{ C_1, C_2, \dots \}$
+
+. . .
+
+Look at `penguins` data from the [`palmerpenguins`](https://allisonhorst.github.io/palmerpenguins/) package, focusing on `species`:
+
+```{r}
+library(palmerpenguins)
+head(penguins$species)
+```
+
+***How could we summarize these data? What information would you report?***
+
+. . .
+
+```{r}
+table(penguins$species)
+```
+
+---
+
+## Area plots
+
+![](https://clauswilke.com/dataviz/directory_of_visualizations_files/figure-html/proportions-1.png){fig-align="center" width=65%}
+
++ Each area corresponds to one categorical level
+
++ Area is proportional to counts/frequencies/percentages
+
++ Differences between areas correspond to differences between counts/frequencies/percentages
+
+
+---
+
+## Bar charts
+
+```{r}
+#| code-line-numbers: "3-4"
+library(tidyverse)
+penguins |>
+  ggplot(aes(x = species)) +
+  geom_bar()
+```
+
+
+
+---
+
+## Behind the scenes: statistical summaries
+
+![](https://d33wubrfki0l68.cloudfront.net/70a3b18a1128c785d8676a48c005ee9b6a23cc00/7283c/images/visualization-stat-bar.png){fig-align="center" width=65%}
+
+From [Chapter 3 of R for Data Science](https://r4ds.had.co.nz/data-visualisation.html)
+
+---
+
+## Spine charts - height version
+
+```{r}
+#| code-line-numbers: "2"
+penguins |>
+  ggplot(aes(fill = species, x = "")) +
+  geom_bar()
+```
+
+---
+
+## Spine charts - width version
+
+```{r}
+#| code-line-numbers: "4"
+penguins |>
+  ggplot(aes(fill = species, x = "")) +
+  geom_bar() +
+  coord_flip()
+```
+
+---
+
+## So you want to make pie charts...
+
+```{r}
+#| code-line-numbers: "2-5"
+penguins |> 
+  ggplot(aes(fill = species, x = "")) + 
+  geom_bar(aes(y = after_stat(count))) +
+  coord_polar(theta = "y") +
+  theme_void() 
+```
+
+---
+
+## [Friends Don't Let Friends Make Pie Charts](https://github.com/cxli233/FriendsDontLetFriends)
+
+![](https://raw.githubusercontent.com/cxli233/FriendsDontLetFriends/9267fcbb0e5db5a95c2cf624db3c53b50d6ee2fb/Results/dont_pie_chart.svg){fig-align="center" width=80%}
+
+---
+
+## [Waffle charts](https://github.com/hrbrmstr/waffle) are cooler anyway...
+
+```{r}
+library(waffle)
+penguins |>
+  group_by(species) |> 
+  summarize(count = n(), .groups = "drop") |> 
+  ggplot(aes(fill = species, values = count)) +
+  geom_waffle(n_rows = 20, color = "white", flip = TRUE) +
+  coord_equal() +
+  theme_void()
+```
+
+---
+
+## [Florence Nightingale's](https://www.datavis.ca/gallery/flo.php) Rose Diagram 
+
+![](https://daily.jstor.org/wp-content/uploads/2020/08/florence_nightingagle_data_visualization_visionary_1050x700.jpg){fig-align="center" width=75%}
+
+---
+
+## Rose diagrams
+
+```{r}
+#| code-line-numbers: "2-5"
+penguins |> 
+  ggplot(aes(x = species)) + 
+  geom_bar(fill = "darkblue") +
+  coord_polar() +
+  scale_y_sqrt()
+```
+
+
+---
+
+
+## Recap and next steps
+
+::: {style="font-size: 80%;"}
+
+
++ 1D Categorical Data: look at counts, frequencies, percentages
+
++ Area plots, where area $\propto$ counts/frequencies/percentages:
+
+  + __Bar charts (you should pretty much always just make a bar chart)__
+  
+  + Spine charts (will be more useful with more variables)
+  
+  + Pie charts (__DON'T DO IT__)
+  
+  + Rose diagrams (temporal or directional context can justify usage)
+  
+:::
+  
+. . .
+
+::: {style="font-size: 80%;"}
+
++ **Complete HW0 by TONIGHT!** Confirms you have everything installed and can [render `.qmd` files to PDF via `tinytex`](https://quarto.org/docs/output-formats/pdf-basics.html)
+
++ **HW1 is due in two weeks, no class on Monday**
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
++ **Next time**: quantify and display uncertainty for 1D categorical data
+
++ Recommended reading: 
+
+  + [CW Chapter 10 Visualizing proportions](https://clauswilke.com/dataviz/visualizing-proportions.html), [CW Chapter 16.2 Visualizing the uncertainty of point estimates](https://clauswilke.com/dataviz/visualizing-uncertainty.html#visualizing-the-uncertainty-of-point-estimates), [CW Chapter 11 Visualizing nested proportions](https://clauswilke.com/dataviz/nested-proportions.html)
+
+:::
+
