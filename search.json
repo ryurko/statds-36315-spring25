@@ -14,7 +14,7 @@
     "href": "lectures.html",
     "title": "Lectures",
     "section": "",
-    "text": "Lecture\nDate\nTitle\nMaterials\n\n\n\n\n1\nJan 13\nIntroduction and Grammar of Graphics\nslides\n\n\n2\nJan 15\n1D Categorical Data\nslides",
+    "text": "Lecture\nDate\nTitle\nMaterials\n\n\n\n\n1\nJan 13\nIntroduction and Grammar of Graphics\nslides\n\n\n2\nJan 15\n1D Categorical Data\nslides\n\n\n3\nJan 22\nStatistical Inference for 1D Categorical Data\nslides",
     "crumbs": [
       "Lectures"
     ]
@@ -279,6 +279,209 @@
     "text": "Recap and next steps\n\n\n1D Categorical Data: look at counts, frequencies, percentages\nArea plots, where area \\(\\propto\\) counts/frequencies/percentages:\n\nBar charts (you should pretty much always just make a bar chart)\nSpine charts (will be more useful with more variables)\nPie charts (DON’T DO IT)\nRose diagrams (temporal or directional context can justify usage)\n\n\n\n\n\n\nComplete HW0 by TONIGHT! Confirms you have everything installed and can render .qmd files to PDF via tinytex\nHW1 is due in two weeks, no class on Monday\n\n\n\n\n\n\nNext time: quantify and display uncertainty for 1D categorical data\nRecommended reading:\n\nCW Chapter 10 Visualizing proportions, CW Chapter 16.2 Visualizing the uncertainty of point estimates, CW Chapter 11 Visualizing nested proportions"
   },
   {
+    "objectID": "lectures/03-1dcat-infer.html#announcements-previously-and-today",
+    "href": "lectures/03-1dcat-infer.html#announcements-previously-and-today",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Announcements, previously, and today…",
+    "text": "Announcements, previously, and today…\n\n\nHW1 is posted and due Wednesday Jan 29\nYou have Lab 2 again on Friday\n\nOffice hours schedule:\n\nMy office hours (BH 132D): Wednesdays and Thursdays @ 2 PM\nAnna (zoom): Mondays @ 2 PM\nPerry (zoom): Wednesdays @ 11 AM\n\n\n\n\n\nDiscussed 1D categorical data, basic summaries with counts and proportions\nIntroduced different area plots for visualizing 1D categorical data\nWe make bar charts for categorical data (I told you repeatedly that pie charts suck)\n\n\n\n\n\nTODAY: quantify and display uncertainty for 1D categorical data\n\nAdd confidence intervals to bar charts\nReview the Chi-Squared Test\nDiscuss connections between visualizations and statistical significance"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#crimes-against-bar-charts",
+    "href": "lectures/03-1dcat-infer.html#crimes-against-bar-charts",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Crimes against bar charts",
+    "text": "Crimes against bar charts"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#crimes-against-bar-charts-1",
+    "href": "lectures/03-1dcat-infer.html#crimes-against-bar-charts-1",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Crimes against bar charts",
+    "text": "Crimes against bar charts"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#what-does-a-bar-chart-show",
+    "href": "lectures/03-1dcat-infer.html#what-does-a-bar-chart-show",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "What does a bar chart show?",
+    "text": "What does a bar chart show?\nMarginal Distribution\n\nAssume categorical variable \\(X\\) has \\(K\\) categories: \\(C_1, \\dots, C_K\\)\nTrue marginal distribution of \\(X\\):\n\n\\[\nP(X = C_j) = p_j,\\ j \\in \\{ 1, \\dots, K \\}\n\\]\n\nWe have access to the Empirical Marginal Distribution\n\nObserved distribution of \\(X\\), our best estimate (MLE) of the marginal distribution of \\(X\\): \\(\\hat{p}_1\\), \\(\\hat{p}_2\\), \\(\\dots\\), \\(\\hat{p}_K\\)\n\n\ntable(penguins$species) / nrow(penguins)\n\n\n   Adelie Chinstrap    Gentoo \n0.4418605 0.1976744 0.3604651"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#bar-charts-with-proportions",
+    "href": "lectures/03-1dcat-infer.html#bar-charts-with-proportions",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Bar charts with proportions",
+    "text": "Bar charts with proportions\n\nafter_stat() indicates the aesthetic mapping is performed after statistical transformation\nUse after_stat(count) to access the stat_count() called by geom_bar()\n\n\npenguins |&gt;\n  ggplot(aes(x = species)) +\n  geom_bar(aes(y = after_stat(count) / sum(after_stat(count)))) + \n  labs(y = \"Proportion\")"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#compute-and-display-the-proportions-directly",
+    "href": "lectures/03-1dcat-infer.html#compute-and-display-the-proportions-directly",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Compute and display the proportions directly",
+    "text": "Compute and display the proportions directly\n\nUse group_by(), summarize(), and mutate() in a pipeline to compute then display the proportions directly\nNeed to indicate we are displaying the y axis as given, i.e., the identity function\n\n\npenguins |&gt;\n  group_by(species) |&gt; \n  summarize(count = n(), .groups = \"drop\") |&gt; \n  mutate(total = sum(count), \n         prop = count / total) |&gt; \n  ggplot(aes(x = species)) +\n  geom_bar(aes(y = prop), stat = \"identity\")"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#compute-and-display-the-proportions-directly-output",
+    "href": "lectures/03-1dcat-infer.html#compute-and-display-the-proportions-directly-output",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Compute and display the proportions directly",
+    "text": "Compute and display the proportions directly"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#what-about-uncertainty",
+    "href": "lectures/03-1dcat-infer.html#what-about-uncertainty",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "What about uncertainty?",
+    "text": "What about uncertainty?\n\nQuantify uncertainty for our estimate \\(\\hat{p}_j = \\frac{n_j}{n}\\) with the standard error:\n\n\\[\nSE(\\hat{p}_j) = \\sqrt{\\frac{\\hat{p}_j(1 - \\hat{p}_j)}{n}}\n\\]\n\n\nCompute \\(\\alpha\\)-level confidence interval (CI) as \\(\\hat{p}_j \\pm z_{1 - \\alpha / 2} \\cdot SE(\\hat{p}_j)\\)\nGood rule-of-thumb: construct 95% CI using \\(\\hat{p}_j \\pm 2 \\cdot SE(\\hat{p}_j)\\)\nApproximation justified by CLT, so CI could include values outside of [0,1]"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#add-standard-errors-to-bars",
+    "href": "lectures/03-1dcat-infer.html#add-standard-errors-to-bars",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Add standard errors to bars",
+    "text": "Add standard errors to bars\n\nNeed to remember each CI is for each \\(\\hat{p}_j\\) marginally, not jointly\nHave to be careful with multiple testing\n\n\npenguins |&gt;\n  group_by(species) |&gt; \n  summarize(count = n(), .groups = \"drop\") |&gt; \n  mutate(total = sum(count), \n         prop = count / total,\n         se = sqrt(prop * (1 - prop) / total), \n         lower = prop - 2 * se, \n         upper = prop + 2 * se) |&gt; \n  ggplot(aes(x = species)) +\n  geom_bar(aes(y = prop), stat = \"identity\") +\n  geom_errorbar(aes(ymin = lower, ymax = upper), \n                color = \"red\")"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#add-standard-errors-to-bars-output",
+    "href": "lectures/03-1dcat-infer.html#add-standard-errors-to-bars-output",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Add standard errors to bars",
+    "text": "Add standard errors to bars"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#useful-to-order-categories-by-frequency-with-forcats",
+    "href": "lectures/03-1dcat-infer.html#useful-to-order-categories-by-frequency-with-forcats",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Useful to order categories by frequency with forcats",
+    "text": "Useful to order categories by frequency with forcats\n\npenguins |&gt;\n  group_by(species) |&gt; \n  summarize(count = n(), .groups = \"drop\") |&gt; \n  mutate(total = sum(count), \n         prop = count / total,\n         se = sqrt(prop * (1 - prop) / total), \n         lower = prop - 2 * se, \n         upper = prop + 2 * se,\n         species = fct_reorder(species, prop)) |&gt;\n  ggplot(aes(x = species)) +\n  geom_bar(aes(y = prop), stat = \"identity\") +\n  geom_errorbar(aes(ymin = lower, ymax = upper), \n                color = \"red\")"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#useful-to-order-categories-by-frequency-with-forcats-output",
+    "href": "lectures/03-1dcat-infer.html#useful-to-order-categories-by-frequency-with-forcats-output",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Useful to order categories by frequency with forcats",
+    "text": "Useful to order categories by frequency with forcats"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#dont-do-this",
+    "href": "lectures/03-1dcat-infer.html#dont-do-this",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Don’t do this…",
+    "text": "Don’t do this…"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#chi-squared-test-for-1d-categorical-data",
+    "href": "lectures/03-1dcat-infer.html#chi-squared-test-for-1d-categorical-data",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Chi-squared test for 1D categorical data:",
+    "text": "Chi-squared test for 1D categorical data:\n\n\nNull hypothesis \\(H_0\\): \\(p_1 = p_2 = \\dots = p_K\\), compute the test statistic:\n\n\\[\n\\chi^2 = \\sum_{j=1}^K \\frac{(O_j - E_j)^2}{E_j}\n\\]\n\n\\(O_j\\): observed counts in category \\(j\\)\n\\(E_j\\): expected counts under \\(H_0\\), i.e., each category is equally to occur \\(n / K = p_1 = p_2 = \\dots = p_K\\)\n\n\n\n\nchisq.test(table(penguins$species))\n\n\n    Chi-squared test for given probabilities\n\ndata:  table(penguins$species)\nX-squared = 31.907, df = 2, p-value = 1.179e-07"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#hypothesis-testing-review",
+    "href": "lectures/03-1dcat-infer.html#hypothesis-testing-review",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Hypothesis testing review",
+    "text": "Hypothesis testing review\n\n\n\nComputing \\(p\\)-values works like this:\n\nChoose a test statistic.\nCompute the test statistic in your dataset.\nIs test statistic “unusual” compared to what I would expect under \\(H_0\\)?\nCompare \\(p\\)-value to target error rate \\(\\alpha\\) (typically referred to as target level \\(\\alpha\\) )\nTypically choose \\(\\alpha = 0.05\\)\n\ni.e., if we reject null hypothesis at \\(\\alpha = 0.05\\) then, assuming \\(H_0\\) is true, there is a 5% chance it is a false positive (aka Type 1 error)"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#chi-squared-test-for-1d-categorical-data-1",
+    "href": "lectures/03-1dcat-infer.html#chi-squared-test-for-1d-categorical-data-1",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Chi-squared test for 1D categorical data:",
+    "text": "Chi-squared test for 1D categorical data:\n\n\nNull hypothesis \\(H_0\\): \\(p_1 = p_2 = \\dots = p_K\\), compute the test statistic:\n\n\\[\n\\chi^2 = \\sum_{j=1}^K \\frac{(O_j - E_j)^2}{E_j}\n\\]\n\n\\(O_j\\): observed counts in category \\(j\\)\n\\(E_j\\): expected counts under \\(H_0\\), i.e., each category is equally to occur \\(n / K = p_1 = p_2 = \\dots = p_K\\)\n\n\n\nchisq.test(table(penguins$species))\n\n\n    Chi-squared test for given probabilities\n\ndata:  table(penguins$species)\nX-squared = 31.907, df = 2, p-value = 1.179e-07"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#graphics-versus-statistical-inference",
+    "href": "lectures/03-1dcat-infer.html#graphics-versus-statistical-inference",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Graphics versus Statistical Inference",
+    "text": "Graphics versus Statistical Inference\n\nReminder Anscombe’s Quartet: where statistical inference was the same but the graphics were very different\n\n\n\nThe opposite can be true! Graphics are the same, but statistical inference is very different…"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#example-3-categories-p_1-12-p_2-p_3-14",
+    "href": "lectures/03-1dcat-infer.html#example-3-categories-p_1-12-p_2-p_3-14",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Example: 3 categories, \\(p_1 = 1/2,\\ p_2 = p_3 = 1/4\\)",
+    "text": "Example: 3 categories, \\(p_1 = 1/2,\\ p_2 = p_3 = 1/4\\)"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#example-3-categories-p_1-12-p_2-p_3-14-1",
+    "href": "lectures/03-1dcat-infer.html#example-3-categories-p_1-12-p_2-p_3-14-1",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Example: 3 categories, \\(p_1 = 1/2,\\ p_2 = p_3 = 1/4\\)",
+    "text": "Example: 3 categories, \\(p_1 = 1/2,\\ p_2 = p_3 = 1/4\\)"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#example-3-categories-p_1-12-p_2-p_3-14-2",
+    "href": "lectures/03-1dcat-infer.html#example-3-categories-p_1-12-p_2-p_3-14-2",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Example: 3 categories, \\(p_1 = 1/2,\\ p_2 = p_3 = 1/4\\)",
+    "text": "Example: 3 categories, \\(p_1 = 1/2,\\ p_2 = p_3 = 1/4\\)"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#example-3-categories-p_1-12-p_2-p_3-14-3",
+    "href": "lectures/03-1dcat-infer.html#example-3-categories-p_1-12-p_2-p_3-14-3",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Example: 3 categories, \\(p_1 = 1/2,\\ p_2 = p_3 = 1/4\\)",
+    "text": "Example: 3 categories, \\(p_1 = 1/2,\\ p_2 = p_3 = 1/4\\)"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#power-under-this-scenario-2n4-n4-n4",
+    "href": "lectures/03-1dcat-infer.html#power-under-this-scenario-2n4-n4-n4",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Power under this scenario: (2n/4, n/4, n/4)",
+    "text": "Power under this scenario: (2n/4, n/4, n/4)"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#how-do-we-combine-graphs-with-inference",
+    "href": "lectures/03-1dcat-infer.html#how-do-we-combine-graphs-with-inference",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "How do we combine graphs with inference?",
+    "text": "How do we combine graphs with inference?\n\nSimply add \\(p\\)-values (or other info) to graph via text\nAdd confidence intervals to the graph\n\n\nNeed to remember what each CI is for!\nOur CIs on previous slides are for each \\(\\hat{p}_j\\) marginally, NOT jointly\nHave to be careful with multiple testing…"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#cis-will-visually-capture-uncertainty-in-estimates",
+    "href": "lectures/03-1dcat-infer.html#cis-will-visually-capture-uncertainty-in-estimates",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "CIs will visually capture uncertainty in estimates",
+    "text": "CIs will visually capture uncertainty in estimates"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#rough-rules-of-thumb-for-comparing-cis-on-bar-charts",
+    "href": "lectures/03-1dcat-infer.html#rough-rules-of-thumb-for-comparing-cis-on-bar-charts",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "(Rough) Rules-of-thumb for comparing CIs on bar charts",
+    "text": "(Rough) Rules-of-thumb for comparing CIs on bar charts\n\n\nComparing overlap of two CIs is NOT exactly the same as directly testing for a significant difference…\n\nReally you want CI( \\(\\hat{p}_1 - \\hat{p}_2\\) ), not CI( \\(\\hat{p_1}\\) ) and CI( \\(\\hat{p_2}\\) )\nCI( \\(\\hat{p_1}\\) ) and CI( \\(\\hat{p_2}\\) ) not overlapping implies \\(0 \\notin\\) CI( \\(\\hat{p}_1 - \\hat{p}_2\\) )\nHowever CI( \\(\\hat{p_1}\\) ) and CI( \\(\\hat{p_2}\\) ) overlapping DOES NOT imply \\(0 \\in\\) CI( \\(\\hat{p}_1 - \\hat{p}_2\\) )\n\n\nRoughly speaking:\n\nIf CIs don’t overlap \\(\\rightarrow\\) significant difference\nIf CIs overlap a little \\(\\rightarrow\\) ambiguous\nIf CIs overlap a lot \\(\\rightarrow\\) no significant difference\n\n\n\n\nBut if we’re comparing more than two CIs simultaneously, we need to account for multiple testing!\n\nWhen you look for all non-overlapping CIs: implicitly making \\(\\binom{K}{2} = \\frac{K!}{2!(K-2)!}\\) pairwise tests in your head!"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#corrections-for-multiple-testing",
+    "href": "lectures/03-1dcat-infer.html#corrections-for-multiple-testing",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Corrections for multiple testing",
+    "text": "Corrections for multiple testing\n\n\nIn those bar plots, when we determine whether CIs overlap we make 3 comparisons:\n\nA vs B\nA vs C\nB vs C\n\n\nThis is a multiple testing issue\n\n\n\n\nIn short: we will make Type 1 errors (chance of false rejecting) more than 5% of the time!\nReminder: Type 1 error = Rejecting \\(H_0\\) when \\(H_0\\) is true\ne.g., CIs don’t overlap but actually \\(H_0: p_A = p_B\\) is true\nIf only interested in A vs B and nothing else, then just construct 95% CI for A vs B and control error rate at 5%\nHowever, if we construct several CIs, where A vs B is just one comparison we make, our Type 1 error rate &gt; 5%!"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#corrections-for-multiple-testing-1",
+    "href": "lectures/03-1dcat-infer.html#corrections-for-multiple-testing-1",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Corrections for multiple testing",
+    "text": "Corrections for multiple testing\n\nVast literature on corrections for multiple testing (beyond the scope of this class… but in my thesis!)\nBut you should understand the following:\n\nCorrections for multiple testing inflate \\(p\\)-values (i.e., make them bigger)\nEquivalently, they inflate CIs (i.e., make them wider)\nPurpose of these corrections is to control Type 1 error rate \\(\\leq 5\\%\\)\n\n\n\n\nWe’ll focus on the Bonferroni correction, which inflates \\(p\\)-values the most but is easy to implement and very popular:\n\nWe usually reject null hypothesis when \\(p\\)-value \\(\\leq .05\\)\nBonferroni: if making \\(K\\) comparisons, reject only if \\(p\\)-value \\(\\leq .05/K\\)\nFor CIs: instead of plotting 95% CIs, we plot (1 - \\(0.05/K\\))% CIs\n\ne.g., for \\(K = 3\\) then plot 98.3% CIs"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#impact-of-bonferroni-correction-on-cis",
+    "href": "lectures/03-1dcat-infer.html#impact-of-bonferroni-correction-on-cis",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Impact of Bonferroni correction on CIs…",
+    "text": "Impact of Bonferroni correction on CIs…"
+  },
+  {
+    "objectID": "lectures/03-1dcat-infer.html#recap-and-next-steps",
+    "href": "lectures/03-1dcat-infer.html#recap-and-next-steps",
+    "title": "Statistical Inference for 1D Categorical Data",
+    "section": "Recap and next steps",
+    "text": "Recap and next steps\n\n\nBar charts display the empirical distribution of the categorical variable ( \\(\\hat{p}_1, \\dots, \\hat{p}_K\\) )\nChi-squared test is a global test for 1D categorical data, testing \\(H_0 : p_1 = \\cdot \\cdot \\cdot = p_K\\)\n\nDoes not tell us which probabilities differ!\n\nCan visualize CIs for each \\(\\hat{p}_1\\), \\(\\dots\\), \\(\\hat{p}_K\\), but need to deal with multiple testing\nGraphs with the same trends can display very different statistical significance (largely due to sample size)\n\n\n\n\n\nHW1 is due next week and you have Lab 2 on Friday!\nNext time: 2D categorical data\nRecommended reading:\n\nCW Chapter 16.2 Visualizing the uncertainty of point estimates"
+  },
+  {
     "objectID": "demos/01-into-tidyverse.html",
     "href": "demos/01-into-tidyverse.html",
     "title": "Demo 01: Into the tidyverse",
@@ -339,7 +542,7 @@
     "href": "index.html",
     "title": "Statistical Graphics and Visualization 36-315",
     "section": "",
-    "text": "This is the companion website for Statistical Graphics and Visualization 36-315. While all of the assignments will be posted on Canvas, this website provides an alternative way to access lecture materials and additional demo files (see the see side-bar).\nLectures are on Mondays and Wednesdays from 12 - 12:50 PM, located in DH A302.\nOffice hours schedule:\n\n\n\nName\nOffice hours\nLocation\n\n\n\n\nProf Yurko\nTBA\nBaker Hall 132D\n\n\nAnna Rosengart\nTBA\nZoom (see Canvas)\n\n\nPerry Lin\nTBA\nZoom (see Canvas)\n\n\n\nThere are no required textbooks for this course, but the following are useful free resources that I will sometimes refer to as recommended reading:\n\nR for Data Science\nData Visualization: A Practical Introduction\nFundamentals of Data Visualization\nggplot2: Elegant Graphics for Data Analysis\n\nAnd the following are interesting data visualization websites:\n\nFlowingData\nHistory of Data Visualization\nFriends Don’t Let Friends Make Bad Graphs",
+    "text": "This is the companion website for Statistical Graphics and Visualization 36-315. While all of the assignments will be posted on Canvas, this website provides an alternative way to access lecture materials and additional demo files (see the see side-bar).\nLectures are on Mondays and Wednesdays from 12 - 12:50 PM, located in DH A302.\nOffice hours schedule:\n\n\n\n\n\n\n\n\nName\nOffice hours\nLocation\n\n\n\n\nProf Yurko\nWednesdays and Thursdays @ 2 PM\nBaker Hall 132D\n\n\nAnna Rosengart\nMondays @ 2 PM\nZoom (see Canvas)\n\n\nPerry Lin\nWednesdays @ 11 AM\nZoom (see Canvas)\n\n\n\nThere are no required textbooks for this course, but the following are useful free resources that I will sometimes refer to as recommended reading:\n\nR for Data Science\nData Visualization: A Practical Introduction\nFundamentals of Data Visualization\nggplot2: Elegant Graphics for Data Analysis\n\nAnd the following are interesting data visualization websites:\n\nFlowingData\nHistory of Data Visualization\nFriends Don’t Let Friends Make Bad Graphs",
     "crumbs": [
       "Home"
     ]
