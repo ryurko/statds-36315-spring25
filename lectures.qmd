@@ -7,5 +7,6 @@ title: "Lectures"
 | 1         | Jan 13  | Introduction and Grammar of Graphics | [slides](lectures/01-intro.qmd)        |
 | 2         | Jan 15  | 1D Categorical Data                  | [slides](lectures/02-1dcat.qmd)        |
 | 3         | Jan 22  | Statistical Inference for 1D Categorical Data  | [slides](lectures/03-1dcat-infer.qmd)        |
+| 4         | Jan 27  | Power and Multiple Testing  | [slides](lectures/04-power-multiple-testing.qmd)        |
 
 

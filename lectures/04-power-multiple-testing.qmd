@@ -1,0 +1,536 @@
+---
+title: "Power and multiple testing"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-01-27
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 80%;"}
+
++ **HW1 is due this Wednesday Jan 29 by 11:59 PM** 
+
++ **You have Lab 3 again on Friday**
+
+Office hours schedule:
+
++ My office hours (BH 132D): Wednesdays and Thursdays @ 2 PM
+
++ Anna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+
++ Main estimators: $\underbrace{\hat{p}_1,\dots,\hat{p}_K}_{\text{proportions}}$ for $K$-many categories
+
++ Chi-square test is the main statistical test for 1D categorical data, tests $H_0: p_1 = \cdots = p_K$
+
++ Can also make confidence intervals for $\hat{p}_1,\dots,\hat{p}_K$ (just multiply CIs by $n$)
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+**TODAY:**
+
++ Interpreting CIs on graphs is tricky and have to be careful with multiple testing
+
+:::
+
+---
+
+## Graphics versus Statistical Inference
+
+- Reminder Anscombe's Quartet: where statistical inference was the same but the graphics were very different
+
+![](https://upload.wikimedia.org/wikipedia/commons/e/ec/Anscombe%27s_quartet_3.svg){fig-align="center"width=55%}
+
+- __The opposite can be true!__ Graphics are the same, but statistical inference is very different...
+
+
+---
+
+## Example: 3 categories, $p_A = 1/2,\ p_B = p_C = 1/4$
+
+```{r}
+#| echo: false
+#| fig-align: center
+fake_counts <- tibble(fake_group = c("A", "A", "B", "C"))
+fake_counts |>
+  ggplot(aes(x = fake_group)) +
+  geom_bar(fill = "darkblue") +
+  theme_bw() +
+  theme(axis.title = element_blank(),
+        axis.text = element_text(size = 16))
+```
+
+
+---
+
+## Example: 3 categories, $p_A = 1/2,\ p_B = p_C = 1/4$
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Init the fake data
+fake_counts <- tibble(fake_group = c("A", "A", "B", "C"))
+# Run and store the chi-square test:
+fake_chisq_test_results <- chisq.test(table(fake_counts$fake_group))
+# Create the plot
+fake_counts |>
+  ggplot(aes(x = fake_group)) +
+  geom_bar(fill = "darkblue") +
+  # Add the label with number of observations
+  annotate(geom = "text", x = 2.5, y = 1.5, size = 5,
+           label = paste0("n = ", nrow(fake_counts))) +
+  # Add label with p-value from chi-square test
+  annotate(geom = "text", x = 2.5, y = 1.25, size = 5,
+           label = paste0("p-value = ", 
+                          signif(fake_chisq_test_results$p.value,
+                                 digits = 2))) +
+  theme_bw() +
+  theme(axis.title = element_blank(),
+        axis.text = element_text(size = 16))
+
+```
+
+
+---
+
+## Example: 3 categories, $p_A = 1/2,\ p_B = p_C = 1/4$
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Init the fake data
+fake_counts <- tibble(fake_group = c(rep("A", 8), 
+                                     rep("B", 4), rep("C", 4)))
+# Run and store the chi-square test:
+fake_chisq_test_results <- chisq.test(table(fake_counts$fake_group))
+fake_counts |>
+  ggplot(aes(x = fake_group)) +
+  geom_bar(fill = "darkblue") +
+  # Add labels but preserve location of vertical label based on change in n
+  annotate(geom = "text", x = 2.5, y = 1.5 * 8 / 2, size = 5,
+           label = paste0("n = ", nrow(fake_counts))) +
+  annotate(geom = "text", x = 2.5, y = 1.25 * 8 / 2, size = 5,
+           label = paste0("p-value = ", 
+                          signif(fake_chisq_test_results$p.value,
+                                 digits = 2))) +
+  theme_bw() +
+  theme(axis.title = element_blank(),
+        axis.text = element_text(size = 16))
+
+```
+
+
+---
+
+## Example: 3 categories, $p_A = 1/2,\ p_B = p_C = 1/4$
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Init the fake data
+fake_counts <- tibble(fake_group = c(rep("A", 32), 
+                                     rep("B", 16), rep("C", 16)))
+# Run and store the chi-square test:
+fake_chisq_test_results <- chisq.test(table(fake_counts$fake_group))
+# Create the plot
+fake_counts |>
+  ggplot(aes(x = fake_group)) +
+  geom_bar(fill = "darkblue") +
+  # Add labels but preserve location of vertical label based on change in n
+  annotate(geom = "text", x = 2.5, y = 1.5 * 32 / 2, size = 5,
+           label = paste0("n = ", nrow(fake_counts))) +
+  annotate(geom = "text", x = 2.5, y = 1.25 * 32 / 2, size = 5,
+           label = paste0("p-value = ", 
+                          signif(fake_chisq_test_results$p.value,
+                                 digits = 2))) +
+  theme_bw() +
+  theme(axis.title = element_blank(),
+        axis.text = element_text(size = 16))
+
+```
+
+
+---
+
+## Power under this scenario: (2n/4, n/4, n/4)
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Iterate through a sequence of sample sizes to compute the pvalue:
+chisq_power_table <-
+  map_dfr(seq(4, 100, by = 4),
+          # Apply the following function to each value
+          function(x) {
+            
+            # Init the fake data:
+            fake_data <- tibble(fake_group = 
+                                  c(rep("A", 2 * x / 4), 
+                                    rep("B", x / 4), rep("C", x / 4)))
+            
+            # Run and store the chi-square test:
+            fake_results <- chisq.test(table(fake_data$fake_group))
+            
+            # Return a table with the p-value and n:
+            tibble("n" = x,
+                   "pval" = fake_results$p.value)
+          })
+
+# Plot the results:
+chisq_power_table |>
+  # Note the use of 
+  ggplot(aes(x = n, y = pval)) +
+  # Draw a line layer to connect the points 
+  geom_line(color = "gray") +
+  geom_point(color = "black") +
+  # Add a horizontal line at 0.05:
+  geom_hline(yintercept = 0.05, linetype = "dashed", 
+             color = "red") +
+  scale_x_continuous(breaks = seq(0, 100, by = 20)) +
+  theme_bw() +
+  labs(x = "Sample size", y = "p-value")
+
+```
+
+
+---
+
+## How do we combine graphs with inference?
+
+
+1. Simply add $p$-values (or other info) to graph via text
+
+2. Add confidence intervals to the graph
+
+  - Need to remember what each CI is for! 
+  
+  - Our CIs on previous slides are for each $\hat{p}_j$ marginally, __NOT__ jointly
+
+  - Have to be careful with __multiple testing__...
+
+---
+
+## CIs will visually capture uncertainty in estimates
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| fig-height: 9
+# Init the fake data
+fake_counts <- tibble(fake_group = c("A", "A", "B", "C"))
+# Compute the summary with standard errors:
+fake_counts |>
+  group_by(fake_group) |>
+  summarize(count = n(), .groups = "drop") |>
+  mutate(total = sum(count),
+         prop = count / total,
+         se = sqrt(prop * (1 - prop) / total),
+         lower = prop - 2 * se,
+         upper = prop + 2 * se) |>
+  ggplot(aes(x = fake_group)) +
+  geom_bar(fill = "darkblue",
+           aes(y = prop),
+           stat = "identity") +
+  geom_errorbar(aes(ymin = lower,
+                    ymax = upper),
+                color = "red") +
+  # Add the label with number of observations
+  annotate(geom = "text", x = 2.5, y = .75, size = 10,
+           label = paste0("n = ", nrow(fake_counts))) +
+  theme_bw() +
+  theme(axis.title = element_blank(),
+        axis.text = element_text(size = 16))
+
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| fig-height: 9
+# Init the fake data
+fake_counts <- tibble(fake_group = c(rep("A", 32), 
+                                     rep("B", 16), rep("C", 16)))# Compute the summary with standard errors:
+fake_counts |>
+  group_by(fake_group) |>
+  summarize(count = n(), .groups = "drop") |>
+  mutate(total = sum(count),
+         prop = count / total,
+         se = sqrt(prop * (1 - prop) / total),
+         lower = prop - 2 * se,
+         upper = prop + 2 * se) |>
+  ggplot(aes(x = fake_group)) +
+  geom_bar(fill = "darkblue",
+           aes(y = prop),
+           stat = "identity") +
+  geom_errorbar(aes(ymin = lower,
+                    ymax = upper),
+                color = "red") +
+  # Add the label with number of observations
+  annotate(geom = "text", x = 2.5, y = .75, size = 10,
+           label = paste0("n = ", nrow(fake_counts))) +
+  scale_y_continuous(limits = c(0, 1)) +
+  theme_bw() +
+  theme(axis.title = element_blank(),
+        axis.text = element_text(size = 16))
+
+```
+
+:::
+
+::::
+
+---
+
+## Rough rules for comparing CIs on bar charts
+
+::: {style="font-size: 75%;"}
+
+- Comparing overlap of two CIs is __NOT__ exactly the same as directly testing for a significant difference...
+
+  - Really you want CI( $\hat{p}_1 - \hat{p}_2$ ), not CI( $\hat{p_1}$ ) and CI( $\hat{p_2}$ )
+  
+  - CI( $\hat{p_1}$ ) and CI( $\hat{p_2}$ ) not overlapping implies $0 \notin$ CI( $\hat{p}_1 - \hat{p}_2$ )
+
+  - _However_ CI( $\hat{p_1}$ ) and CI( $\hat{p_2}$ ) overlapping __DOES NOT__ imply $0 \in$ CI( $\hat{p}_1 - \hat{p}_2$ ) 
+
+
+Roughly speaking:
+
+  - If CIs don't overlap $\rightarrow$ significant difference
+  
+  - If CIs overlap a little $\rightarrow$ ambiguous
+  
+  - If CIs overlap a lot $\rightarrow$ no significant difference
+  
+:::
+  
+. . .
+
+::: {style="font-size: 75%;"}
+
+But if we're comparing more than two CIs simultaneously, we need to account for __multiple testing__!
+
+  - When you look for all non-overlapping CIs: making $\binom{K}{2} = \frac{K!}{2!(K-2)!}$ pairwise tests in your head!
+  
+:::
+
+---
+
+## Corrections for multiple testing
+
+::: {style="font-size: 75%;"}
+
+- In those bar plots, when we determine whether CIs overlap we make 3 comparisons:
+
+  1. A vs B
+  
+  2. A vs C
+  
+  3. B vs C
+  
+**This is a multiple testing issue**
+
+:::
+
+. . .
+
+::: {style="font-size: 75%;"}
+
+- In short: we will make Type 1 errors (chance of false rejecting) more than 5% of the time!
+
+- Reminder: Type 1 error = Rejecting $H_0$ when $H_0$ is true
+
+- e.g., CIs don't overlap but actually $H_0: p_A = p_B$ is true
+  
+- If only interested in A vs B __and nothing else__, then just construct 95% CI for A vs B and _control error rate_ at 5%
+  
+- However, if we construct several CIs, where A vs B is just one comparison we make, our Type 1 error rate > 5%!
+
+:::
+
+---
+
+## Corrections for multiple testing
+
+::: {style="font-size: 75%;"}
+
+Vast literature on corrections for multiple testing (beyond the scope of this class... but in my thesis!)
+
+But you should understand the following:
+
+1. Corrections for multiple testing inflate $p$-values (i.e., make them bigger)
+
+2. Equivalently, they inflate CIs (i.e., make them wider)
+
+3. Purpose of these corrections is to control Type 1 error rate $\leq 5\%$
+
+:::
+
+. . .
+
+::: {style="font-size: 75%;"}
+
+We'll focus on the __Bonferroni correction__, which inflates $p$-values the most but is easy to implement and very popular:
+
++ We usually reject null hypothesis when $p$-value $\leq .05$
+
++ __Bonferroni__: if making $K$ comparisons, reject only if $p$-value $\leq .05/K$
+
++ For CIs: instead of plotting 95% CIs, we plot (1 - $0.05/K$)% CIs
+
+  + e.g., for $K = 3$ then plot 98.3% CIs
+  
+:::
+  
+---
+
+## Impact of Bonferroni correction on CIs...
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| fig-height: 9
+# Init the fake data
+fake_counts <- tibble(fake_group = c(rep("A", 32), 
+                                     rep("B", 16), rep("C", 16)))# Compute the summary with standard errors:
+fake_counts |>
+  group_by(fake_group) |>
+  summarize(count = n(), .groups = "drop") |>
+  mutate(total = sum(count),
+         prop = count / total,
+         se = sqrt(prop * (1 - prop) / total),
+         lower = prop - 2 * se,
+         upper = prop + 2 * se) |>
+  ggplot(aes(x = fake_group)) +
+  geom_bar(fill = "darkblue",
+           aes(y = prop),
+           stat = "identity") +
+  geom_errorbar(aes(ymin = lower,
+                    ymax = upper),
+                color = "red") +
+  # Add the label with number of observations
+  annotate(geom = "text", x = 2.5, y = .75, size = 10,
+           label = paste0("n = ", nrow(fake_counts))) +
+  scale_y_continuous(limits = c(0, 1)) +
+  theme_bw() +
+  theme(axis.title = element_blank(),
+        axis.text = element_text(size = 16))
+
+```
+
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| fig-height: 9
+# Init the fake data
+fake_counts <- tibble(fake_group = c(rep("A", 32), 
+                                     rep("B", 16), rep("C", 16)))# Compute the summary with standard errors:
+fake_counts |>
+  group_by(fake_group) |>
+  summarize(count = n(), .groups = "drop") |>
+  mutate(total = sum(count),
+         prop = count / total,
+         se = sqrt(prop * (1 - prop) / total),
+         lower = prop - qnorm(1 - .05 / 3 / 2) * se,
+         upper = prop + qnorm(1 - .05 / 3 / 2) * se) |>
+  ggplot(aes(x = fake_group)) +
+  geom_bar(fill = "darkblue",
+           aes(y = prop),
+           stat = "identity") +
+  geom_errorbar(aes(ymin = lower,
+                    ymax = upper),
+                color = "red") +
+  # Add the label with number of observations
+  annotate(geom = "text", x = 2.5, y = .75, size = 10,
+           label = paste0("n = ", nrow(fake_counts))) +
+  scale_y_continuous(limits = c(0, 1)) +
+  theme_bw() +
+  theme(axis.title = element_blank(),
+        axis.text = element_text(size = 16))
+
+
+```
+
+
+:::
+
+::::
+
+---
+
+## Recap and next steps
+
+::: {style="font-size: 80%;"}
+
++ Graphs with the same trends can display very different statistical significance (largely due to sample size)
+
++ Can visualize CIs for each $\hat{p}_1$, $\dots$, $\hat{p}_K$, but need to deal with multiple testing
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
++ **HW1 is due Wednesday and you have Lab 3 on Friday!**
+
++ **Next time**: Visualizations and inference for 2D categorical data
+
++ Recommended reading: [CW Chapter 11 Visualizing nested proportions](https://clauswilke.com/dataviz/nested-proportions.html)
+
+:::
+
