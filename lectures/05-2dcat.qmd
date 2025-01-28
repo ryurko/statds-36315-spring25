@@ -1,0 +1,446 @@
+---
+title: "Visualizations and Inference for 2D Categorical Data"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-01-29
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 80%;"}
+
++ **HW1 is due TONIGHT by 11:59 PM** 
+
++ **You have Lab 3 again on Friday**
+
+Office hours schedule:
+
++ My office hours (BH 132D): Wednesdays and Thursdays @ 2 PM
+
++ Anna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+
++ Discussed how similar looking graphics can have very different statistical results (thinking about power)
+
++ Discussed the challenges of multiple testing
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+**TODAY:**
+
++ Visuals for 2D categorical data
+
++ How do we visualize inference for 2D categorical data?
+
+:::
+
+---
+
+## 2D categorical basics
+
+
+---
+
+## 2D categorical basics
+
+```{r}
+addmargins(table("Species" = penguins$species, "Island" = penguins$island))
+```
+
++ Column and row sums: marginal distributions
+
++ Values within rows: conditional distribution for `Island` given `Species`
+
++ Values within columns: conditional distribution for `Species` given `Island`
+
++ Bottom right: total number of observations
+
+---
+
+## Connecting distributions to visualizations
+
+Five distributions for two categorical variables $A$ and $B$:
+
+- __Marginals__:  $P(A)$ and $P(B)$
+
+- __Conditionals__: $P(A | B)$ and $P(B|A)$
+
+- __Joint__: $P(A, B)$
+
+We use bar charts to visualize marginal distributions for categorical variables...
+
+. . .
+
+**And we'll use more bar charts to visualize conditional and joint distributions!**
+
+---
+
+## Stacked bar charts - a bar chart of spine charts
+
+
+```{r}
+#| code-line-numbers: "2"
+penguins |>
+  ggplot(aes(x = species, fill = island)) +
+  geom_bar() + 
+  theme_bw()
+```
+
+::: {style="font-size: 75%;"}
+
++ Easy to see marginal of `species`,  i.e., $P($ `x` $)$
+
++ Can see conditional of `island` | `species`,  i.e., $P($ `fill` | `x` $)$
+
++ Harder to see conditional of `species` | `island`,  i.e., $P($ `x` | `fill` $)$
+
+:::
+
+---
+
+## Side-by-side bar charts
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = species, fill = island)) + 
+  geom_bar(position = "dodge") +
+  theme_bw()
+```
+
+::: {style="font-size: 75%;"}
+
++ Easy to see conditional of `island` | `species`,  i.e., $P($ `fill` | `x` $)$
+
++ Can see conditional of `species` | `island`,  i.e., $P($ `x` | `fill` $)$
+
+:::
+
+---
+
+## Side-by-side bar charts
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = species, fill = island)) + 
+  geom_bar(position = position_dodge(preserve = "single")) +
+  theme_bw()
+```
+
+::: {style="font-size: 75%;"}
+
++ Easy to see conditional of `island` | `species`,  i.e., $P($ `fill` | `x` $)$
+
++ Can see conditional of `species` | `island`,  i.e., $P($ `x` | `fill` $)$
+
+:::
+
+---
+
+## [Complete](https://tidyr.tidyverse.org/reference/complete.html) missing values to preserve location
+
+```{r}
+#| code-line-numbers: "2-6"
+penguins |>
+  count(species, island) |>
+  complete(species = unique(species), island = unique(island), 
+           fill = list(n = 0)) |>
+  ggplot(aes(x = species, y = n, fill = island)) + 
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_bw()
+```
+
+---
+
+## What do you prefer?
+
+```{r}
+#| echo: false
+#| layout-ncol: 2
+#| fig-height: 9
+penguins |>
+  ggplot(aes(x = species, fill = island)) +
+  geom_bar() + 
+  theme_bw() +
+  theme(text = element_text(size = 18))
+
+penguins |>
+  count(species, island) |>
+  complete(species = unique(species), island = unique(island), 
+           fill = list(n = 0)) |>
+  ggplot(aes(x = species, y = n, fill = island)) + 
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_bw() +
+  theme(text = element_text(size = 18))
+```
+
+
+---
+
+## Chi-squared test for 1D categorical data:
+
+::: {style="font-size: 75%;"}
+
++ __Null hypothesis__ $H_0$: $p_1 = p_2 = \dots = p_K$, compute the test statistic:
+
+$$
+\chi^2 = \sum_{j=1}^K \frac{(O_j - E_j)^2}{E_j}
+$$
+
++ $O_j$: observed counts in category $j$
+
++ $E_j$: expected counts under $H_0$, i.e., each category is equally to occur $n / K = p_1 = p_2 = \dots = p_K$
+
+:::
+
+. . .
+
+```{r}
+chisq.test(table(penguins$species))
+```
+
+---
+
+## Inference for 2D categorical data 
+
+::: {style="font-size: 75%;"}
+
+Again we use the __chi-squared test__:
+
++ __Null hypothesis__ $H_0$: variables $A$ and $B$ are independent, compute the test statistic:
+
+
+$$\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}$$
+
+
++ $O_{ij}$: observed counts in contingency table
+
++ $E_{ij}$: expected counts under $H_0$
+
+$$
+\begin{aligned}
+E_{ij} &= n \cdot P(A = a_i, B = b_j) \\
+&= n \cdot P(A = a_i) P(B = b_j) \\
+&= n \cdot \left( \frac{n_{i \cdot}}{n} \right) \left( \frac{ n_{\cdot j}}{n} \right)
+\end{aligned}
+$$
+
+:::
+
+---
+
+## Inference for 2D categorical data 
+
+::: {style="font-size: 75%;"}
+
+Again we use the __chi-squared test__:
+
++ __Null hypothesis__ $H_0$: variables $A$ and $B$ are independent, compute the test statistic:
+
+
+$$\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}$$
+
+
++ $O_{ij}$: observed counts in contingency table
+
++ $E_{ij}$: expected counts under $H_0$
+
+:::
+
+```{r}
+chisq.test(table(penguins$species, penguins$island))
+```
+
+---
+
+## Visualize independence test with mosaic plots
+
+::: {style="font-size: 75%;"}
+
+Two variables are __independent__ if knowing the level of one tells us nothing about the other
+
++ i.e.  $P(A | B) = P(A)$, and that $P(A, B) = P(A) \times P(B)$
+
+Create a __mosaic__ plot using __base `R`__
+
+:::
+
+```{r}
+mosaicplot(table(penguins$species, penguins$island)) 
+```
+
+
+---
+
+## Shade by _Pearson residuals_
+
+::: {style="font-size: 75%;"}
+
++ The __test statistic__ is: 
+
+$$\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}$$
+
++ Define the _Pearson residuals_ as:
+
+$$r_{ij} = \frac{O_{ij} - E_{ij}}{\sqrt{E_{ij}}}$$
+
+- Side-note: In general, Pearson residuals are $\frac{\text{residuals}}{\sqrt{\text{variance}}}$
+
+:::
+
+. . .
+
+::: {style="font-size: 75%;"}
+
++ $r_{ij} \approx 0 \rightarrow$ observed counts are close to expected counts
+
++ $|r_{ij}| > 2 \rightarrow$ "significant" at level $\alpha = 0.05$.
+
++ Very positive $r_{ij} \rightarrow$ more than expected, while very negative $r_{ij} \rightarrow$ fewer than expected
+
++ **Color by Pearson residuals** to tell us which combos are much bigger/smaller than expected.
+
+:::
+
+---
+
+```{r}
+mosaicplot(table(penguins$species, penguins$island), shade = TRUE)
+```
+
+
+---
+
+```{r}
+mosaicplot(table(penguins$island, penguins$sex), shade = TRUE,
+           main = "Distribution of penguins' sex does not vary across islands")
+```
+
+
+---
+
+## Titanic Dataset Example
+
+```{r}
+#| message: false
+#| warning: false
+titanic <- read_csv("https://raw.githubusercontent.com/ryurko/DataViz-Class-Data/main/titanic.csv")
+```
+
+__Question__: Does survival (yes/no) depend on cabin (1st/2nd/3rd)?
+
+```{r}
+table("Survived?" = titanic$Survived, "Class" = titanic$Pclass)
+```
+
+. . .
+
+```{r}
+chisq.test(table("Survived?" = titanic$Survived, "Class" = titanic$Pclass))
+```
+
+
+__Conclusion__: Class and survival are dependent - but how?
+
+---
+
+```{r}
+mosaicplot(table(titanic$Pclass, titanic$Survived), shade = TRUE,
+           xlab = "Passenger Class", ylab = "Survived?", main = "How are they related?")
+```
+
+---
+
+## [Guardian](https://www.theguardian.com/news/datablog/2009/mar/20/1): 1000 songs to hear before you die
+
+![](https://upload.wikimedia.org/wikipedia/commons/8/84/Mosaic-big.png?20090726044211){fig-align="center"width=60%}
+
+---
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| fig-height: 6
+#| warning: false
+#| message: false
+# read in the data
+songs <- read.csv("https://raw.githubusercontent.com/ryurko/DataViz-Class-Data/main/1000songs.csv")
+songs$YEAR <- as.numeric(gsub(",","",songs$YEAR))
+songs$decade <- ifelse( songs$YEAR <= 1959, "1910s-50s",
+ ifelse( songs$YEAR <= 1969, "1960s",
+ 	ifelse( songs$YEAR <= 1979, "1970s",
+ 		ifelse(songs$YEAR <= 1989, "1980s",
+ 			ifelse(songs$YEAR <= 1999, "1990s", "2000s")))) )
+ songs$decade <- as.factor(songs$decade)
+mosaicplot(table(songs$decade, songs$THEME), 
+           main = "Mosaic Plot: 1000 Songs by Decade and Theme", 
+           shade = TRUE, las = 1)
+```
+
+---
+
+## Recap and next steps
+
+::: {style="font-size: 75%;"}
+
++ For 2D categorical data we create visualizations for marginal, conditional, and joint distributions
+
++ Can create stacked and side-by-side bar charts to visualize 2D categorical data
+
++ Perform 2D Chi-squared test to test if two categorical variables are associated with each other
+
++ Create mosaic plots to visualize 2D categorical data
+
++ Shade mosaic plot tiles by Pearson residuals to see what drives association between two categorical variables (if any)
+
+:::
+
+. . .
+
+::: {style="font-size: 75%;"}
+
++ **HW1 is due TONIGHT and you have Lab 3 on Friday!**
+
++ **Next time**: Visualizing 1D quantitative data
+
++ Recommended reading: [CW Chapter 11 Visualizing nested proportions](https://clauswilke.com/dataviz/nested-proportions.html)
+
+:::
+
