@@ -2,38 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://ryurko.github.io/statds-36315-spring25/lectures/04-power-multiple-testing.html</loc>
-    <lastmod>2025-01-28T20:26:59.852Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ryurko.github.io/statds-36315-spring25/lectures/05-2dcat.html</loc>
-    <lastmod>2025-01-28T20:26:59.852Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ryurko.github.io/statds-36315-spring25/lectures/02-1dcat.html</loc>
-    <lastmod>2025-01-28T20:26:59.851Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ryurko.github.io/statds-36315-spring25/demos.html</loc>
-    <lastmod>2025-01-28T20:26:59.851Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ryurko.github.io/statds-36315-spring25/demos/01-into-tidyverse.html</loc>
-    <lastmod>2025-01-28T20:26:59.851Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ryurko.github.io/statds-36315-spring25/lectures.html</loc>
-    <lastmod>2025-01-28T20:26:59.851Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ryurko.github.io/statds-36315-spring25/index.html</loc>
-    <lastmod>2025-01-28T20:26:59.851Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ryurko.github.io/statds-36315-spring25/lectures/01-intro.html</loc>
-    <lastmod>2025-01-28T20:26:59.851Z</lastmod>
+    <lastmod>2025-02-03T01:12:16.548Z</lastmod>
   </url>
   <url>
     <loc>https://ryurko.github.io/statds-36315-spring25/lectures/03-1dcat-infer.html</loc>
-    <lastmod>2025-01-28T20:26:59.851Z</lastmod>
+    <lastmod>2025-02-03T01:12:16.548Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ryurko.github.io/statds-36315-spring25/lectures/01-intro.html</loc>
+    <lastmod>2025-02-03T01:12:16.547Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ryurko.github.io/statds-36315-spring25/index.html</loc>
+    <lastmod>2025-02-03T01:12:16.547Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ryurko.github.io/statds-36315-spring25/lectures.html</loc>
+    <lastmod>2025-02-03T01:12:16.547Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ryurko.github.io/statds-36315-spring25/demos/01-into-tidyverse.html</loc>
+    <lastmod>2025-02-03T01:12:16.547Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ryurko.github.io/statds-36315-spring25/demos.html</loc>
+    <lastmod>2025-02-03T01:12:16.547Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ryurko.github.io/statds-36315-spring25/lectures/02-1dcat.html</loc>
+    <lastmod>2025-02-03T01:12:16.548Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ryurko.github.io/statds-36315-spring25/lectures/05-2dcat.html</loc>
+    <lastmod>2025-02-03T01:12:16.548Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ryurko.github.io/statds-36315-spring25/lectures/06-1dquant.html</loc>
+    <lastmod>2025-02-03T01:12:16.548Z</lastmod>
   </url>
 </urlset>
