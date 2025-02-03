@@ -1,0 +1,392 @@
+---
+title: "Visualizing 1D Quantitative Data"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-02-03
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 80%;"}
+
++ **HW2 is due Wednesday by 11:59 PM** 
+
++ **You have Lab 4 again on Friday**
+
+Office hours schedule:
+
++ My office hours (BH 132D): Wednesdays and Thursdays @ 2 PM
+
++ Anna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+
++ Can create stacked and side-by-side bar charts to visualize 2D categorical data
+
++ Perform 2D Chi-squared test to test if two categorical variables are associated with each other
+
++ Create mosaic plots to visualize 2D categorical data, shade by Pearson residuals
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+**TODAY:**
+
++ How do we visualize 1D quantitative data?
+
++ For this week, we'll focus on visualization issues and move to inference next week
+
+:::
+
+---
+
+## 1D Quantitative Data
+
+Observations are collected into a vector $(x_1, \dots, x_n)$, $x_i \in \mathbb{R}$ (or $\mathbb{R}^+$, $\mathbb{Z}$)
+
+Common __summary statistics__ for 1D quantitative data:
+
+. . .
+
++ __Center__: Mean, median, weighted mean, mode
+
+  + Related to the first moment, i.e., $\mathbb{E}[X]$
+
+. . .
+
++ __Spread__: Variance, range, min/max, quantiles, IQR
+
+  + Related to the second moment, i.e., $\mathbb{E}[X^2]$
+  
+. . .
+
++ __Shape__: symmetry, skew, kurtosis ("peakedness")
+
+  + Related to higher order moments, i.e., skewness is $\mathbb{E}[X^3]$, kurtosis is $\mathbb{E}[X^4]$
+  
+
+Compute various statistics with `summary()`, `mean()`, `median()`, `quantile()`, `range()`, `sd()`, `var()`, etc.
+
+---
+
+## Box plots visualize summary statistics
+
+```{r}
+#| code-line-numbers: "2-4"
+penguins |>
+  ggplot(aes(y = flipper_length_mm)) +
+  geom_boxplot(aes(x = "")) +
+  coord_flip()
+```
+
+
+---
+
+## Histograms display 1D continuous distributions
+
+```{r}
+#| code-line-numbers: "2-3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm)) +
+  geom_histogram()
+```
+
+
+---
+
+## [Do NOT rely on box plots...](https://www.autodesk.com/research/publications/same-stats-different-graphs)
+
+
+ 
+---
+
+## Simulate from mixture of Normal distributions
+
+Will sample 100 draws from $N(-1.5, 1)$ and 100 draws from $N(1.5, 1)$
+
+```{r}
+#| echo: false
+tibble(x = c(-5, 5)) |>
+  ggplot(aes(x)) +
+  geom_function(fun = function(x) dnorm(x, mean = -1.5, sd = 1) + 
+                  dnorm(x, mean = 1.5, sd = 1)) + 
+  labs(x = "Fake variable x") +
+  theme_minimal() +
+  theme(axis.text.y = element_blank(),
+        axis.title.y = element_blank())
+```
+
+---
+
+## Can we trust the default?
+
+```{r}
+set.seed(2025)
+fake_data <- 
+  tibble(fake_x = c(rnorm(100, -1.5), rnorm(100, 1.5))) |>
+  mutate(component = c(rep("left", 100), rep("right", 100)))
+
+fake_data |>
+  ggplot(aes(x = fake_x)) +
+  geom_histogram() +
+  scale_x_continuous(limits = c(-5, 5))
+```
+
+
+---
+
+## What happens as we change the number of bins?
+
+```{r}
+#| code-line-numbers: "3"
+fake_data |>
+  ggplot(aes(x = fake_x)) +
+  geom_histogram(bins = 15) +
+  scale_x_continuous(limits = c(-5, 5))
+```
+
+
+---
+
+## What happens as we change the number of bins?
+
+```{r}
+#| code-line-numbers: "3"
+fake_data |>
+  ggplot(aes(x = fake_x)) +
+  geom_histogram(bins = 60) +
+  scale_x_continuous(limits = c(-5, 5))
+```
+
+---
+
+## What happens as we change the number of bins?
+
+```{r}
+#| code-line-numbers: "3"
+fake_data |>
+  ggplot(aes(x = fake_x)) +
+  geom_histogram(bins = 5) +
+  scale_x_continuous(limits = c(-5, 5))
+```
+
+---
+
+## What happens as we change the number of bins?
+
+```{r}
+#| code-line-numbers: "3"
+fake_data |>
+  ggplot(aes(x = fake_x)) +
+  geom_histogram(bins = 100) +
+  scale_x_continuous(limits = c(-5, 5))
+```
+
+---
+
+## Variability of graphs - 30 bins
+
+```{r}
+set.seed(2025)
+fake_data <- 
+  tibble(fake_x = c(rnorm(100, -1.5), rnorm(100, 1.5))) |>
+  mutate(component = c(rep("left", 100), rep("right", 100)))
+
+fake_data |>
+  ggplot(aes(x = fake_x)) +
+  geom_histogram() +
+  scale_x_continuous(limits = c(-5, 5))
+```
+
+---
+
+## What happens with a different sample?
+
+```{r}
+set.seed(1985)
+fake_data2 <- 
+  tibble(fake_x = c(rnorm(100, -1.5), rnorm(100, 1.5))) |>
+  mutate(component = c(rep("left", 100), rep("right", 100)))
+
+fake_data2 |>
+  ggplot(aes(x = fake_x)) +
+  geom_histogram() +
+  scale_x_continuous(limits = c(-5, 5))
+```
+
+
+---
+
+## Variability of graphs - 15 bins
+
+```{r}
+#| echo: false
+library(patchwork)
+hist1 <- fake_data |>
+  ggplot(aes(x = fake_x)) +
+  geom_histogram(bins = 15) +
+  scale_x_continuous(limits = c(-5, 5))
+hist2 <- fake_data2 |>
+  ggplot(aes(x = fake_x)) +
+  geom_histogram(bins = 15) +
+  scale_x_continuous(limits = c(-5, 5))
+hist1 + hist2
+```
+
+---
+
+## Variability of graphs - a few bins
+
+```{r}
+#| echo: false
+hist1 <- fake_data |>
+  ggplot(aes(x = fake_x)) +
+  geom_histogram(bins = 5) +
+  scale_x_continuous(limits = c(-5, 5))
+hist2 <- fake_data2 |>
+  ggplot(aes(x = fake_x)) +
+  geom_histogram(bins = 5) +
+  scale_x_continuous(limits = c(-5, 5))
+hist1 + hist2
+```
+
+---
+
+## Variability of graphs - too many bins
+
+```{r}
+#| echo: false
+hist1 <- fake_data |>
+  ggplot(aes(x = fake_x)) +
+  geom_histogram(bins = 100) +
+  scale_x_continuous(limits = c(-5, 5))
+hist2 <- fake_data2 |>
+  ggplot(aes(x = fake_x)) +
+  geom_histogram(bins = 100) +
+  scale_x_continuous(limits = c(-5, 5))
+hist1 + hist2
+```
+
+---
+
+## What about displaying conditional distributions?
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm)) + 
+  geom_histogram(aes(fill = species))
+```
+
+
+---
+
+## What about displaying conditional distributions?
+
+```{r}
+#| code-line-numbers: "3-4"
+penguins |>
+  ggplot(aes(x = flipper_length_mm)) + 
+  geom_histogram(aes(fill = species),
+                 position = "identity", alpha = 0.3)
+```
+
+
+---
+
+## Normalize histogram frequencies with density
+
+```{r}
+#| code-line-numbers: "3-4"
+penguins |>
+  ggplot(aes(x = flipper_length_mm)) + 
+  geom_histogram(aes(y = after_stat(density), fill = species),
+                 position = "identity", alpha = 0.3) 
+```
+
+
+---
+
+## Can use density curves instead
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm)) + 
+  geom_density(aes(color = species))
+```
+
+---
+
+## We should NOT fill the density curves
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm)) + 
+  geom_density(aes(fill = species), alpha = .3)
+```
+
+
+---
+
+## Recap and next steps
+
+::: {style="font-size: 80%;"}
+
++ Visualize 1D quantitative data to inspect center, spread, and shape
+
++ Boxplots are only a display of summary statistics (i.e., they suck)
+
++ Histograms display shape of the distribution, but comes with tradeoffs
+
++ Density curves provide an easy way to visualize conditional distributions
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
++ **HW2 is due Wednesday and you have Lab 4 on Friday**
+
++ **Next time**: Density estimation
+
++ Recommended reading: [CW Chapter 7 Visualizing distributions: Histograms and density plots](https://clauswilke.com/dataviz/histograms-density-plots.html)
+
+:::
+
