@@ -1,0 +1,360 @@
+---
+title: "Density Estimation"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-02-05
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 80%;"}
+
++ **HW2 is due TONIGHT by 11:59 PM** 
+
++ **You have Lab 4 again on Friday!**
+
+Office hours schedule:
+
++ My office hours (BH 132D): Wednesdays and Thursdays @ 2 PM
+
++ Anna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+
++ Visualize 1D quantitative data to inspect center, spread, and shape
+
++ Boxplots are only a display of summary statistics (i.e., they suck)
+
++ Histograms display shape of the distribution, but comes with tradeoffs
+
++ Density curves provide an easy way to visualize conditional distributions
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+**TODAY:**
+
++ Displaying smooth densities
+
++ How does kernel density estimation work?
+
+:::
+
+---
+
+## Continuous Densities
+
+Distribution of any __continuous__ random variable $X$ is defined by a __probability density function__ (PDF), typically denoted by $f(x)$
+
+- __Probability continuous variable $X$ takes a particular value is 0__, _why?_
+
+Use PDF to provide a relative likelihood,
+
+  - e.g., Normal distribution: $f(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp(- \frac{(x - \mu)^2}{2\sigma^2})$
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Properties of densities**
+
+:::
+
+::: {.column width="50%"}
+
+**How do we estimate densities?**
+
+:::
+
+::::
+
+---
+
+## Normal distribution
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Normal_Distribution_PDF.svg/440px-Normal_Distribution_PDF.svg.png){fig-align="center" width=100%}
+
+---
+
+## Uniform distribution
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Uniform_Distribution_PDF_SVG.svg/500px-Uniform_Distribution_PDF_SVG.svg.png){fig-align="center" width=100%}
+
+---
+
+## Gamma (also Exponential and Chi-squared) distribution
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Gamma_distribution_pdf.svg/650px-Gamma_distribution_pdf.svg.png){fig-align="center" width=100%}
+
+---
+
+## Beta distribution
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Beta_distribution_pdf.svg/650px-Beta_distribution_pdf.svg.png){fig-align="center" width=100%}
+
+---
+
+## Normalize histogram frequencies with density
+
+```{r}
+#| code-line-numbers: "3-4"
+penguins |>
+  ggplot(aes(x = flipper_length_mm)) + 
+  geom_histogram(aes(y = after_stat(density), fill = species),
+                 position = "identity", alpha = 0.3) 
+```
+
+---
+
+## Can use density curves instead
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm)) + 
+  geom_density(aes(color = species))
+```
+
+
+---
+
+## Kernel density estimation
+
+__Goal__: estimate PDF $f(x)$ for all possible values (assuming it is continuous & smooth)
+
+. . .
+
+$$
+\text{Kernel density estimate: } \hat{f}(x) = \frac{1}{n} \sum_{i=1}^n \frac{1}{h} K_h(x - x_i)
+$$
+
+. . .
+
+::: {style="font-size: 75%;"}
+
+- $n =$ sample size, $x =$ new point to estimate $f(x)$ (does NOT have to be in dataset!)
+
+:::
+
+. . .
+
+::: {style="font-size: 75%;"}
+
+- $h =$ __bandwidth__, analogous to histogram bin width, ensures $\hat{f}(x)$ integrates to 1
+
+- $x_i =$ $i$th observation in dataset
+
+:::
+
+. . .
+
+::: {style="font-size: 75%;"}
+
+- $K_h(x - x_i)$ is the __Kernel__ function, creates __weight__ given distance of $i$th observation from new point 
+  - as $|x - x_i| \rightarrow \infty$ then $K_h(x - x_i) \rightarrow 0$, i.e. further apart $i$th row is from $x$, smaller the weight
+  
+  - as __bandwidth__ $h \uparrow$ weights are more evenly spread out (as $h \downarrow$ more concentrated around $x$) 
+
+  - typically use [__Gaussian__ / Normal](https://en.wikipedia.org/wiki/Normal_distribution) kernel: $\propto e^{-(x - x_i)^2 / 2h^2}$
+  
+  - $K_h(x - x_i)$ is large when $x_i$ is close to $x$
+  
+:::
+
+---
+
+## [Wikipedia example](https://en.wikipedia.org/wiki/Kernel_density_estimation)
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Comparison_of_1D_histogram_and_KDE.png/1000px-Comparison_of_1D_histogram_and_KDE.png){fig-align="center" width=100%}
+
+---
+
+## We display __kernel density estimates__ with [`geom_density()`](https://ggplot2.tidyverse.org/reference/geom_density.html)
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm)) + 
+  geom_density() +
+  theme_bw()
+```
+
+---
+
+## Choice of [kernel?](https://en.wikipedia.org/wiki/Kernel_(statistics))
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Kernels.svg/1000px-Kernels.svg.png){fig-align="center" width=70%}
+
+
+---
+
+## What about the bandwidth? 
+
+Use __Gaussian reference rule__ (_rule-of-thumb_) $\approx 1.06 \cdot \sigma \cdot n^{-1/5}$, where $\sigma$ is the observed standard deviation
+
+Modify the bandwidth using the `adjust` argument - __value to multiply default bandwidth by__
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm)) + 
+  geom_density(adjust = 0.5) +
+  theme_bw()
+```
+
+---
+
+## What about the bandwidth? 
+
+Use __Gaussian reference rule__ (_rule-of-thumb_) $\approx 1.06 \cdot \sigma \cdot n^{-1/5}$, where $\sigma$ is the observed standard deviation
+
+Modify the bandwidth using the `adjust` argument - __value to multiply default bandwidth by__
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm)) + 
+  geom_density(adjust = 2) +
+  theme_bw()
+```
+
+
+---
+
+## CAUTION: dealing with bounded data...
+
+
+```{r}
+#| label: bound-dens
+set.seed(101)
+bound_data <- tibble(fake_x = runif(100))
+
+bound_data |>
+  ggplot(aes(x = fake_x)) +
+  geom_density() +
+  geom_rug(alpha = 0.5) + #<<
+  stat_function(data = 
+                  tibble(fake_x = c(0, 1)),
+                fun = dunif, color = "red") +
+  scale_x_continuous(limits = c(-.5, 1.5))
+
+```
+
+
+---
+
+## Visualizing conditional distributions: violin plots
+
+```{r}
+#| code-line-numbers: "2-4"
+penguins |>
+  ggplot(aes(x = species, y = flipper_length_mm)) +
+  geom_violin() +
+  coord_flip()
+```
+
+---
+
+## Visualizing conditional distributions: violin plots
+
+```{r}
+#| code-line-numbers: "4"
+penguins |>
+  ggplot(aes(x = species, y = flipper_length_mm)) +
+  geom_violin() + 
+  geom_boxplot(width = .2) +
+  coord_flip()
+```
+
+
+---
+
+## Visualizing conditional distributions: [`ggridges`](https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html)
+
+```{r}
+#| code-line-numbers: "1,3-4"
+library(ggridges)
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = species)) +
+  geom_density_ridges(rel_min_height = 0.01)
+```
+
+
+---
+
+## Visualizing conditional distributions: [`ggbeeswarm`](https://github.com/eclarke/ggbeeswarm)
+
+```{r}
+#| code-line-numbers: "1,3-4"
+library(ggbeeswarm)
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = species)) +
+  geom_beeswarm(cex = 1.5) +
+  theme_bw()
+```
+
+
+---
+
+## Recap and next steps
+
+::: {style="font-size: 80%;"}
+
++ Smoothed densities are a flexible tool for visualizing 1D distribution
+
++ There are two choices we need to make for kernel density estimation:
+
+  1. Bandwidth: Determines _smoothness_ of distribution, usually data-driven choice
+  
+  2. Kernel: Determines how much _influence_ each observation should have on each other during estimation, usually context driven
+
++ Several other types of density-based displays: violins, ridges, beeswarm plots
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
++ **HW2 is due TONIGHT and you have Lab 4 on Friday**
+
++ **Next time**: Graphical inference for 1D quantitative data
+
++ Recommended reading: [CW Chapter 7 Visualizing distributions: Histograms and density plots](https://clauswilke.com/dataviz/histograms-density-plots.html)
+
+:::
+

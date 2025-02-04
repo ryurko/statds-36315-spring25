@@ -10,5 +10,6 @@ title: "Lectures"
 | 4         | Jan 27  | Power and Multiple Testing  | [slides](lectures/04-power-multiple-testing.qmd)        |
 | 5         | Jan 29  | Visualizations and Inference for 2D Categorical Data  | [slides](lectures/05-2dcat.qmd)        |
 | 6         | Feb 3  | Visualizing 1D Quantitative Data  | [slides](lectures/06-1dquant.qmd)        |
+| 7         | Feb 5  | Density Estimation  | [slides](lectures/07-density-estimation.qmd)        |
 
 
