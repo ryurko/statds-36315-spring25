@@ -98,622 +98,186 @@
     "text": "Recap and next steps\n\n\nGraphs with the same trends can display very different statistical significance (largely due to sample size)\nCan visualize CIs for each \\(\\hat{p}_1\\), \\(\\dots\\), \\(\\hat{p}_K\\), but need to deal with multiple testing\n\n\n\n\n\nHW1 is due Wednesday and you have Lab 3 on Friday!\nNext time: Visualizations and inference for 2D categorical data\nRecommended reading: CW Chapter 11 Visualizing nested proportions"
   },
   {
-    "objectID": "lectures/06-1dquant.html#announcements-previously-and-today",
-    "href": "lectures/06-1dquant.html#announcements-previously-and-today",
-    "title": "Visualizing 1D Quantitative Data",
+    "objectID": "lectures/08-1dquant-inference.html#announcements-previously-and-today",
+    "href": "lectures/08-1dquant-inference.html#announcements-previously-and-today",
+    "title": "Graphical Inference for 1D Quantitative Data",
     "section": "Announcements, previously, and today…",
-    "text": "Announcements, previously, and today…\n\n\nHW2 is due Wednesday by 11:59 PM\nYou have Lab 4 again on Friday\n\nOffice hours schedule:\n\nMy office hours (BH 132D): Wednesdays and Thursdays @ 2 PM\nAnna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM\n\n\n\n\n\nCan create stacked and side-by-side bar charts to visualize 2D categorical data\nPerform 2D Chi-squared test to test if two categorical variables are associated with each other\nCreate mosaic plots to visualize 2D categorical data, shade by Pearson residuals\n\n\n\n\n\nTODAY:\n\nHow do we visualize 1D quantitative data?\nFor this week, we’ll focus on visualization issues and move to inference next week"
+    "text": "Announcements, previously, and today…\n\n\nHW3 is due Wednesday by 11:59 PM and you have Lab 5 again on Friday!\n\nOffice hours schedule:\n\nMy office hours (BH 132D): Wednesdays and Thursdays @ 2 PM\nAnna (zoom): Mondays @ 2 PM; and Perry (zoom): Tuesdays @ 11 AM\n\n\n\n\n\nSmoothed densities are a flexible tool for visualizing 1D distribution\nThere are two choices we need to make for kernel density estimation:\n\nBandwidth: Determines smoothness of distribution, usually data-driven choice\nKernel: Determines how much influence each observation should have on each other during estimation, usually context driven\n\nSeveral other types of density-based displays: violins, ridges, beeswarm plots\n\n\n\n\n\nTODAY:\n\nGraphical inference for 1D quantitative data\nParametric density estimates\nECDFs and Kolmogorov-Smirnov (KS) test"
   },
   {
-    "objectID": "lectures/06-1dquant.html#d-quantitative-data",
-    "href": "lectures/06-1dquant.html#d-quantitative-data",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "1D Quantitative Data",
-    "text": "1D Quantitative Data\nObservations are collected into a vector \\((x_1, \\dots, x_n)\\), \\(x_i \\in \\mathbb{R}\\) (or \\(\\mathbb{R}^+\\), \\(\\mathbb{Z}\\))\nCommon summary statistics for 1D quantitative data:\n\n\nCenter: Mean, median, weighted mean, mode\n\nRelated to the first moment, i.e., \\(\\mathbb{E}[X]\\)\n\n\n\n\n\nSpread: Variance, range, min/max, quantiles, IQR\n\nRelated to the second moment, i.e., \\(\\mathbb{E}[X^2]\\)\n\n\n\n\n\nShape: symmetry, skew, kurtosis (“peakedness”)\n\nRelated to higher order moments, i.e., skewness is \\(\\mathbb{E}[X^3]\\), kurtosis is \\(\\mathbb{E}[X^4]\\)\n\n\nCompute various statistics with summary(), mean(), median(), quantile(), range(), sd(), var(), etc."
+    "objectID": "lectures/08-1dquant-inference.html#visualizing-conditional-distributions-violin-plots",
+    "href": "lectures/08-1dquant-inference.html#visualizing-conditional-distributions-violin-plots",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Visualizing conditional distributions: violin plots",
+    "text": "Visualizing conditional distributions: violin plots\n\npenguins |&gt;\n  ggplot(aes(x = species, y = flipper_length_mm)) +\n  geom_violin() +\n  coord_flip()"
   },
   {
-    "objectID": "lectures/06-1dquant.html#box-plots-visualize-summary-statistics",
-    "href": "lectures/06-1dquant.html#box-plots-visualize-summary-statistics",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "Box plots visualize summary statistics",
-    "text": "Box plots visualize summary statistics\n\npenguins |&gt;\n  ggplot(aes(y = flipper_length_mm)) +\n  geom_boxplot(aes(x = \"\")) +\n  coord_flip()"
+    "objectID": "lectures/08-1dquant-inference.html#visualizing-conditional-distributions-violin-plots-1",
+    "href": "lectures/08-1dquant-inference.html#visualizing-conditional-distributions-violin-plots-1",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Visualizing conditional distributions: violin plots",
+    "text": "Visualizing conditional distributions: violin plots\n\npenguins |&gt;\n  ggplot(aes(x = species, y = flipper_length_mm)) +\n  geom_violin() + \n  geom_boxplot(width = .2) +\n  coord_flip()"
   },
   {
-    "objectID": "lectures/06-1dquant.html#histograms-display-1d-continuous-distributions",
-    "href": "lectures/06-1dquant.html#histograms-display-1d-continuous-distributions",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "Histograms display 1D continuous distributions",
-    "text": "Histograms display 1D continuous distributions\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm)) +\n  geom_histogram()"
+    "objectID": "lectures/08-1dquant-inference.html#visualizing-conditional-distributions-ggridges",
+    "href": "lectures/08-1dquant-inference.html#visualizing-conditional-distributions-ggridges",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Visualizing conditional distributions: ggridges",
+    "text": "Visualizing conditional distributions: ggridges\n\nlibrary(ggridges)\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = species)) +\n  geom_density_ridges(rel_min_height = 0.01)"
   },
   {
-    "objectID": "lectures/06-1dquant.html#do-not-rely-on-box-plots",
-    "href": "lectures/06-1dquant.html#do-not-rely-on-box-plots",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "Do NOT rely on box plots…",
-    "text": "Do NOT rely on box plots…"
+    "objectID": "lectures/08-1dquant-inference.html#gallery-of-ggridges-examples",
+    "href": "lectures/08-1dquant-inference.html#gallery-of-ggridges-examples",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Gallery of ggridges examples",
+    "text": "Gallery of ggridges examples"
   },
   {
-    "objectID": "lectures/06-1dquant.html#simulate-from-mixture-of-normal-distributions",
-    "href": "lectures/06-1dquant.html#simulate-from-mixture-of-normal-distributions",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "Simulate from mixture of Normal distributions",
-    "text": "Simulate from mixture of Normal distributions\nWill sample 100 draws from \\(N(-1.5, 1)\\) and 100 draws from \\(N(1.5, 1)\\)"
+    "objectID": "lectures/08-1dquant-inference.html#visualizing-conditional-distributions-ggbeeswarm",
+    "href": "lectures/08-1dquant-inference.html#visualizing-conditional-distributions-ggbeeswarm",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Visualizing conditional distributions: ggbeeswarm",
+    "text": "Visualizing conditional distributions: ggbeeswarm\n\nlibrary(ggbeeswarm)\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = species)) +\n  geom_beeswarm(cex = 1.5) +\n  theme_bw()"
   },
   {
-    "objectID": "lectures/06-1dquant.html#can-we-trust-the-default",
-    "href": "lectures/06-1dquant.html#can-we-trust-the-default",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "Can we trust the default?",
-    "text": "Can we trust the default?\n\nset.seed(2025)\nfake_data &lt;- \n  tibble(fake_x = c(rnorm(100, -1.5), rnorm(100, 1.5))) |&gt;\n  mutate(component = c(rep(\"left\", 100), rep(\"right\", 100)))\n\nfake_data |&gt;\n  ggplot(aes(x = fake_x)) +\n  geom_histogram() +\n  scale_x_continuous(limits = c(-5, 5))"
+    "objectID": "lectures/08-1dquant-inference.html#kernel-density-estimation",
+    "href": "lectures/08-1dquant-inference.html#kernel-density-estimation",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Kernel density estimation",
+    "text": "Kernel density estimation\nGoal: estimate PDF \\(f(x)\\) for all possible values (assuming it is continuous & smooth)\n\\[\n\\text{Kernel density estimate: } \\hat{f}(x) = \\frac{1}{n} \\sum_{i=1}^n \\frac{1}{h} K_h(x - x_i)\n\\]\n\n\n\\(n =\\) sample size, \\(x =\\) new point to estimate \\(f(x)\\) (does NOT have to be in dataset!)\n\\(h =\\) bandwidth, analogous to histogram bin width, ensures \\(\\hat{f}(x)\\) integrates to 1\n\\(x_i =\\) \\(i\\)th observation in dataset\n\\(K_h(x - x_i)\\) is the Kernel function, creates weight given distance of \\(i\\)th observation from new point\n\nas \\(|x - x_i| \\rightarrow \\infty\\) then \\(K_h(x - x_i) \\rightarrow 0\\), i.e. further apart \\(i\\)th row is from \\(x\\), smaller the weight\nas bandwidth \\(h \\uparrow\\) weights are more evenly spread out (as \\(h \\downarrow\\) more concentrated around \\(x\\))\ntypically use Gaussian / Normal kernel: \\(\\propto e^{-(x - x_i)^2 / 2h^2}\\)\n\\(K_h(x - x_i)\\) is large when \\(x_i\\) is close to \\(x\\)"
   },
   {
-    "objectID": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins",
-    "href": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "What happens as we change the number of bins?",
-    "text": "What happens as we change the number of bins?\n\nfake_data |&gt;\n  ggplot(aes(x = fake_x)) +\n  geom_histogram(bins = 15) +\n  scale_x_continuous(limits = c(-5, 5))"
+    "objectID": "lectures/08-1dquant-inference.html#from-the-pdf-to-the-cdf",
+    "href": "lectures/08-1dquant-inference.html#from-the-pdf-to-the-cdf",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "From the PDF to the CDF",
+    "text": "From the PDF to the CDF\n\nProbability that continuous variable \\(X\\) takes a particular value is 0\ne.g., \\(P\\) (flipper_length_mm \\(= 200\\)) \\(= 0\\)\nInstead we use the probability density function (PDF) to provide a relative likelihood\n\n\n\nFor continuous variables we can use the cumulative distribution function (CDF),\n\\[\nF(x) = P(X \\leq x)\n\\]\n\n\n\n\nFor \\(n\\) observations we can easily compute the Empirical CDF (ECDF):\n\\[\\hat{F}_n(x)  = \\frac{\\text{# obs. with variable} \\leq x}{n} = \\frac{1}{n} \\sum_{i=1}^{n}1(x_i \\leq x)\\]\n\nwhere \\(1()\\) is the indicator function, i.e. ifelse(x_i &lt;= x, 1, 0)"
   },
   {
-    "objectID": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins-1",
-    "href": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins-1",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "What happens as we change the number of bins?",
-    "text": "What happens as we change the number of bins?\n\nfake_data |&gt;\n  ggplot(aes(x = fake_x)) +\n  geom_histogram(bins = 60) +\n  scale_x_continuous(limits = c(-5, 5))"
+    "objectID": "lectures/08-1dquant-inference.html#display-full-distribution-with-ecdf-plot",
+    "href": "lectures/08-1dquant-inference.html#display-full-distribution-with-ecdf-plot",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Display full distribution with ECDF plot",
+    "text": "Display full distribution with ECDF plot\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm)) + \n  stat_ecdf() +\n  theme_bw()"
   },
   {
-    "objectID": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins-2",
-    "href": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins-2",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "What happens as we change the number of bins?",
-    "text": "What happens as we change the number of bins?\n\nfake_data |&gt;\n  ggplot(aes(x = fake_x)) +\n  geom_histogram(bins = 5) +\n  scale_x_continuous(limits = c(-5, 5))"
+    "objectID": "lectures/08-1dquant-inference.html#whats-the-relationship-between-these-two",
+    "href": "lectures/08-1dquant-inference.html#whats-the-relationship-between-these-two",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "What’s the relationship between these two?",
+    "text": "What’s the relationship between these two?"
   },
   {
-    "objectID": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins-3",
-    "href": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins-3",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "What happens as we change the number of bins?",
-    "text": "What happens as we change the number of bins?\n\nfake_data |&gt;\n  ggplot(aes(x = fake_x)) +\n  geom_histogram(bins = 100) +\n  scale_x_continuous(limits = c(-5, 5))"
+    "objectID": "lectures/08-1dquant-inference.html#comparing-to-theoretical-distributions",
+    "href": "lectures/08-1dquant-inference.html#comparing-to-theoretical-distributions",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Comparing to theoretical distributions",
+    "text": "Comparing to theoretical distributions"
   },
   {
-    "objectID": "lectures/06-1dquant.html#variability-of-graphs---30-bins",
-    "href": "lectures/06-1dquant.html#variability-of-graphs---30-bins",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "Variability of graphs - 30 bins",
-    "text": "Variability of graphs - 30 bins\n\nset.seed(2025)\nfake_data &lt;- \n  tibble(fake_x = c(rnorm(100, -1.5), rnorm(100, 1.5))) |&gt;\n  mutate(component = c(rep(\"left\", 100), rep(\"right\", 100)))\n\nfake_data |&gt;\n  ggplot(aes(x = fake_x)) +\n  geom_histogram() +\n  scale_x_continuous(limits = c(-5, 5))"
+    "objectID": "lectures/08-1dquant-inference.html#one-sample-kolmogorov-smirnov-test",
+    "href": "lectures/08-1dquant-inference.html#one-sample-kolmogorov-smirnov-test",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "One-Sample Kolmogorov-Smirnov Test",
+    "text": "One-Sample Kolmogorov-Smirnov Test\n\nWe compare the ECDF \\(\\hat{F}(x)\\) to a theoretical distribution’s CDF \\(F(x)\\)\nThe one sample KS test statistic is: \\(\\text{max}_x |\\hat{F}(x) - F(x)|\\)"
   },
   {
-    "objectID": "lectures/06-1dquant.html#what-happens-with-a-different-sample",
-    "href": "lectures/06-1dquant.html#what-happens-with-a-different-sample",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "What happens with a different sample?",
-    "text": "What happens with a different sample?\n\nset.seed(1985)\nfake_data2 &lt;- \n  tibble(fake_x = c(rnorm(100, -1.5), rnorm(100, 1.5))) |&gt;\n  mutate(component = c(rep(\"left\", 100), rep(\"right\", 100)))\n\nfake_data2 |&gt;\n  ggplot(aes(x = fake_x)) +\n  geom_histogram() +\n  scale_x_continuous(limits = c(-5, 5))"
+    "objectID": "lectures/08-1dquant-inference.html#parametric-density-estimation",
+    "href": "lectures/08-1dquant-inference.html#parametric-density-estimation",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Parametric Density Estimation",
+    "text": "Parametric Density Estimation\n\nInstead of trying to estimate the whole \\(f(x)\\) non-parametrically, we can assume a particular \\(f(x)\\) and estimate its parameters\nFor example, assume \\(X_i \\sim N(\\mu, \\sigma^2)\\). Then estimate the parameters:\n\n\\[\n\\hat{\\mu} = \\bar{x}, \\hspace{0.1in} \\hat{\\sigma}^2 = \\frac{\\sum_{i=1}^n (x_i - \\bar{x})^2}{n-1}\n\\]\n\nThen our density estimate is:\n\n\\[\n\\hat{f}(x) = \\frac{1}{\\sqrt{2\\pi} \\hat{\\sigma}} \\exp \\left( - \\frac{(x - \\hat{\\mu})^2}{2\\hat{\\sigma}^2} \\right)\n\\]"
   },
   {
-    "objectID": "lectures/06-1dquant.html#variability-of-graphs---15-bins",
-    "href": "lectures/06-1dquant.html#variability-of-graphs---15-bins",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "Variability of graphs - 15 bins",
-    "text": "Variability of graphs - 15 bins"
+    "objectID": "lectures/08-1dquant-inference.html#flipper-length-example",
+    "href": "lectures/08-1dquant-inference.html#flipper-length-example",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Flipper length example",
+    "text": "Flipper length example\nWhat if we assume flipper_length_mm follows Normal distribution?\n\ni.e., flipper_length_mm \\(\\sim N(\\mu, \\sigma^2)\\)\n\nNeed estimates for mean \\(\\mu\\) and standard deviation \\(\\sigma\\):\n\nflipper_length_mean &lt;- mean(penguins$flipper_length_mm, na.rm = TRUE)\nflipper_length_sd &lt;- sd(penguins$flipper_length_mm, na.rm = TRUE)\n\n\nPerform one-sample KS test using ks.test():\n\nks.test(x = penguins$flipper_length_mm, y = \"pnorm\",\n        mean = flipper_length_mean, sd = flipper_length_sd)\n\n\n    Asymptotic one-sample Kolmogorov-Smirnov test\n\ndata:  penguins$flipper_length_mm\nD = 0.12428, p-value = 5.163e-05\nalternative hypothesis: two-sided"
   },
   {
-    "objectID": "lectures/06-1dquant.html#variability-of-graphs---a-few-bins",
-    "href": "lectures/06-1dquant.html#variability-of-graphs---a-few-bins",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "Variability of graphs - a few bins",
-    "text": "Variability of graphs - a few bins"
+    "objectID": "lectures/08-1dquant-inference.html#flipper-length-example-1",
+    "href": "lectures/08-1dquant-inference.html#flipper-length-example-1",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Flipper length example",
+    "text": "Flipper length example"
   },
   {
-    "objectID": "lectures/06-1dquant.html#variability-of-graphs---too-many-bins",
-    "href": "lectures/06-1dquant.html#variability-of-graphs---too-many-bins",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "Variability of graphs - too many bins",
-    "text": "Variability of graphs - too many bins"
+    "objectID": "lectures/08-1dquant-inference.html#statistical-tests-for-comparing-distributions",
+    "href": "lectures/08-1dquant-inference.html#statistical-tests-for-comparing-distributions",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Statistical Tests for Comparing Distributions",
+    "text": "Statistical Tests for Comparing Distributions\n\n\nWe’ve focused on assessing if a single quantitative variable follows a particular distribution\n\nLogic of one-sample KS test: Compare empirical distribution to theoretical distribution\n\n\n\n\n\nHow do we compare multiple empirical distributions?\nVery common scenario: Determine if a quantitative variable depends on a categorical variable, examples:\n\nClinical trials with multiple treatments\nAssessing differences across race, gender, socioeconomic status\nIndustrial experiments, A/B testing\nComparing song duration across different genres?\n\nCan use overlayed densities, side-by-side violin plots, facetted histograms\nRemember: plotting conditional distributions… but when are differences in a graphic statistically significant?"
   },
   {
-    "objectID": "lectures/06-1dquant.html#what-about-displaying-conditional-distributions",
-    "href": "lectures/06-1dquant.html#what-about-displaying-conditional-distributions",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "What about displaying conditional distributions?",
-    "text": "What about displaying conditional distributions?\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm)) + \n  geom_histogram(aes(fill = species))"
+    "objectID": "lectures/08-1dquant-inference.html#tidytuesday-spotify-songs---duration-by-genre",
+    "href": "lectures/08-1dquant-inference.html#tidytuesday-spotify-songs---duration-by-genre",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "TidyTuesday Spotify Songs - Duration by Genre",
+    "text": "TidyTuesday Spotify Songs - Duration by Genre"
   },
   {
-    "objectID": "lectures/06-1dquant.html#what-about-displaying-conditional-distributions-1",
-    "href": "lectures/06-1dquant.html#what-about-displaying-conditional-distributions-1",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "What about displaying conditional distributions?",
-    "text": "What about displaying conditional distributions?\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm)) + \n  geom_histogram(aes(fill = species),\n                 position = \"identity\", alpha = 0.3)"
+    "objectID": "lectures/08-1dquant-inference.html#tidytuesday-spotify-songs---duration-by-genre-1",
+    "href": "lectures/08-1dquant-inference.html#tidytuesday-spotify-songs---duration-by-genre-1",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "TidyTuesday Spotify Songs - Duration by Genre",
+    "text": "TidyTuesday Spotify Songs - Duration by Genre"
   },
   {
-    "objectID": "lectures/06-1dquant.html#normalize-histogram-frequencies-with-density",
-    "href": "lectures/06-1dquant.html#normalize-histogram-frequencies-with-density",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "Normalize histogram frequencies with density",
-    "text": "Normalize histogram frequencies with density\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm)) + \n  geom_histogram(aes(y = after_stat(density), fill = species),\n                 position = \"identity\", alpha = 0.3)"
+    "objectID": "lectures/08-1dquant-inference.html#test-difference-between-rap-and-rock",
+    "href": "lectures/08-1dquant-inference.html#test-difference-between-rap-and-rock",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Test difference between rap and rock?",
+    "text": "Test difference between rap and rock?"
   },
   {
-    "objectID": "lectures/06-1dquant.html#can-use-density-curves-instead",
-    "href": "lectures/06-1dquant.html#can-use-density-curves-instead",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "Can use density curves instead",
-    "text": "Can use density curves instead\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm)) + \n  geom_density(aes(color = species))"
+    "objectID": "lectures/08-1dquant-inference.html#kolmogorov-smirnov-test-again",
+    "href": "lectures/08-1dquant-inference.html#kolmogorov-smirnov-test-again",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Kolmogorov-Smirnov Test… Again",
+    "text": "Kolmogorov-Smirnov Test… Again\nKS test can also be used to compare two empirical distributions \\(\\hat{F}_A(x)\\) and \\(\\hat{F}_B\\), via test statistic for two samples:\n\\[\n\\text{max}_x |\\hat{F}_A(x) - \\hat{F}_B(x)|\n\\]\n\nspotify_songs &lt;- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv')\nrap_duration &lt;- spotify_songs |&gt; filter(playlist_genre == \"rap\") |&gt; pull(duration_ms)\nrock_duration &lt;- spotify_songs |&gt; filter(playlist_genre == \"rock\") |&gt; pull(duration_ms)\n\nks.test(rap_duration, y = rock_duration)\n\n\n    Asymptotic two-sample Kolmogorov-Smirnov test\n\ndata:  rap_duration and rock_duration\nD = 0.22386, p-value &lt; 2.2e-16\nalternative hypothesis: two-sided"
   },
   {
-    "objectID": "lectures/06-1dquant.html#we-should-not-fill-the-density-curves",
-    "href": "lectures/06-1dquant.html#we-should-not-fill-the-density-curves",
-    "title": "Visualizing 1D Quantitative Data",
-    "section": "We should NOT fill the density curves",
-    "text": "We should NOT fill the density curves\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm)) + \n  geom_density(aes(fill = species), alpha = .3)"
+    "objectID": "lectures/08-1dquant-inference.html#kolmogorov-smirnov-test-again-1",
+    "href": "lectures/08-1dquant-inference.html#kolmogorov-smirnov-test-again-1",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Kolmogorov-Smirnov Test… Again",
+    "text": "Kolmogorov-Smirnov Test… Again\nKS test can also be used to compare two empirical distributions \\(\\hat{F}_A(x)\\) and \\(\\hat{F}_B\\), via test statistic for two samples:\n\\[\n\\text{max}_x |\\hat{F}_A(x) - \\hat{F}_B(x)|\n\\]"
   },
   {
-    "objectID": "lectures/06-1dquant.html#recap-and-next-steps",
-    "href": "lectures/06-1dquant.html#recap-and-next-steps",
-    "title": "Visualizing 1D Quantitative Data",
+    "objectID": "lectures/08-1dquant-inference.html#statistical-tests-for-comparing-distributions-1",
+    "href": "lectures/08-1dquant-inference.html#statistical-tests-for-comparing-distributions-1",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Statistical Tests for Comparing Distributions",
+    "text": "Statistical Tests for Comparing Distributions\n\nInfinite number of ways that you can compare multiple quantitative distributions, 3 common ways:\n\nAny difference at all? \nDifference in means?\n\n\nNull hypothesis: \\(H_0: \\mu_1 = \\mu_2 = \\cdots = \\mu_K\\) (use t.test or oneway.test() functions)\nCan assume the variances are all the same or differ\nIf reject, can only conclude not all means are equal\n\n\nDifference in variances?\n\n\nNull hypothesis: \\(H_0: \\sigma^2_1 = \\sigma^2_2 = \\cdots = \\sigma^2_K\\) (use bartlett.test() function)\nIf reject, can only conclude not all variances are equal\n\nUnlike the KS test, difference in means and variances are sensitive to non-Normality\n\nDifferent distributions can yield insignificant results"
+  },
+  {
+    "objectID": "lectures/08-1dquant-inference.html#test-difference-between-rap-and-rock-1",
+    "href": "lectures/08-1dquant-inference.html#test-difference-between-rap-and-rock-1",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Test difference between rap and rock?",
+    "text": "Test difference between rap and rock?"
+  },
+  {
+    "objectID": "lectures/08-1dquant-inference.html#test-difference-between-rap-and-rock-2",
+    "href": "lectures/08-1dquant-inference.html#test-difference-between-rap-and-rock-2",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Test difference between rap and rock?",
+    "text": "Test difference between rap and rock?"
+  },
+  {
+    "objectID": "lectures/08-1dquant-inference.html#test-difference-between-pop-and-rap",
+    "href": "lectures/08-1dquant-inference.html#test-difference-between-pop-and-rap",
+    "title": "Graphical Inference for 1D Quantitative Data",
+    "section": "Test difference between pop and rap?",
+    "text": "Test difference between pop and rap?"
+  },
+  {
+    "objectID": "lectures/08-1dquant-inference.html#recap-and-next-steps",
+    "href": "lectures/08-1dquant-inference.html#recap-and-next-steps",
+    "title": "Graphical Inference for 1D Quantitative Data",
     "section": "Recap and next steps",
-    "text": "Recap and next steps\n\n\nVisualize 1D quantitative data to inspect center, spread, and shape\nBoxplots are only a display of summary statistics (i.e., they suck)\nHistograms display shape of the distribution, but comes with tradeoffs\nDensity curves provide an easy way to visualize conditional distributions\n\n\n\n\n\nHW2 is due Wednesday and you have Lab 4 on Friday\nNext time: Density estimation\nRecommended reading: CW Chapter 7 Visualizing distributions: Histograms and density plots"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#announcements-previously-and-today",
-    "href": "lectures/05-2dcat.html#announcements-previously-and-today",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "Announcements, previously, and today…",
-    "text": "Announcements, previously, and today…\n\n\nHW1 is due TONIGHT by 11:59 PM\nYou have Lab 3 again on Friday\n\nOffice hours schedule:\n\nMy office hours (BH 132D): Wednesdays and Thursdays @ 2 PM\nAnna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM\n\n\n\n\n\nDiscussed how similar looking graphics can have very different statistical results (thinking about power)\nDiscussed the challenges of multiple testing\n\n\n\n\n\nTODAY:\n\nVisuals for 2D categorical data\nHow do we visualize inference for 2D categorical data?"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#d-categorical-basics",
-    "href": "lectures/05-2dcat.html#d-categorical-basics",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "2D categorical basics",
-    "text": "2D categorical basics"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#d-categorical-basics-1",
-    "href": "lectures/05-2dcat.html#d-categorical-basics-1",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "2D categorical basics",
-    "text": "2D categorical basics\n\naddmargins(table(\"Species\" = penguins$species, \"Island\" = penguins$island))\n\n           Island\nSpecies     Biscoe Dream Torgersen Sum\n  Adelie        44    56        52 152\n  Chinstrap      0    68         0  68\n  Gentoo       124     0         0 124\n  Sum          168   124        52 344\n\n\n\nColumn and row sums: marginal distributions\nValues within rows: conditional distribution for Island given Species\nValues within columns: conditional distribution for Species given Island\nBottom right: total number of observations"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#connecting-distributions-to-visualizations",
-    "href": "lectures/05-2dcat.html#connecting-distributions-to-visualizations",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "Connecting distributions to visualizations",
-    "text": "Connecting distributions to visualizations\nFive distributions for two categorical variables \\(A\\) and \\(B\\):\n\nMarginals: \\(P(A)\\) and \\(P(B)\\)\nConditionals: \\(P(A | B)\\) and \\(P(B|A)\\)\nJoint: \\(P(A, B)\\)\n\nWe use bar charts to visualize marginal distributions for categorical variables…\n\nAnd we’ll use more bar charts to visualize conditional and joint distributions!"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#stacked-bar-charts---a-bar-chart-of-spine-charts",
-    "href": "lectures/05-2dcat.html#stacked-bar-charts---a-bar-chart-of-spine-charts",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "Stacked bar charts - a bar chart of spine charts",
-    "text": "Stacked bar charts - a bar chart of spine charts\n\npenguins |&gt;\n  ggplot(aes(x = species, fill = island)) +\n  geom_bar() + \n  theme_bw()\n\n\n\n\nEasy to see marginal of species, i.e., \\(P(\\) x \\()\\)\nCan see conditional of island | species, i.e., \\(P(\\) fill | x \\()\\)\nHarder to see conditional of species | island, i.e., \\(P(\\) x | fill \\()\\)"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#side-by-side-bar-charts",
-    "href": "lectures/05-2dcat.html#side-by-side-bar-charts",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "Side-by-side bar charts",
-    "text": "Side-by-side bar charts\n\npenguins |&gt;\n  ggplot(aes(x = species, fill = island)) + \n  geom_bar(position = \"dodge\") +\n  theme_bw()\n\n\n\n\nEasy to see conditional of island | species, i.e., \\(P(\\) fill | x \\()\\)\nCan see conditional of species | island, i.e., \\(P(\\) x | fill \\()\\)"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#side-by-side-bar-charts-1",
-    "href": "lectures/05-2dcat.html#side-by-side-bar-charts-1",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "Side-by-side bar charts",
-    "text": "Side-by-side bar charts\n\npenguins |&gt;\n  ggplot(aes(x = species, fill = island)) + \n  geom_bar(position = position_dodge(preserve = \"single\")) +\n  theme_bw()\n\n\n\n\nEasy to see conditional of island | species, i.e., \\(P(\\) fill | x \\()\\)\nCan see conditional of species | island, i.e., \\(P(\\) x | fill \\()\\)"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#complete-missing-values-to-preserve-location",
-    "href": "lectures/05-2dcat.html#complete-missing-values-to-preserve-location",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "Complete missing values to preserve location",
-    "text": "Complete missing values to preserve location\n\npenguins |&gt;\n  count(species, island) |&gt;\n  complete(species = unique(species), island = unique(island), \n           fill = list(n = 0)) |&gt;\n  ggplot(aes(x = species, y = n, fill = island)) + \n  geom_bar(stat = \"identity\", position = \"dodge\") +\n  theme_bw()"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#what-do-you-prefer",
-    "href": "lectures/05-2dcat.html#what-do-you-prefer",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "What do you prefer?",
-    "text": "What do you prefer?"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#chi-squared-test-for-1d-categorical-data",
-    "href": "lectures/05-2dcat.html#chi-squared-test-for-1d-categorical-data",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "Chi-squared test for 1D categorical data:",
-    "text": "Chi-squared test for 1D categorical data:\n\n\nNull hypothesis \\(H_0\\): \\(p_1 = p_2 = \\dots = p_K\\), compute the test statistic:\n\n\\[\n\\chi^2 = \\sum_{j=1}^K \\frac{(O_j - E_j)^2}{E_j}\n\\]\n\n\\(O_j\\): observed counts in category \\(j\\)\n\\(E_j\\): expected counts under \\(H_0\\), i.e., each category is equally to occur \\(n / K = p_1 = p_2 = \\dots = p_K\\)\n\n\n\n\nchisq.test(table(penguins$species))\n\n\n    Chi-squared test for given probabilities\n\ndata:  table(penguins$species)\nX-squared = 31.907, df = 2, p-value = 1.179e-07"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#inference-for-2d-categorical-data",
-    "href": "lectures/05-2dcat.html#inference-for-2d-categorical-data",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "Inference for 2D categorical data",
-    "text": "Inference for 2D categorical data\n\nAgain we use the chi-squared test:\n\nNull hypothesis \\(H_0\\): variables \\(A\\) and \\(B\\) are independent, compute the test statistic:\n\n\\[\\chi^2 = \\sum_{i}^{K_A} \\sum_{j}^{K_B} \\frac{(O_{ij} - E_{ij})^2}{E_{ij}}\\]\n\n\\(O_{ij}\\): observed counts in contingency table\n\\(E_{ij}\\): expected counts under \\(H_0\\)\n\n\\[\n\\begin{aligned}\nE_{ij} &= n \\cdot P(A = a_i, B = b_j) \\\\\n&= n \\cdot P(A = a_i) P(B = b_j) \\\\\n&= n \\cdot \\left( \\frac{n_{i \\cdot}}{n} \\right) \\left( \\frac{ n_{\\cdot j}}{n} \\right)\n\\end{aligned}\n\\]"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#inference-for-2d-categorical-data-1",
-    "href": "lectures/05-2dcat.html#inference-for-2d-categorical-data-1",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "Inference for 2D categorical data",
-    "text": "Inference for 2D categorical data\n\nAgain we use the chi-squared test:\n\nNull hypothesis \\(H_0\\): variables \\(A\\) and \\(B\\) are independent, compute the test statistic:\n\n\\[\\chi^2 = \\sum_{i}^{K_A} \\sum_{j}^{K_B} \\frac{(O_{ij} - E_{ij})^2}{E_{ij}}\\]\n\n\\(O_{ij}\\): observed counts in contingency table\n\\(E_{ij}\\): expected counts under \\(H_0\\)\n\n\n\nchisq.test(table(penguins$species, penguins$island))\n\n\n    Pearson's Chi-squared test\n\ndata:  table(penguins$species, penguins$island)\nX-squared = 299.55, df = 4, p-value &lt; 2.2e-16"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#visualize-independence-test-with-mosaic-plots",
-    "href": "lectures/05-2dcat.html#visualize-independence-test-with-mosaic-plots",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "Visualize independence test with mosaic plots",
-    "text": "Visualize independence test with mosaic plots\n\nTwo variables are independent if knowing the level of one tells us nothing about the other\n\ni.e. \\(P(A | B) = P(A)\\), and that \\(P(A, B) = P(A) \\times P(B)\\)\n\nCreate a mosaic plot using base R\n\n\nmosaicplot(table(penguins$species, penguins$island))"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#shade-by-pearson-residuals",
-    "href": "lectures/05-2dcat.html#shade-by-pearson-residuals",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "Shade by Pearson residuals",
-    "text": "Shade by Pearson residuals\n\n\nThe test statistic is:\n\n\\[\\chi^2 = \\sum_{i}^{K_A} \\sum_{j}^{K_B} \\frac{(O_{ij} - E_{ij})^2}{E_{ij}}\\]\n\nDefine the Pearson residuals as:\n\n\\[r_{ij} = \\frac{O_{ij} - E_{ij}}{\\sqrt{E_{ij}}}\\]\n\nSide-note: In general, Pearson residuals are \\(\\frac{\\text{residuals}}{\\sqrt{\\text{variance}}}\\)\n\n\n\n\n\n\\(r_{ij} \\approx 0 \\rightarrow\\) observed counts are close to expected counts\n\\(|r_{ij}| &gt; 2 \\rightarrow\\) “significant” at level \\(\\alpha = 0.05\\).\nVery positive \\(r_{ij} \\rightarrow\\) more than expected, while very negative \\(r_{ij} \\rightarrow\\) fewer than expected\nColor by Pearson residuals to tell us which combos are much bigger/smaller than expected."
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#titanic-dataset-example",
-    "href": "lectures/05-2dcat.html#titanic-dataset-example",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "Titanic Dataset Example",
-    "text": "Titanic Dataset Example\n\ntitanic &lt;- read_csv(\"https://raw.githubusercontent.com/ryurko/DataViz-Class-Data/main/titanic.csv\")\n\nQuestion: Does survival (yes/no) depend on cabin (1st/2nd/3rd)?\n\ntable(\"Survived?\" = titanic$Survived, \"Class\" = titanic$Pclass)\n\n         Class\nSurvived?   1   2   3\n        0  64  90 270\n        1 120  83  85\n\n\n\n\nchisq.test(table(\"Survived?\" = titanic$Survived, \"Class\" = titanic$Pclass))\n\n\n    Pearson's Chi-squared test\n\ndata:  table(`Survived?` = titanic$Survived, Class = titanic$Pclass)\nX-squared = 91.081, df = 2, p-value &lt; 2.2e-16\n\n\nConclusion: Class and survival are dependent - but how?"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#guardian-1000-songs-to-hear-before-you-die",
-    "href": "lectures/05-2dcat.html#guardian-1000-songs-to-hear-before-you-die",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "Guardian: 1000 songs to hear before you die",
-    "text": "Guardian: 1000 songs to hear before you die"
-  },
-  {
-    "objectID": "lectures/05-2dcat.html#recap-and-next-steps",
-    "href": "lectures/05-2dcat.html#recap-and-next-steps",
-    "title": "Visualizations and Inference for 2D Categorical Data",
-    "section": "Recap and next steps",
-    "text": "Recap and next steps\n\n\nFor 2D categorical data we create visualizations for marginal, conditional, and joint distributions\nCan create stacked and side-by-side bar charts to visualize 2D categorical data\nPerform 2D Chi-squared test to test if two categorical variables are associated with each other\nCreate mosaic plots to visualize 2D categorical data\nShade mosaic plot tiles by Pearson residuals to see what drives association between two categorical variables (if any)\n\n\n\n\n\nHW1 is due TONIGHT and you have Lab 3 on Friday!\nNext time: Visualizing 1D quantitative data\nRecommended reading: CW Chapter 11 Visualizing nested proportions"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#announcements-previously-and-today",
-    "href": "lectures/02-1dcat.html#announcements-previously-and-today",
-    "title": "1D Categorical Data",
-    "section": "Announcements, previously, and today…",
-    "text": "Announcements, previously, and today…\n\nComplete HW0 by tonight! Confirms you have everything installed and can render .qmd files to PDF via tinytex\nOffice hours will be announced soon… (I’ll be in my office BH 132D today at 2:30 PM)\n\n\n\nDiscussed the importance of data visualization in your role as a statistician / data scientist\nIntroduced the Grammar of Graphics as a framework for building visualizations\nDiscussed historical examples and principles of visualization to keep in mind\n\n\n\nTODAY: 1D Categorical Data\n\nBriefly talk about variable types\nWalk through different graphs for visualizing 1D categorical data"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#reminder-tidy-data-structure",
-    "href": "lectures/02-1dcat.html#reminder-tidy-data-structure",
-    "title": "1D Categorical Data",
-    "section": "Reminder: tidy data structure",
-    "text": "Reminder: tidy data structure\nData are often stored in tabular (or matrix) form:\n\n\n# A tibble: 5 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;\n\n\n\nEach row == unit of observation, e.g., penguins\nEach column == variable/measurement about each observation, e.g., flipper_length_mm\nKnown as a data.frame in base R and tibble in the tidyverse\nTwo main variable types: quantitative and categorical"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#variable-types",
-    "href": "lectures/02-1dcat.html#variable-types",
-    "title": "1D Categorical Data",
-    "section": "Variable Types",
-    "text": "Variable Types\n\nMost visualizations are about understanding the distribution of different variables (which are stored in columns of tabular/matrix data)\nThe variable type often dictates the type of graphs you should make\nThere are two main types of variables:"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#d-categorical-data",
-    "href": "lectures/02-1dcat.html#d-categorical-data",
-    "title": "1D Categorical Data",
-    "section": "1D Categorical Data",
-    "text": "1D Categorical Data\nTwo different versions of categorical:\n\nNominal: coded with arbitrary numbers, i.e., no real order\n\n\nExamples: race, gender, species, text\n\n\n\nOrdinal: levels with a meaningful order\n\n\nExamples: education level, grades, ranks\n\n\n\nNOTE: R and ggplot considers a categorical variable to be factor\n\nR will always treat categorical variables as ordinal! Defaults to alphabetical…\nWe will need to manually define the factor levels"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#d-categorical-data-structure",
-    "href": "lectures/02-1dcat.html#d-categorical-data-structure",
-    "title": "1D Categorical Data",
-    "section": "1D categorical data structure",
-    "text": "1D categorical data structure\n\nObservations are collected into a vector \\((x_1, \\dots, x_n)\\), where \\(n\\) is number of observations\nEach observed value \\(x_i\\) can only belong to one category level \\(\\{ C_1, C_2, \\dots \\}\\)\n\n\nLook at penguins data from the palmerpenguins package, focusing on species:\n\nlibrary(palmerpenguins)\nhead(penguins$species)\n\n[1] Adelie Adelie Adelie Adelie Adelie Adelie\nLevels: Adelie Chinstrap Gentoo\n\n\nHow could we summarize these data? What information would you report?\n\n\n\ntable(penguins$species)\n\n\n   Adelie Chinstrap    Gentoo \n      152        68       124"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#area-plots",
-    "href": "lectures/02-1dcat.html#area-plots",
-    "title": "1D Categorical Data",
-    "section": "Area plots",
-    "text": "Area plots\n\n\nEach area corresponds to one categorical level\nArea is proportional to counts/frequencies/percentages\nDifferences between areas correspond to differences between counts/frequencies/percentages"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#bar-charts",
-    "href": "lectures/02-1dcat.html#bar-charts",
-    "title": "1D Categorical Data",
-    "section": "Bar charts",
-    "text": "Bar charts\n\nlibrary(tidyverse)\npenguins |&gt;\n  ggplot(aes(x = species)) +\n  geom_bar()"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#behind-the-scenes-statistical-summaries",
-    "href": "lectures/02-1dcat.html#behind-the-scenes-statistical-summaries",
-    "title": "1D Categorical Data",
-    "section": "Behind the scenes: statistical summaries",
-    "text": "Behind the scenes: statistical summaries\n\nFrom Chapter 3 of R for Data Science"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#spine-charts---height-version",
-    "href": "lectures/02-1dcat.html#spine-charts---height-version",
-    "title": "1D Categorical Data",
-    "section": "Spine charts - height version",
-    "text": "Spine charts - height version\n\npenguins |&gt;\n  ggplot(aes(fill = species, x = \"\")) +\n  geom_bar()"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#spine-charts---width-version",
-    "href": "lectures/02-1dcat.html#spine-charts---width-version",
-    "title": "1D Categorical Data",
-    "section": "Spine charts - width version",
-    "text": "Spine charts - width version\n\npenguins |&gt;\n  ggplot(aes(fill = species, x = \"\")) +\n  geom_bar() +\n  coord_flip()"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#so-you-want-to-make-pie-charts",
-    "href": "lectures/02-1dcat.html#so-you-want-to-make-pie-charts",
-    "title": "1D Categorical Data",
-    "section": "So you want to make pie charts…",
-    "text": "So you want to make pie charts…\n\npenguins |&gt; \n  ggplot(aes(fill = species, x = \"\")) + \n  geom_bar(aes(y = after_stat(count))) +\n  coord_polar(theta = \"y\") +\n  theme_void()"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#friends-dont-let-friends-make-pie-charts",
-    "href": "lectures/02-1dcat.html#friends-dont-let-friends-make-pie-charts",
-    "title": "1D Categorical Data",
-    "section": "Friends Don’t Let Friends Make Pie Charts",
-    "text": "Friends Don’t Let Friends Make Pie Charts"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#waffle-charts-are-cooler-anyway",
-    "href": "lectures/02-1dcat.html#waffle-charts-are-cooler-anyway",
-    "title": "1D Categorical Data",
-    "section": "Waffle charts are cooler anyway…",
-    "text": "Waffle charts are cooler anyway…\n\nlibrary(waffle)\npenguins |&gt;\n  group_by(species) |&gt; \n  summarize(count = n(), .groups = \"drop\") |&gt; \n  ggplot(aes(fill = species, values = count)) +\n  geom_waffle(n_rows = 20, color = \"white\", flip = TRUE) +\n  coord_equal() +\n  theme_void()"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#florence-nightingales-rose-diagram",
-    "href": "lectures/02-1dcat.html#florence-nightingales-rose-diagram",
-    "title": "1D Categorical Data",
-    "section": "Florence Nightingale’s Rose Diagram",
-    "text": "Florence Nightingale’s Rose Diagram"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#rose-diagrams",
-    "href": "lectures/02-1dcat.html#rose-diagrams",
-    "title": "1D Categorical Data",
-    "section": "Rose diagrams",
-    "text": "Rose diagrams\n\npenguins |&gt; \n  ggplot(aes(x = species)) + \n  geom_bar(fill = \"darkblue\") +\n  coord_polar() +\n  scale_y_sqrt()"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#recap-and-next-steps",
-    "href": "lectures/02-1dcat.html#recap-and-next-steps",
-    "title": "1D Categorical Data",
-    "section": "Recap and next steps",
-    "text": "Recap and next steps\n\n\n1D Categorical Data: look at counts, frequencies, percentages\nArea plots, where area \\(\\propto\\) counts/frequencies/percentages:\n\nBar charts (you should pretty much always just make a bar chart)\nSpine charts (will be more useful with more variables)\nPie charts (DON’T DO IT)\nRose diagrams (temporal or directional context can justify usage)\n\n\n\n\n\n\nComplete HW0 by TONIGHT! Confirms you have everything installed and can render .qmd files to PDF via tinytex\nHW1 is due in two weeks, no class on Monday\n\n\n\n\n\n\nNext time: quantify and display uncertainty for 1D categorical data\nRecommended reading:\n\nCW Chapter 10 Visualizing proportions, CW Chapter 16.2 Visualizing the uncertainty of point estimates, CW Chapter 11 Visualizing nested proportions"
-  },
-  {
-    "objectID": "demos.html",
-    "href": "demos.html",
-    "title": "Demos",
-    "section": "",
-    "text": "Demo\nDate\nTitle\nDemo file\n\n\n\n\n1\nJan 13\nInto the tidyverse\nHTML",
-    "crumbs": [
-      "Demos"
-    ]
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html",
-    "href": "demos/01-into-tidyverse.html",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "",
-    "text": "(Broadly speaking) EDA = questions about data + wrangling + visualization\nR for Data Science: “EDA is a state of mind”, an iterative cycle:\n\ngenerate questions\nanswer via transformations and visualizations\n\nExample of questions?\n\nWhat type of variation do the variables display?\nWhat type of relationships exist between variables?\n\nGoal: develop understanding and become familiar with your data\n\nEDA is NOT a replacement for statistical inference and learning\nEDA is an important and necessary step to build intuition\n\nWe tackle the challenges of EDA with a data science workflow. An example of this according to Hadley Wickham in R for Data Science:\n\n\n\n\n\nAspects of data wrangling:\n\nimport: reading in data (e.g., read_csv())\ntidy: rows = observations, columns = variables (i.e. tabular data)\ntransform: filter observations, create new variables, summarize, etc."
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#what-is-exploratory-data-analysis-eda",
-    "href": "demos/01-into-tidyverse.html#what-is-exploratory-data-analysis-eda",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "",
-    "text": "(Broadly speaking) EDA = questions about data + wrangling + visualization\nR for Data Science: “EDA is a state of mind”, an iterative cycle:\n\ngenerate questions\nanswer via transformations and visualizations\n\nExample of questions?\n\nWhat type of variation do the variables display?\nWhat type of relationships exist between variables?\n\nGoal: develop understanding and become familiar with your data\n\nEDA is NOT a replacement for statistical inference and learning\nEDA is an important and necessary step to build intuition\n\nWe tackle the challenges of EDA with a data science workflow. An example of this according to Hadley Wickham in R for Data Science:\n\n\n\n\n\nAspects of data wrangling:\n\nimport: reading in data (e.g., read_csv())\ntidy: rows = observations, columns = variables (i.e. tabular data)\ntransform: filter observations, create new variables, summarize, etc."
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#working-with-penguins",
-    "href": "demos/01-into-tidyverse.html#working-with-penguins",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Working with penguins",
-    "text": "Working with penguins\nIn R, there are many libraries or packages/groups of programs that are not permanently stored in R, so we have to load them when we want to use them. You can load an R package by typing library(package_name). (Sometimes we need to download/install the package first, as described in HW0.)\nThroughout this demo we will use the palmerpenguins dataset. To access the data, you will need to install the palmerpenguins package:\n\ninstall.packages(\"palmerpenguins\")\n\nImport the penguins dataset by loading the palmerpenguins package using the library function and then access the data with the data() function:\n\nlibrary(palmerpenguins) \ndata(penguins)\n\nView some basic info about the penguins dataset:\n\n# displays same info as c(nrow(penguins), ncol(penguins))\ndim(penguins) \n\n[1] 344   8\n\nclass(penguins)\n\n[1] \"tbl_df\"     \"tbl\"        \"data.frame\"\n\n\ntbl (pronounced tibble) is the tidyverse way of storing tabular data, like a spreadsheet or data.frame\nI assure you that you’ll run into errors as you code in R; in fact, my attitude as a coder is that something is wrong if I never get any errors while working on a project. When you run into an error, your first reaction may be to panic and post a question to Piazza. However, checking help documentation in R can be a great way to figure out what’s going wrong. (For good or bad, I end up having to read help documentation almost every day of my life - because, well, I regularly make mistakes in R.)\nLook at the help documentation for penguins by typing help(penguins) in the Console. What are the names of the variables in this dataset? How many observations are in this dataset?\n\nhelp(penguins)\n\nYou should always look at your data before doing anything: view the first 6 (by default) rows with head()\n\nhead(penguins) # Try just typing penguins into your console, what happens?\n\n# A tibble: 6 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n6 Adelie  Torgersen           39.3          20.6               190        3650\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;\n\n\nIs our penguins dataset tidy?\n\nEach row = a single penguin\nEach column = different measurement about the penguins (can print out column names directly with colnames(penguins) or names(penguins))\n\nWe’ll now explore differences among the penguins using the tidyverse."
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#let-the-data-wrangling-begin",
-    "href": "demos/01-into-tidyverse.html#let-the-data-wrangling-begin",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Let the data wrangling begin…",
-    "text": "Let the data wrangling begin…\nFirst, load the tidyverse for exploring the data - and do NOT worry about the warning messages that will pop-up! Warning messages will tell you when other packages that are loaded may have functions replaced with the most recent package you’ve loaded. In general though, you should just be concerned when an error message pops up (errors are different than warnings!).\n\nlibrary(tidyverse)\n\nWarning: package 'ggplot2' was built under R version 4.2.3\n\n\nWarning: package 'tidyr' was built under R version 4.2.3\n\n\nWarning: package 'readr' was built under R version 4.2.3\n\n\nWarning: package 'dplyr' was built under R version 4.2.3\n\n\nWarning: package 'stringr' was built under R version 4.2.3\n\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.0     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.1\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\n\nWe’ll start by summarizing continuous (e.g., bill_length_mm, flipper_length_mm) and categorical (e.g., species, island) variables in different ways.\nWe can compute summary statistics for continuous variables with the summary() function:\n\nsummary(penguins$bill_length_mm)\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's \n  32.10   39.23   44.45   43.92   48.50   59.60       2 \n\n\nCompute counts of categorical variables with table() function:\n\ntable(\"island\" = penguins$island) # be careful it ignores NA values!\n\nisland\n   Biscoe     Dream Torgersen \n      168       124        52 \n\n\nHow do we remove the penguins with missing bill_length_mm values? Within the tidyverse, dplyr is a package with functions for data wrangling (because it’s within the tidyverse that means you do NOT have to load it separately with library(dplyr) after using library(tidyverse)!). It’s considered a “grammar of data manipulation”: dplyr functions are verbs, datasets are nouns.\nWe can filter() our dataset to choose observations meeting conditions:\n\nclean_penguins &lt;- filter(penguins, !is.na(bill_length_mm))\n# Use help(is.na) to see what it returns. And then observe \n# that the ! operator means to negate what comes after it.\n# This means !TRUE == FALSE (i.e., opposite of TRUE is equal to FALSE).\nnrow(penguins) - nrow(clean_penguins) # Difference in rows\n\n[1] 2\n\n\nIf we want to only consider a subset of columns in our data, we can select() variables of interest:\n\nsel_penguins &lt;- select(clean_penguins, species, island, bill_length_mm, flipper_length_mm)\nhead(sel_penguins, n = 3)\n\n# A tibble: 3 × 4\n  species island    bill_length_mm flipper_length_mm\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;             &lt;int&gt;\n1 Adelie  Torgersen           39.1               181\n2 Adelie  Torgersen           39.5               186\n3 Adelie  Torgersen           40.3               195\n\n\nWe can arrange() our dataset to sort observations by variables:\n\nbill_penguins &lt;- arrange(sel_penguins, desc(bill_length_mm)) # use desc() for descending order\nhead(bill_penguins, n = 3)\n\n# A tibble: 3 × 4\n  species   island bill_length_mm flipper_length_mm\n  &lt;fct&gt;     &lt;fct&gt;           &lt;dbl&gt;             &lt;int&gt;\n1 Gentoo    Biscoe           59.6               230\n2 Chinstrap Dream            58                 181\n3 Gentoo    Biscoe           55.9               228\n\n\nWe can summarize() our dataset to one row based on functions of variables:\n\nsummarize(bill_penguins, max(bill_length_mm), median(flipper_length_mm))\n\n# A tibble: 1 × 2\n  `max(bill_length_mm)` `median(flipper_length_mm)`\n                  &lt;dbl&gt;                       &lt;dbl&gt;\n1                  59.6                         197\n\n\nWe can mutate() our dataset to create new variables:\n\nnew_penguins &lt;- mutate(bill_penguins, \n                       bill_flipper_ratio = bill_length_mm / flipper_length_mm,\n                       flipper_bill_ratio = flipper_length_mm / bill_length_mm)\nhead(new_penguins, n = 1)\n\n# A tibble: 1 × 6\n  species island bill_length_mm flipper_length_mm bill_flipper_ratio\n  &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;             &lt;int&gt;              &lt;dbl&gt;\n1 Gentoo  Biscoe           59.6               230              0.259\n# ℹ 1 more variable: flipper_bill_ratio &lt;dbl&gt;\n\n\nHow do we perform several of these actions?\n\nhead(arrange(select(mutate(filter(penguins, !is.na(flipper_length_mm)), bill_flipper_ratio = bill_length_mm / flipper_length_mm), species, island, bill_flipper_ratio), desc(bill_flipper_ratio)), n = 1)\n\n# A tibble: 1 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n\n\nThat’s awfully annoying to do, and also difficult to read…"
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#enter-the-pipeline",
-    "href": "demos/01-into-tidyverse.html#enter-the-pipeline",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Enter the pipeline",
-    "text": "Enter the pipeline\nThe |&gt; (pipe) operator is used in the to chain commands together. Note: you can also use the tidyverse pipe %&gt;% (from magrittr), but |&gt; is the built-in pipe that is native to new versions of R without loading the tidyverse.\n|&gt; directs the data analyis pipeline: output of one function pipes into input of the next function\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  mutate(bill_flipper_ratio = bill_length_mm / flipper_length_mm) |&gt;\n  select(species, island, bill_flipper_ratio) |&gt;\n  arrange(desc(bill_flipper_ratio)) |&gt;\n  head(n = 5)\n\n# A tibble: 5 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n2 Chinstrap Dream               0.275\n3 Chinstrap Dream               0.270\n4 Chinstrap Dream               0.270\n5 Chinstrap Dream               0.268"
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#more-pipeline-actions",
-    "href": "demos/01-into-tidyverse.html#more-pipeline-actions",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "More pipeline actions!",
-    "text": "More pipeline actions!\nInstead of head(), we can slice() our dataset to choose the observations based on the position\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  mutate(bill_flipper_ratio = bill_length_mm / flipper_length_mm) |&gt;\n  select(species, island, bill_flipper_ratio) |&gt;\n  arrange(desc(bill_flipper_ratio)) |&gt;\n  slice(c(1, 2, 10, 100))\n\n# A tibble: 4 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n2 Chinstrap Dream               0.275\n3 Chinstrap Dream               0.264\n4 Gentoo    Biscoe              0.227"
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#grouped-operations",
-    "href": "demos/01-into-tidyverse.html#grouped-operations",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Grouped operations",
-    "text": "Grouped operations\nWe group_by() to split our dataset into groups based on a variable’s values\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  group_by(island) |&gt;\n  summarize(n_penguins = n(), #counts number of rows in group\n            ave_flipper_length = mean(flipper_length_mm), \n            sum_bill_depth = sum(bill_depth_mm),\n            .groups = \"drop\") |&gt; # all levels of grouping dropping\n  arrange(desc(n_penguins)) |&gt;\n  slice(1:5)\n\n# A tibble: 3 × 4\n  island    n_penguins ave_flipper_length sum_bill_depth\n  &lt;fct&gt;          &lt;int&gt;              &lt;dbl&gt;          &lt;dbl&gt;\n1 Biscoe           167               210.          2651.\n2 Dream            124               193.          2275.\n3 Torgersen         51               191.           940.\n\n\n\ngroup_by() is only useful in a pipeline (e.g. with summarize()), and pay attention to its behavior\nspecify the .groups field to decide if observations remain grouped or not after summarizing (you can also use ungroup() for this as well)"
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#putting-it-all-together",
-    "href": "demos/01-into-tidyverse.html#putting-it-all-together",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Putting it all together…",
-    "text": "Putting it all together…\nAs your own exercise, create a tidy dataset where each row == an island with the following variables:\n\nnumber of penguins,\nnumber of unique species on the island (see help(unique)),\naverage body_mass_g,\nvariance (see help(var)) of bill_depth_mm\n\nPrior to making those variables, make sure to filter missings and also only consider female penguins. Then arrange the islands in order of the average body_mass_g:\n\n# INSERT YOUR CODE HERE"
-  },
-  {
-    "objectID": "lectures.html",
-    "href": "lectures.html",
-    "title": "Lectures",
-    "section": "",
-    "text": "Lecture\nDate\nTitle\nMaterials\n\n\n\n\n1\nJan 13\nIntroduction and Grammar of Graphics\nslides\n\n\n2\nJan 15\n1D Categorical Data\nslides\n\n\n3\nJan 22\nStatistical Inference for 1D Categorical Data\nslides\n\n\n4\nJan 27\nPower and Multiple Testing\nslides\n\n\n5\nJan 29\nVisualizations and Inference for 2D Categorical Data\nslides\n\n\n6\nFeb 3\nVisualizing 1D Quantitative Data\nslides\n\n\n7\nFeb 5\nDensity Estimation\nslides",
-    "crumbs": [
-      "Lectures"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Statistical Graphics and Visualization 36-315",
-    "section": "",
-    "text": "This is the companion website for Statistical Graphics and Visualization 36-315. While all of the assignments will be posted on Canvas, this website provides an alternative way to access lecture materials and additional demo files (see the see side-bar).\nLectures are on Mondays and Wednesdays from 12 - 12:50 PM, located in DH A302.\nOffice hours schedule:\n\n\n\n\n\n\n\n\nName\nOffice hours\nLocation\n\n\n\n\nProf Yurko\nWednesdays and Thursdays @ 2 PM\nBaker Hall 132D\n\n\nAnna Rosengart\nMondays @ 2 PM\nZoom (see Canvas)\n\n\nPerry Lin\nWednesdays @ 11 AM\nZoom (see Canvas)\n\n\n\nThere are no required textbooks for this course, but the following are useful free resources that I will sometimes refer to as recommended reading:\n\nR for Data Science\nData Visualization: A Practical Introduction\nFundamentals of Data Visualization\nggplot2: Elegant Graphics for Data Analysis\n\nAnd the following are interesting data visualization websites:\n\nFlowingData\nHistory of Data Visualization\nFriends Don’t Let Friends Make Bad Graphs",
-    "crumbs": [
-      "Home"
-    ]
-  },
-  {
-    "objectID": "lectures/01-intro.html#who-am-i",
-    "href": "lectures/01-intro.html#who-am-i",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "Who am I?",
-    "text": "Who am I?\n\n\n\n\nAssistant Teaching Professor\nFinished Phd in Statistics @ CMU in May 2022\nPreviously BS in Statistics @ CMU in 2015\nResearch interests: sports analytics, natural language processing, clustering, selective inference\n\n\n\n\n\nIndustry experience: finance before returning to grad school and also as data scientist in professional sports"
-  },
-  {
-    "objectID": "lectures/01-intro.html#why-do-we-visualize-data",
-    "href": "lectures/01-intro.html#why-do-we-visualize-data",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "Why do we visualize data?",
-    "text": "Why do we visualize data?"
-  },
-  {
-    "objectID": "lectures/01-intro.html#course-structure",
-    "href": "lectures/01-intro.html#course-structure",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "Course Structure",
-    "text": "Course Structure\n\n\n\nLectures on Mondays/Wednesdays\n\nAll slides and demos posted on https://ryurko.github.io/statds-36315-spring25/\nParticipate and ask questions!\n\nWeekly homeworks due Wednesdays by 11:59 PM ET\nWeekly Friday labs due Saturdays by 11:59 AM ET\n\n\n\n\nTwo Graphics Critiques of Data Viz in the Wild (due Feb 28 and Mar 31)\nTake-home exam on Wednesday, Feb 26th\nFinal project with individual and group grade\n\nWork in teams on dataset you choose\nIn-class presentations during final week of class\nPublic facing HTML report due during finals week"
-  },
-  {
-    "objectID": "lectures/01-intro.html#course-logistics",
-    "href": "lectures/01-intro.html#course-logistics",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "Course logistics",
-    "text": "Course logistics\n\n\nAll homework/lab assignments will be in Quarto. You’ll generate a PDF, which you’ll submit on Gradescope\nMake sure R and RStudio are installed on your computer!\nHW0 due Wednesday Jan 15 at 11:59 PM ET: install R/RStudio, install/load tidyverse, render to PDF, and post to Gradescope\n\nHave any installation issues? Post to the course Piazza!\n\nPiazza: all questions about course material, HWs, exam, and projects\n\nDo NOT share code on Piazza\n\nOnly email for address administrative/logistic issues\nLab attendance on Friday is mandatory - submit lab assignment but don’t attend YOU LOSE 20PTS!\n\nQuestions about lab assignments will only be answered during lab\nIf you need to miss a lab due to illness, interviews, emergencies, etc., email me 48 hours in advance"
-  },
-  {
-    "objectID": "lectures/01-intro.html#important-hw0-is-due-wednesday-night",
-    "href": "lectures/01-intro.html#important-hw0-is-due-wednesday-night",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "IMPORTANT: HW0 is due Wednesday night",
-    "text": "IMPORTANT: HW0 is due Wednesday night\nAs seen in today’s Canvas announcement - you must submit HW0 by Wednesday night!\n\nThis is just to make sure you have everything installed correctly and can render .qmd files to PDF\n\nRead through all of the directions in HW0 carefully!\nYou will stop saving your workspace upon exiting RStudio!\nYou will need to be set-up for the first lab on Friday"
-  },
-  {
-    "objectID": "lectures/01-intro.html#course-objectives-read-the-syllabus",
-    "href": "lectures/01-intro.html#course-objectives-read-the-syllabus",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "Course Objectives (read the syllabus)",
-    "text": "Course Objectives (read the syllabus)\nLearn useful principles for making appropriate statistical graphics.\nCritique existing graphs and remake better ones.\nVisualize statistical analyses to facilitate communication.\nPinpoint the statistical claims you can/cannot make from graphics.\nWrite and speak publicly about statistical graphics.\nPractice tidy data manipulation in R using the tidyverse\nPractice reproducible workflows with Quarto"
-  },
-  {
-    "objectID": "lectures/01-intro.html#what-do-i-mean-by-tidy-data",
-    "href": "lectures/01-intro.html#what-do-i-mean-by-tidy-data",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "What do I mean by tidy data?",
-    "text": "What do I mean by tidy data?\nData are often stored in tabular (or matrix) form:\n\nlibrary(palmerpenguins)\npenguins |&gt; slice(1:5)\n\n# A tibble: 5 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;"
-  },
-  {
-    "objectID": "lectures/01-intro.html#the-grammar-of-graphics",
-    "href": "lectures/01-intro.html#the-grammar-of-graphics",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "The Grammar of Graphics",
-    "text": "The Grammar of Graphics\n\n\nOriginally defined by Leland Wilkinson\n\n\ndata\ngeometries: type of geometric objects to represent data, e.g., points, lines\naesthetics: visual characteristics of geometric objects to represent data, e.g., position, size\nscales: how each aesthetic is converted into values on the graph, e.g., color scales\nstats: statistical transformations to summarize data, e.g., counts, means, regression lines\nfacets: split data and view as multiple graphs\ncoordinate system: 2D space the data are projected onto, e.g., Cartesian coordinates\n\n\n\n\nHadley Wickham created ggplot2\n\n\ndata\ngeom\naes: mappings of columns to geometric objects\nscale: one scale for each aes variable\nstat\nfacet\ncoord\nlabs: labels/guides for each variable and other parts of the plot, e.g., title, subtitle, caption\ntheme: customization of plot layout"
-  },
-  {
-    "objectID": "lectures/01-intro.html#start-with-the-data",
-    "href": "lectures/01-intro.html#start-with-the-data",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "Start with the data",
-    "text": "Start with the data\n\n\nAccess ggplot2 from the tidyverse:\n\nlibrary(tidyverse)\nggplot(data = penguins)\n\n\nOr equivalently using |&gt;:\n\npenguins |&gt;\n  ggplot()"
-  },
-  {
-    "objectID": "lectures/01-intro.html#need-to-add-geometric-objects",
-    "href": "lectures/01-intro.html#need-to-add-geometric-objects",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "Need to add geometric objects!",
-    "text": "Need to add geometric objects!\n\n\n\npenguins |&gt;\n  ggplot(aes(x = bill_length_mm, \n             y = bill_depth_mm)) + \n  geom_point()\n\n\n\npenguins %&gt;%\n  ggplot(mapping = aes(x = bill_length_mm,\n                       y = bill_depth_mm)) + \n  geom_point()"
-  },
-  {
-    "objectID": "lectures/01-intro.html#modify-scale-add-statistical-summary-and-so-on",
-    "href": "lectures/01-intro.html#modify-scale-add-statistical-summary-and-so-on",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "Modify scale, add statistical summary, and so on…",
-    "text": "Modify scale, add statistical summary, and so on…\n\npenguins %&gt;%\n  ggplot(aes(x = bill_length_mm,\n             y = bill_depth_mm)) + \n  # Adjust alpha of points\n  geom_point(alpha = 0.5) +\n  # Add smooth regression line\n  stat_smooth(method = \"lm\") + \n  # Flip the x-axis scale\n  scale_x_reverse() + \n  # Change title & axes labels \n  labs(x = \"Bill length (mm)\", \n       y = \"Bill depth (mm)\", \n       title = \"Clustering of penguins bills\") + \n  # Change the theme:\n  theme_bw() +\n  # Update font size of text:\n  theme(axis.title = element_text(size = 12),\n        plot.title = element_text(size = 16))"
-  },
-  {
-    "objectID": "lectures/01-intro.html#modify-scale-add-statistical-summary-and-so-on-output",
-    "href": "lectures/01-intro.html#modify-scale-add-statistical-summary-and-so-on-output",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "Modify scale, add statistical summary, and so on…",
-    "text": "Modify scale, add statistical summary, and so on…"
-  },
-  {
-    "objectID": "lectures/01-intro.html#in-the-beginning",
-    "href": "lectures/01-intro.html#in-the-beginning",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "In the beginning…",
-    "text": "In the beginning…\n\nMichael Florent van Langren published the first (known) statistical graphic in 1644\n\n\n\n\n\n\nPlots different estimates of the longitudinal distance between Toledo, Spain and Rome, Italy\ni.e., visualization of collected data to aid in estimation of parameter"
-  },
-  {
-    "objectID": "lectures/01-intro.html#john-snow-knows-something-about-cholera",
-    "href": "lectures/01-intro.html#john-snow-knows-something-about-cholera",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "John Snow Knows Something About Cholera",
-    "text": "John Snow Knows Something About Cholera"
-  },
-  {
-    "objectID": "lectures/01-intro.html#charles-minards-map-of-napoleons-russian-disaster",
-    "href": "lectures/01-intro.html#charles-minards-map-of-napoleons-russian-disaster",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "Charles Minard’s Map of Napoleon’s Russian Disaster",
-    "text": "Charles Minard’s Map of Napoleon’s Russian Disaster"
-  },
-  {
-    "objectID": "lectures/01-intro.html#florence-nightingales-rose-diagram",
-    "href": "lectures/01-intro.html#florence-nightingales-rose-diagram",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "Florence Nightingale’s Rose Diagram",
-    "text": "Florence Nightingale’s Rose Diagram"
-  },
-  {
-    "objectID": "lectures/01-intro.html#milestones-in-data-visualization-history",
-    "href": "lectures/01-intro.html#milestones-in-data-visualization-history",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "Milestones in Data Visualization History",
-    "text": "Milestones in Data Visualization History"
-  },
-  {
-    "objectID": "lectures/01-intro.html#edward-tuftes-principles-of-data-visualization",
-    "href": "lectures/01-intro.html#edward-tuftes-principles-of-data-visualization",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "Edward Tufte’s Principles of Data Visualization",
-    "text": "Edward Tufte’s Principles of Data Visualization\nGraphics: visually display measured quantities by combining points, lines, coordinate systems, numbers, symbols, words, shading, color\nOften our goal is to show data and/or communicate a story\n\n\nInduce viewer to think about substance, not graphical methodology\nMake large, complex datasets more coherent\nEncourage comparison of different pieces of data\nDescribe, explore, and identify relationships\nAvoid data distortion and data decoration\nUse consistent graph design\n\n\n\nAvoid graphs that lead to misleading conclusions!"
-  },
-  {
-    "objectID": "lectures/01-intro.html#how-to-fail-this-class",
-    "href": "lectures/01-intro.html#how-to-fail-this-class",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "How to Fail this Class:",
-    "text": "How to Fail this Class:"
-  },
-  {
-    "objectID": "lectures/01-intro.html#what-about-this-spiral",
-    "href": "lectures/01-intro.html#what-about-this-spiral",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "What about this spiral?",
-    "text": "What about this spiral?\n\n\nRequires distortion"
-  },
-  {
-    "objectID": "lectures/01-intro.html#recap-and-next-steps",
-    "href": "lectures/01-intro.html#recap-and-next-steps",
-    "title": "Introduction and the Grammar of Graphics",
-    "section": "Recap and next steps",
-    "text": "Recap and next steps\n\nDiscussed the importance of data visualization in your role as a statistician / data scientist\nWalked through course logistics (READ THE SYLLABUS)\nIntroduced the Grammar of Graphics and ggplot2 basics\nDiscussed data visualization principles and the role of infographics\n\n\n\nComplete HW0 by Wednesday night! Confirms you have everything installed and can render .qmd files to PDF via tinytex\n\n\n\n\nNext time: 1D Categorical Data\nRecommended reading:\n\nCW Chapter 2 Visualizing data: Mapping data onto aesthetics, CW Chapter 17 The principle of proportional ink\nKH Chapter 1 Look at data, KH Chapter 3 Make a plot"
+    "text": "Recap and next steps\n\n\nIntroduced KS tests for testing differences in distributions\nBut when are the differences we’re seeing statistically significant?\n\nAny distributional difference? \\(\\rightarrow\\) KS test\nJust care about mean differences? \\(\\rightarrow\\) t-test\nJust care about variance differences? \\(\\rightarrow\\) Bartlett’s test\n\n\n\n\n\n\nHW3 is due Wednesday and you have Lab 5 on Friday\nNext time: Comparing Distributions and Statistical Power\nRecommended reading: CW Chapter 8 Visualizing distributions: Empirical cumulative distribution functions and q-q plots"
   },
   {
     "objectID": "lectures/03-1dcat-infer.html#announcements-previously-and-today",
@@ -917,6 +481,624 @@
     "title": "Statistical Inference for 1D Categorical Data",
     "section": "Recap and next steps",
     "text": "Recap and next steps\n\n\nBar charts display the empirical distribution of the categorical variable ( \\(\\hat{p}_1, \\dots, \\hat{p}_K\\) )\nChi-squared test is a global test for 1D categorical data, testing \\(H_0 : p_1 = \\cdot \\cdot \\cdot = p_K\\)\n\nDoes not tell us which probabilities differ!\n\nCan visualize CIs for each \\(\\hat{p}_1\\), \\(\\dots\\), \\(\\hat{p}_K\\), but need to deal with multiple testing\nGraphs with the same trends can display very different statistical significance (largely due to sample size)\n\n\n\n\n\nHW1 is due next week and you have Lab 2 on Friday!\nNext time: 2D categorical data\nRecommended reading:\n\nCW Chapter 16.2 Visualizing the uncertainty of point estimates"
+  },
+  {
+    "objectID": "lectures/01-intro.html#who-am-i",
+    "href": "lectures/01-intro.html#who-am-i",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Who am I?",
+    "text": "Who am I?\n\n\n\n\nAssistant Teaching Professor\nFinished Phd in Statistics @ CMU in May 2022\nPreviously BS in Statistics @ CMU in 2015\nResearch interests: sports analytics, natural language processing, clustering, selective inference\n\n\n\n\n\nIndustry experience: finance before returning to grad school and also as data scientist in professional sports"
+  },
+  {
+    "objectID": "lectures/01-intro.html#why-do-we-visualize-data",
+    "href": "lectures/01-intro.html#why-do-we-visualize-data",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Why do we visualize data?",
+    "text": "Why do we visualize data?"
+  },
+  {
+    "objectID": "lectures/01-intro.html#course-structure",
+    "href": "lectures/01-intro.html#course-structure",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Course Structure",
+    "text": "Course Structure\n\n\n\nLectures on Mondays/Wednesdays\n\nAll slides and demos posted on https://ryurko.github.io/statds-36315-spring25/\nParticipate and ask questions!\n\nWeekly homeworks due Wednesdays by 11:59 PM ET\nWeekly Friday labs due Saturdays by 11:59 AM ET\n\n\n\n\nTwo Graphics Critiques of Data Viz in the Wild (due Feb 28 and Mar 31)\nTake-home exam on Wednesday, Feb 26th\nFinal project with individual and group grade\n\nWork in teams on dataset you choose\nIn-class presentations during final week of class\nPublic facing HTML report due during finals week"
+  },
+  {
+    "objectID": "lectures/01-intro.html#course-logistics",
+    "href": "lectures/01-intro.html#course-logistics",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Course logistics",
+    "text": "Course logistics\n\n\nAll homework/lab assignments will be in Quarto. You’ll generate a PDF, which you’ll submit on Gradescope\nMake sure R and RStudio are installed on your computer!\nHW0 due Wednesday Jan 15 at 11:59 PM ET: install R/RStudio, install/load tidyverse, render to PDF, and post to Gradescope\n\nHave any installation issues? Post to the course Piazza!\n\nPiazza: all questions about course material, HWs, exam, and projects\n\nDo NOT share code on Piazza\n\nOnly email for address administrative/logistic issues\nLab attendance on Friday is mandatory - submit lab assignment but don’t attend YOU LOSE 20PTS!\n\nQuestions about lab assignments will only be answered during lab\nIf you need to miss a lab due to illness, interviews, emergencies, etc., email me 48 hours in advance"
+  },
+  {
+    "objectID": "lectures/01-intro.html#important-hw0-is-due-wednesday-night",
+    "href": "lectures/01-intro.html#important-hw0-is-due-wednesday-night",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "IMPORTANT: HW0 is due Wednesday night",
+    "text": "IMPORTANT: HW0 is due Wednesday night\nAs seen in today’s Canvas announcement - you must submit HW0 by Wednesday night!\n\nThis is just to make sure you have everything installed correctly and can render .qmd files to PDF\n\nRead through all of the directions in HW0 carefully!\nYou will stop saving your workspace upon exiting RStudio!\nYou will need to be set-up for the first lab on Friday"
+  },
+  {
+    "objectID": "lectures/01-intro.html#course-objectives-read-the-syllabus",
+    "href": "lectures/01-intro.html#course-objectives-read-the-syllabus",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Course Objectives (read the syllabus)",
+    "text": "Course Objectives (read the syllabus)\nLearn useful principles for making appropriate statistical graphics.\nCritique existing graphs and remake better ones.\nVisualize statistical analyses to facilitate communication.\nPinpoint the statistical claims you can/cannot make from graphics.\nWrite and speak publicly about statistical graphics.\nPractice tidy data manipulation in R using the tidyverse\nPractice reproducible workflows with Quarto"
+  },
+  {
+    "objectID": "lectures/01-intro.html#what-do-i-mean-by-tidy-data",
+    "href": "lectures/01-intro.html#what-do-i-mean-by-tidy-data",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "What do I mean by tidy data?",
+    "text": "What do I mean by tidy data?\nData are often stored in tabular (or matrix) form:\n\nlibrary(palmerpenguins)\npenguins |&gt; slice(1:5)\n\n# A tibble: 5 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;"
+  },
+  {
+    "objectID": "lectures/01-intro.html#the-grammar-of-graphics",
+    "href": "lectures/01-intro.html#the-grammar-of-graphics",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "The Grammar of Graphics",
+    "text": "The Grammar of Graphics\n\n\nOriginally defined by Leland Wilkinson\n\n\ndata\ngeometries: type of geometric objects to represent data, e.g., points, lines\naesthetics: visual characteristics of geometric objects to represent data, e.g., position, size\nscales: how each aesthetic is converted into values on the graph, e.g., color scales\nstats: statistical transformations to summarize data, e.g., counts, means, regression lines\nfacets: split data and view as multiple graphs\ncoordinate system: 2D space the data are projected onto, e.g., Cartesian coordinates\n\n\n\n\nHadley Wickham created ggplot2\n\n\ndata\ngeom\naes: mappings of columns to geometric objects\nscale: one scale for each aes variable\nstat\nfacet\ncoord\nlabs: labels/guides for each variable and other parts of the plot, e.g., title, subtitle, caption\ntheme: customization of plot layout"
+  },
+  {
+    "objectID": "lectures/01-intro.html#start-with-the-data",
+    "href": "lectures/01-intro.html#start-with-the-data",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Start with the data",
+    "text": "Start with the data\n\n\nAccess ggplot2 from the tidyverse:\n\nlibrary(tidyverse)\nggplot(data = penguins)\n\n\nOr equivalently using |&gt;:\n\npenguins |&gt;\n  ggplot()"
+  },
+  {
+    "objectID": "lectures/01-intro.html#need-to-add-geometric-objects",
+    "href": "lectures/01-intro.html#need-to-add-geometric-objects",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Need to add geometric objects!",
+    "text": "Need to add geometric objects!\n\n\n\npenguins |&gt;\n  ggplot(aes(x = bill_length_mm, \n             y = bill_depth_mm)) + \n  geom_point()\n\n\n\npenguins %&gt;%\n  ggplot(mapping = aes(x = bill_length_mm,\n                       y = bill_depth_mm)) + \n  geom_point()"
+  },
+  {
+    "objectID": "lectures/01-intro.html#modify-scale-add-statistical-summary-and-so-on",
+    "href": "lectures/01-intro.html#modify-scale-add-statistical-summary-and-so-on",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Modify scale, add statistical summary, and so on…",
+    "text": "Modify scale, add statistical summary, and so on…\n\npenguins %&gt;%\n  ggplot(aes(x = bill_length_mm,\n             y = bill_depth_mm)) + \n  # Adjust alpha of points\n  geom_point(alpha = 0.5) +\n  # Add smooth regression line\n  stat_smooth(method = \"lm\") + \n  # Flip the x-axis scale\n  scale_x_reverse() + \n  # Change title & axes labels \n  labs(x = \"Bill length (mm)\", \n       y = \"Bill depth (mm)\", \n       title = \"Clustering of penguins bills\") + \n  # Change the theme:\n  theme_bw() +\n  # Update font size of text:\n  theme(axis.title = element_text(size = 12),\n        plot.title = element_text(size = 16))"
+  },
+  {
+    "objectID": "lectures/01-intro.html#modify-scale-add-statistical-summary-and-so-on-output",
+    "href": "lectures/01-intro.html#modify-scale-add-statistical-summary-and-so-on-output",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Modify scale, add statistical summary, and so on…",
+    "text": "Modify scale, add statistical summary, and so on…"
+  },
+  {
+    "objectID": "lectures/01-intro.html#in-the-beginning",
+    "href": "lectures/01-intro.html#in-the-beginning",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "In the beginning…",
+    "text": "In the beginning…\n\nMichael Florent van Langren published the first (known) statistical graphic in 1644\n\n\n\n\n\n\nPlots different estimates of the longitudinal distance between Toledo, Spain and Rome, Italy\ni.e., visualization of collected data to aid in estimation of parameter"
+  },
+  {
+    "objectID": "lectures/01-intro.html#john-snow-knows-something-about-cholera",
+    "href": "lectures/01-intro.html#john-snow-knows-something-about-cholera",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "John Snow Knows Something About Cholera",
+    "text": "John Snow Knows Something About Cholera"
+  },
+  {
+    "objectID": "lectures/01-intro.html#charles-minards-map-of-napoleons-russian-disaster",
+    "href": "lectures/01-intro.html#charles-minards-map-of-napoleons-russian-disaster",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Charles Minard’s Map of Napoleon’s Russian Disaster",
+    "text": "Charles Minard’s Map of Napoleon’s Russian Disaster"
+  },
+  {
+    "objectID": "lectures/01-intro.html#florence-nightingales-rose-diagram",
+    "href": "lectures/01-intro.html#florence-nightingales-rose-diagram",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Florence Nightingale’s Rose Diagram",
+    "text": "Florence Nightingale’s Rose Diagram"
+  },
+  {
+    "objectID": "lectures/01-intro.html#milestones-in-data-visualization-history",
+    "href": "lectures/01-intro.html#milestones-in-data-visualization-history",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Milestones in Data Visualization History",
+    "text": "Milestones in Data Visualization History"
+  },
+  {
+    "objectID": "lectures/01-intro.html#edward-tuftes-principles-of-data-visualization",
+    "href": "lectures/01-intro.html#edward-tuftes-principles-of-data-visualization",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Edward Tufte’s Principles of Data Visualization",
+    "text": "Edward Tufte’s Principles of Data Visualization\nGraphics: visually display measured quantities by combining points, lines, coordinate systems, numbers, symbols, words, shading, color\nOften our goal is to show data and/or communicate a story\n\n\nInduce viewer to think about substance, not graphical methodology\nMake large, complex datasets more coherent\nEncourage comparison of different pieces of data\nDescribe, explore, and identify relationships\nAvoid data distortion and data decoration\nUse consistent graph design\n\n\n\nAvoid graphs that lead to misleading conclusions!"
+  },
+  {
+    "objectID": "lectures/01-intro.html#how-to-fail-this-class",
+    "href": "lectures/01-intro.html#how-to-fail-this-class",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "How to Fail this Class:",
+    "text": "How to Fail this Class:"
+  },
+  {
+    "objectID": "lectures/01-intro.html#what-about-this-spiral",
+    "href": "lectures/01-intro.html#what-about-this-spiral",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "What about this spiral?",
+    "text": "What about this spiral?\n\n\nRequires distortion"
+  },
+  {
+    "objectID": "lectures/01-intro.html#recap-and-next-steps",
+    "href": "lectures/01-intro.html#recap-and-next-steps",
+    "title": "Introduction and the Grammar of Graphics",
+    "section": "Recap and next steps",
+    "text": "Recap and next steps\n\nDiscussed the importance of data visualization in your role as a statistician / data scientist\nWalked through course logistics (READ THE SYLLABUS)\nIntroduced the Grammar of Graphics and ggplot2 basics\nDiscussed data visualization principles and the role of infographics\n\n\n\nComplete HW0 by Wednesday night! Confirms you have everything installed and can render .qmd files to PDF via tinytex\n\n\n\n\nNext time: 1D Categorical Data\nRecommended reading:\n\nCW Chapter 2 Visualizing data: Mapping data onto aesthetics, CW Chapter 17 The principle of proportional ink\nKH Chapter 1 Look at data, KH Chapter 3 Make a plot"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Statistical Graphics and Visualization 36-315",
+    "section": "",
+    "text": "This is the companion website for Statistical Graphics and Visualization 36-315. While all of the assignments will be posted on Canvas, this website provides an alternative way to access lecture materials and additional demo files (see the see side-bar).\nLectures are on Mondays and Wednesdays from 12 - 12:50 PM, located in DH A302.\nOffice hours schedule:\n\n\n\n\n\n\n\n\nName\nOffice hours\nLocation\n\n\n\n\nProf Yurko\nWednesdays and Thursdays @ 2 PM\nBaker Hall 132D\n\n\nAnna Rosengart\nMondays @ 2 PM\nZoom (see Canvas)\n\n\nPerry Lin\nWednesdays @ 11 AM\nZoom (see Canvas)\n\n\n\nThere are no required textbooks for this course, but the following are useful free resources that I will sometimes refer to as recommended reading:\n\nR for Data Science\nData Visualization: A Practical Introduction\nFundamentals of Data Visualization\nggplot2: Elegant Graphics for Data Analysis\n\nAnd the following are interesting data visualization websites:\n\nFlowingData\nHistory of Data Visualization\nFriends Don’t Let Friends Make Bad Graphs",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "lectures.html",
+    "href": "lectures.html",
+    "title": "Lectures",
+    "section": "",
+    "text": "Lecture\nDate\nTitle\nMaterials\n\n\n\n\n1\nJan 13\nIntroduction and Grammar of Graphics\nslides\n\n\n2\nJan 15\n1D Categorical Data\nslides\n\n\n3\nJan 22\nStatistical Inference for 1D Categorical Data\nslides\n\n\n4\nJan 27\nPower and Multiple Testing\nslides\n\n\n5\nJan 29\nVisualizations and Inference for 2D Categorical Data\nslides\n\n\n6\nFeb 3\nVisualizing 1D Quantitative Data\nslides\n\n\n7\nFeb 5\nDensity Estimation\nslides\n\n\n8\nFeb 10\nGraphical Inference for 1D Quantitative Data\nslides",
+    "crumbs": [
+      "Lectures"
+    ]
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html",
+    "href": "demos/01-into-tidyverse.html",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "",
+    "text": "(Broadly speaking) EDA = questions about data + wrangling + visualization\nR for Data Science: “EDA is a state of mind”, an iterative cycle:\n\ngenerate questions\nanswer via transformations and visualizations\n\nExample of questions?\n\nWhat type of variation do the variables display?\nWhat type of relationships exist between variables?\n\nGoal: develop understanding and become familiar with your data\n\nEDA is NOT a replacement for statistical inference and learning\nEDA is an important and necessary step to build intuition\n\nWe tackle the challenges of EDA with a data science workflow. An example of this according to Hadley Wickham in R for Data Science:\n\n\n\n\n\nAspects of data wrangling:\n\nimport: reading in data (e.g., read_csv())\ntidy: rows = observations, columns = variables (i.e. tabular data)\ntransform: filter observations, create new variables, summarize, etc."
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#what-is-exploratory-data-analysis-eda",
+    "href": "demos/01-into-tidyverse.html#what-is-exploratory-data-analysis-eda",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "",
+    "text": "(Broadly speaking) EDA = questions about data + wrangling + visualization\nR for Data Science: “EDA is a state of mind”, an iterative cycle:\n\ngenerate questions\nanswer via transformations and visualizations\n\nExample of questions?\n\nWhat type of variation do the variables display?\nWhat type of relationships exist between variables?\n\nGoal: develop understanding and become familiar with your data\n\nEDA is NOT a replacement for statistical inference and learning\nEDA is an important and necessary step to build intuition\n\nWe tackle the challenges of EDA with a data science workflow. An example of this according to Hadley Wickham in R for Data Science:\n\n\n\n\n\nAspects of data wrangling:\n\nimport: reading in data (e.g., read_csv())\ntidy: rows = observations, columns = variables (i.e. tabular data)\ntransform: filter observations, create new variables, summarize, etc."
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#working-with-penguins",
+    "href": "demos/01-into-tidyverse.html#working-with-penguins",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Working with penguins",
+    "text": "Working with penguins\nIn R, there are many libraries or packages/groups of programs that are not permanently stored in R, so we have to load them when we want to use them. You can load an R package by typing library(package_name). (Sometimes we need to download/install the package first, as described in HW0.)\nThroughout this demo we will use the palmerpenguins dataset. To access the data, you will need to install the palmerpenguins package:\n\ninstall.packages(\"palmerpenguins\")\n\nImport the penguins dataset by loading the palmerpenguins package using the library function and then access the data with the data() function:\n\nlibrary(palmerpenguins) \ndata(penguins)\n\nView some basic info about the penguins dataset:\n\n# displays same info as c(nrow(penguins), ncol(penguins))\ndim(penguins) \n\n[1] 344   8\n\nclass(penguins)\n\n[1] \"tbl_df\"     \"tbl\"        \"data.frame\"\n\n\ntbl (pronounced tibble) is the tidyverse way of storing tabular data, like a spreadsheet or data.frame\nI assure you that you’ll run into errors as you code in R; in fact, my attitude as a coder is that something is wrong if I never get any errors while working on a project. When you run into an error, your first reaction may be to panic and post a question to Piazza. However, checking help documentation in R can be a great way to figure out what’s going wrong. (For good or bad, I end up having to read help documentation almost every day of my life - because, well, I regularly make mistakes in R.)\nLook at the help documentation for penguins by typing help(penguins) in the Console. What are the names of the variables in this dataset? How many observations are in this dataset?\n\nhelp(penguins)\n\nYou should always look at your data before doing anything: view the first 6 (by default) rows with head()\n\nhead(penguins) # Try just typing penguins into your console, what happens?\n\n# A tibble: 6 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n6 Adelie  Torgersen           39.3          20.6               190        3650\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;\n\n\nIs our penguins dataset tidy?\n\nEach row = a single penguin\nEach column = different measurement about the penguins (can print out column names directly with colnames(penguins) or names(penguins))\n\nWe’ll now explore differences among the penguins using the tidyverse."
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#let-the-data-wrangling-begin",
+    "href": "demos/01-into-tidyverse.html#let-the-data-wrangling-begin",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Let the data wrangling begin…",
+    "text": "Let the data wrangling begin…\nFirst, load the tidyverse for exploring the data - and do NOT worry about the warning messages that will pop-up! Warning messages will tell you when other packages that are loaded may have functions replaced with the most recent package you’ve loaded. In general though, you should just be concerned when an error message pops up (errors are different than warnings!).\n\nlibrary(tidyverse)\n\nWarning: package 'ggplot2' was built under R version 4.2.3\n\n\nWarning: package 'tidyr' was built under R version 4.2.3\n\n\nWarning: package 'readr' was built under R version 4.2.3\n\n\nWarning: package 'dplyr' was built under R version 4.2.3\n\n\nWarning: package 'stringr' was built under R version 4.2.3\n\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.0     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.1\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\n\nWe’ll start by summarizing continuous (e.g., bill_length_mm, flipper_length_mm) and categorical (e.g., species, island) variables in different ways.\nWe can compute summary statistics for continuous variables with the summary() function:\n\nsummary(penguins$bill_length_mm)\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's \n  32.10   39.23   44.45   43.92   48.50   59.60       2 \n\n\nCompute counts of categorical variables with table() function:\n\ntable(\"island\" = penguins$island) # be careful it ignores NA values!\n\nisland\n   Biscoe     Dream Torgersen \n      168       124        52 \n\n\nHow do we remove the penguins with missing bill_length_mm values? Within the tidyverse, dplyr is a package with functions for data wrangling (because it’s within the tidyverse that means you do NOT have to load it separately with library(dplyr) after using library(tidyverse)!). It’s considered a “grammar of data manipulation”: dplyr functions are verbs, datasets are nouns.\nWe can filter() our dataset to choose observations meeting conditions:\n\nclean_penguins &lt;- filter(penguins, !is.na(bill_length_mm))\n# Use help(is.na) to see what it returns. And then observe \n# that the ! operator means to negate what comes after it.\n# This means !TRUE == FALSE (i.e., opposite of TRUE is equal to FALSE).\nnrow(penguins) - nrow(clean_penguins) # Difference in rows\n\n[1] 2\n\n\nIf we want to only consider a subset of columns in our data, we can select() variables of interest:\n\nsel_penguins &lt;- select(clean_penguins, species, island, bill_length_mm, flipper_length_mm)\nhead(sel_penguins, n = 3)\n\n# A tibble: 3 × 4\n  species island    bill_length_mm flipper_length_mm\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;             &lt;int&gt;\n1 Adelie  Torgersen           39.1               181\n2 Adelie  Torgersen           39.5               186\n3 Adelie  Torgersen           40.3               195\n\n\nWe can arrange() our dataset to sort observations by variables:\n\nbill_penguins &lt;- arrange(sel_penguins, desc(bill_length_mm)) # use desc() for descending order\nhead(bill_penguins, n = 3)\n\n# A tibble: 3 × 4\n  species   island bill_length_mm flipper_length_mm\n  &lt;fct&gt;     &lt;fct&gt;           &lt;dbl&gt;             &lt;int&gt;\n1 Gentoo    Biscoe           59.6               230\n2 Chinstrap Dream            58                 181\n3 Gentoo    Biscoe           55.9               228\n\n\nWe can summarize() our dataset to one row based on functions of variables:\n\nsummarize(bill_penguins, max(bill_length_mm), median(flipper_length_mm))\n\n# A tibble: 1 × 2\n  `max(bill_length_mm)` `median(flipper_length_mm)`\n                  &lt;dbl&gt;                       &lt;dbl&gt;\n1                  59.6                         197\n\n\nWe can mutate() our dataset to create new variables:\n\nnew_penguins &lt;- mutate(bill_penguins, \n                       bill_flipper_ratio = bill_length_mm / flipper_length_mm,\n                       flipper_bill_ratio = flipper_length_mm / bill_length_mm)\nhead(new_penguins, n = 1)\n\n# A tibble: 1 × 6\n  species island bill_length_mm flipper_length_mm bill_flipper_ratio\n  &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;             &lt;int&gt;              &lt;dbl&gt;\n1 Gentoo  Biscoe           59.6               230              0.259\n# ℹ 1 more variable: flipper_bill_ratio &lt;dbl&gt;\n\n\nHow do we perform several of these actions?\n\nhead(arrange(select(mutate(filter(penguins, !is.na(flipper_length_mm)), bill_flipper_ratio = bill_length_mm / flipper_length_mm), species, island, bill_flipper_ratio), desc(bill_flipper_ratio)), n = 1)\n\n# A tibble: 1 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n\n\nThat’s awfully annoying to do, and also difficult to read…"
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#enter-the-pipeline",
+    "href": "demos/01-into-tidyverse.html#enter-the-pipeline",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Enter the pipeline",
+    "text": "Enter the pipeline\nThe |&gt; (pipe) operator is used in the to chain commands together. Note: you can also use the tidyverse pipe %&gt;% (from magrittr), but |&gt; is the built-in pipe that is native to new versions of R without loading the tidyverse.\n|&gt; directs the data analyis pipeline: output of one function pipes into input of the next function\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  mutate(bill_flipper_ratio = bill_length_mm / flipper_length_mm) |&gt;\n  select(species, island, bill_flipper_ratio) |&gt;\n  arrange(desc(bill_flipper_ratio)) |&gt;\n  head(n = 5)\n\n# A tibble: 5 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n2 Chinstrap Dream               0.275\n3 Chinstrap Dream               0.270\n4 Chinstrap Dream               0.270\n5 Chinstrap Dream               0.268"
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#more-pipeline-actions",
+    "href": "demos/01-into-tidyverse.html#more-pipeline-actions",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "More pipeline actions!",
+    "text": "More pipeline actions!\nInstead of head(), we can slice() our dataset to choose the observations based on the position\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  mutate(bill_flipper_ratio = bill_length_mm / flipper_length_mm) |&gt;\n  select(species, island, bill_flipper_ratio) |&gt;\n  arrange(desc(bill_flipper_ratio)) |&gt;\n  slice(c(1, 2, 10, 100))\n\n# A tibble: 4 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n2 Chinstrap Dream               0.275\n3 Chinstrap Dream               0.264\n4 Gentoo    Biscoe              0.227"
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#grouped-operations",
+    "href": "demos/01-into-tidyverse.html#grouped-operations",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Grouped operations",
+    "text": "Grouped operations\nWe group_by() to split our dataset into groups based on a variable’s values\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  group_by(island) |&gt;\n  summarize(n_penguins = n(), #counts number of rows in group\n            ave_flipper_length = mean(flipper_length_mm), \n            sum_bill_depth = sum(bill_depth_mm),\n            .groups = \"drop\") |&gt; # all levels of grouping dropping\n  arrange(desc(n_penguins)) |&gt;\n  slice(1:5)\n\n# A tibble: 3 × 4\n  island    n_penguins ave_flipper_length sum_bill_depth\n  &lt;fct&gt;          &lt;int&gt;              &lt;dbl&gt;          &lt;dbl&gt;\n1 Biscoe           167               210.          2651.\n2 Dream            124               193.          2275.\n3 Torgersen         51               191.           940.\n\n\n\ngroup_by() is only useful in a pipeline (e.g. with summarize()), and pay attention to its behavior\nspecify the .groups field to decide if observations remain grouped or not after summarizing (you can also use ungroup() for this as well)"
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#putting-it-all-together",
+    "href": "demos/01-into-tidyverse.html#putting-it-all-together",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Putting it all together…",
+    "text": "Putting it all together…\nAs your own exercise, create a tidy dataset where each row == an island with the following variables:\n\nnumber of penguins,\nnumber of unique species on the island (see help(unique)),\naverage body_mass_g,\nvariance (see help(var)) of bill_depth_mm\n\nPrior to making those variables, make sure to filter missings and also only consider female penguins. Then arrange the islands in order of the average body_mass_g:\n\n# INSERT YOUR CODE HERE"
+  },
+  {
+    "objectID": "demos.html",
+    "href": "demos.html",
+    "title": "Demos",
+    "section": "",
+    "text": "Demo\nDate\nTitle\nDemo file\n\n\n\n\n1\nJan 13\nInto the tidyverse\nHTML",
+    "crumbs": [
+      "Demos"
+    ]
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#announcements-previously-and-today",
+    "href": "lectures/02-1dcat.html#announcements-previously-and-today",
+    "title": "1D Categorical Data",
+    "section": "Announcements, previously, and today…",
+    "text": "Announcements, previously, and today…\n\nComplete HW0 by tonight! Confirms you have everything installed and can render .qmd files to PDF via tinytex\nOffice hours will be announced soon… (I’ll be in my office BH 132D today at 2:30 PM)\n\n\n\nDiscussed the importance of data visualization in your role as a statistician / data scientist\nIntroduced the Grammar of Graphics as a framework for building visualizations\nDiscussed historical examples and principles of visualization to keep in mind\n\n\n\nTODAY: 1D Categorical Data\n\nBriefly talk about variable types\nWalk through different graphs for visualizing 1D categorical data"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#reminder-tidy-data-structure",
+    "href": "lectures/02-1dcat.html#reminder-tidy-data-structure",
+    "title": "1D Categorical Data",
+    "section": "Reminder: tidy data structure",
+    "text": "Reminder: tidy data structure\nData are often stored in tabular (or matrix) form:\n\n\n# A tibble: 5 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;\n\n\n\nEach row == unit of observation, e.g., penguins\nEach column == variable/measurement about each observation, e.g., flipper_length_mm\nKnown as a data.frame in base R and tibble in the tidyverse\nTwo main variable types: quantitative and categorical"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#variable-types",
+    "href": "lectures/02-1dcat.html#variable-types",
+    "title": "1D Categorical Data",
+    "section": "Variable Types",
+    "text": "Variable Types\n\nMost visualizations are about understanding the distribution of different variables (which are stored in columns of tabular/matrix data)\nThe variable type often dictates the type of graphs you should make\nThere are two main types of variables:"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#d-categorical-data",
+    "href": "lectures/02-1dcat.html#d-categorical-data",
+    "title": "1D Categorical Data",
+    "section": "1D Categorical Data",
+    "text": "1D Categorical Data\nTwo different versions of categorical:\n\nNominal: coded with arbitrary numbers, i.e., no real order\n\n\nExamples: race, gender, species, text\n\n\n\nOrdinal: levels with a meaningful order\n\n\nExamples: education level, grades, ranks\n\n\n\nNOTE: R and ggplot considers a categorical variable to be factor\n\nR will always treat categorical variables as ordinal! Defaults to alphabetical…\nWe will need to manually define the factor levels"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#d-categorical-data-structure",
+    "href": "lectures/02-1dcat.html#d-categorical-data-structure",
+    "title": "1D Categorical Data",
+    "section": "1D categorical data structure",
+    "text": "1D categorical data structure\n\nObservations are collected into a vector \\((x_1, \\dots, x_n)\\), where \\(n\\) is number of observations\nEach observed value \\(x_i\\) can only belong to one category level \\(\\{ C_1, C_2, \\dots \\}\\)\n\n\nLook at penguins data from the palmerpenguins package, focusing on species:\n\nlibrary(palmerpenguins)\nhead(penguins$species)\n\n[1] Adelie Adelie Adelie Adelie Adelie Adelie\nLevels: Adelie Chinstrap Gentoo\n\n\nHow could we summarize these data? What information would you report?\n\n\n\ntable(penguins$species)\n\n\n   Adelie Chinstrap    Gentoo \n      152        68       124"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#area-plots",
+    "href": "lectures/02-1dcat.html#area-plots",
+    "title": "1D Categorical Data",
+    "section": "Area plots",
+    "text": "Area plots\n\n\nEach area corresponds to one categorical level\nArea is proportional to counts/frequencies/percentages\nDifferences between areas correspond to differences between counts/frequencies/percentages"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#bar-charts",
+    "href": "lectures/02-1dcat.html#bar-charts",
+    "title": "1D Categorical Data",
+    "section": "Bar charts",
+    "text": "Bar charts\n\nlibrary(tidyverse)\npenguins |&gt;\n  ggplot(aes(x = species)) +\n  geom_bar()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#behind-the-scenes-statistical-summaries",
+    "href": "lectures/02-1dcat.html#behind-the-scenes-statistical-summaries",
+    "title": "1D Categorical Data",
+    "section": "Behind the scenes: statistical summaries",
+    "text": "Behind the scenes: statistical summaries\n\nFrom Chapter 3 of R for Data Science"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#spine-charts---height-version",
+    "href": "lectures/02-1dcat.html#spine-charts---height-version",
+    "title": "1D Categorical Data",
+    "section": "Spine charts - height version",
+    "text": "Spine charts - height version\n\npenguins |&gt;\n  ggplot(aes(fill = species, x = \"\")) +\n  geom_bar()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#spine-charts---width-version",
+    "href": "lectures/02-1dcat.html#spine-charts---width-version",
+    "title": "1D Categorical Data",
+    "section": "Spine charts - width version",
+    "text": "Spine charts - width version\n\npenguins |&gt;\n  ggplot(aes(fill = species, x = \"\")) +\n  geom_bar() +\n  coord_flip()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#so-you-want-to-make-pie-charts",
+    "href": "lectures/02-1dcat.html#so-you-want-to-make-pie-charts",
+    "title": "1D Categorical Data",
+    "section": "So you want to make pie charts…",
+    "text": "So you want to make pie charts…\n\npenguins |&gt; \n  ggplot(aes(fill = species, x = \"\")) + \n  geom_bar(aes(y = after_stat(count))) +\n  coord_polar(theta = \"y\") +\n  theme_void()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#friends-dont-let-friends-make-pie-charts",
+    "href": "lectures/02-1dcat.html#friends-dont-let-friends-make-pie-charts",
+    "title": "1D Categorical Data",
+    "section": "Friends Don’t Let Friends Make Pie Charts",
+    "text": "Friends Don’t Let Friends Make Pie Charts"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#waffle-charts-are-cooler-anyway",
+    "href": "lectures/02-1dcat.html#waffle-charts-are-cooler-anyway",
+    "title": "1D Categorical Data",
+    "section": "Waffle charts are cooler anyway…",
+    "text": "Waffle charts are cooler anyway…\n\nlibrary(waffle)\npenguins |&gt;\n  group_by(species) |&gt; \n  summarize(count = n(), .groups = \"drop\") |&gt; \n  ggplot(aes(fill = species, values = count)) +\n  geom_waffle(n_rows = 20, color = \"white\", flip = TRUE) +\n  coord_equal() +\n  theme_void()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#florence-nightingales-rose-diagram",
+    "href": "lectures/02-1dcat.html#florence-nightingales-rose-diagram",
+    "title": "1D Categorical Data",
+    "section": "Florence Nightingale’s Rose Diagram",
+    "text": "Florence Nightingale’s Rose Diagram"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#rose-diagrams",
+    "href": "lectures/02-1dcat.html#rose-diagrams",
+    "title": "1D Categorical Data",
+    "section": "Rose diagrams",
+    "text": "Rose diagrams\n\npenguins |&gt; \n  ggplot(aes(x = species)) + \n  geom_bar(fill = \"darkblue\") +\n  coord_polar() +\n  scale_y_sqrt()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#recap-and-next-steps",
+    "href": "lectures/02-1dcat.html#recap-and-next-steps",
+    "title": "1D Categorical Data",
+    "section": "Recap and next steps",
+    "text": "Recap and next steps\n\n\n1D Categorical Data: look at counts, frequencies, percentages\nArea plots, where area \\(\\propto\\) counts/frequencies/percentages:\n\nBar charts (you should pretty much always just make a bar chart)\nSpine charts (will be more useful with more variables)\nPie charts (DON’T DO IT)\nRose diagrams (temporal or directional context can justify usage)\n\n\n\n\n\n\nComplete HW0 by TONIGHT! Confirms you have everything installed and can render .qmd files to PDF via tinytex\nHW1 is due in two weeks, no class on Monday\n\n\n\n\n\n\nNext time: quantify and display uncertainty for 1D categorical data\nRecommended reading:\n\nCW Chapter 10 Visualizing proportions, CW Chapter 16.2 Visualizing the uncertainty of point estimates, CW Chapter 11 Visualizing nested proportions"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#announcements-previously-and-today",
+    "href": "lectures/05-2dcat.html#announcements-previously-and-today",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "Announcements, previously, and today…",
+    "text": "Announcements, previously, and today…\n\n\nHW1 is due TONIGHT by 11:59 PM\nYou have Lab 3 again on Friday\n\nOffice hours schedule:\n\nMy office hours (BH 132D): Wednesdays and Thursdays @ 2 PM\nAnna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM\n\n\n\n\n\nDiscussed how similar looking graphics can have very different statistical results (thinking about power)\nDiscussed the challenges of multiple testing\n\n\n\n\n\nTODAY:\n\nVisuals for 2D categorical data\nHow do we visualize inference for 2D categorical data?"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#d-categorical-basics",
+    "href": "lectures/05-2dcat.html#d-categorical-basics",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "2D categorical basics",
+    "text": "2D categorical basics"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#d-categorical-basics-1",
+    "href": "lectures/05-2dcat.html#d-categorical-basics-1",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "2D categorical basics",
+    "text": "2D categorical basics\n\naddmargins(table(\"Species\" = penguins$species, \"Island\" = penguins$island))\n\n           Island\nSpecies     Biscoe Dream Torgersen Sum\n  Adelie        44    56        52 152\n  Chinstrap      0    68         0  68\n  Gentoo       124     0         0 124\n  Sum          168   124        52 344\n\n\n\nColumn and row sums: marginal distributions\nValues within rows: conditional distribution for Island given Species\nValues within columns: conditional distribution for Species given Island\nBottom right: total number of observations"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#connecting-distributions-to-visualizations",
+    "href": "lectures/05-2dcat.html#connecting-distributions-to-visualizations",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "Connecting distributions to visualizations",
+    "text": "Connecting distributions to visualizations\nFive distributions for two categorical variables \\(A\\) and \\(B\\):\n\nMarginals: \\(P(A)\\) and \\(P(B)\\)\nConditionals: \\(P(A | B)\\) and \\(P(B|A)\\)\nJoint: \\(P(A, B)\\)\n\nWe use bar charts to visualize marginal distributions for categorical variables…\n\nAnd we’ll use more bar charts to visualize conditional and joint distributions!"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#stacked-bar-charts---a-bar-chart-of-spine-charts",
+    "href": "lectures/05-2dcat.html#stacked-bar-charts---a-bar-chart-of-spine-charts",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "Stacked bar charts - a bar chart of spine charts",
+    "text": "Stacked bar charts - a bar chart of spine charts\n\npenguins |&gt;\n  ggplot(aes(x = species, fill = island)) +\n  geom_bar() + \n  theme_bw()\n\n\n\n\nEasy to see marginal of species, i.e., \\(P(\\) x \\()\\)\nCan see conditional of island | species, i.e., \\(P(\\) fill | x \\()\\)\nHarder to see conditional of species | island, i.e., \\(P(\\) x | fill \\()\\)"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#side-by-side-bar-charts",
+    "href": "lectures/05-2dcat.html#side-by-side-bar-charts",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "Side-by-side bar charts",
+    "text": "Side-by-side bar charts\n\npenguins |&gt;\n  ggplot(aes(x = species, fill = island)) + \n  geom_bar(position = \"dodge\") +\n  theme_bw()\n\n\n\n\nEasy to see conditional of island | species, i.e., \\(P(\\) fill | x \\()\\)\nCan see conditional of species | island, i.e., \\(P(\\) x | fill \\()\\)"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#side-by-side-bar-charts-1",
+    "href": "lectures/05-2dcat.html#side-by-side-bar-charts-1",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "Side-by-side bar charts",
+    "text": "Side-by-side bar charts\n\npenguins |&gt;\n  ggplot(aes(x = species, fill = island)) + \n  geom_bar(position = position_dodge(preserve = \"single\")) +\n  theme_bw()\n\n\n\n\nEasy to see conditional of island | species, i.e., \\(P(\\) fill | x \\()\\)\nCan see conditional of species | island, i.e., \\(P(\\) x | fill \\()\\)"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#complete-missing-values-to-preserve-location",
+    "href": "lectures/05-2dcat.html#complete-missing-values-to-preserve-location",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "Complete missing values to preserve location",
+    "text": "Complete missing values to preserve location\n\npenguins |&gt;\n  count(species, island) |&gt;\n  complete(species = unique(species), island = unique(island), \n           fill = list(n = 0)) |&gt;\n  ggplot(aes(x = species, y = n, fill = island)) + \n  geom_bar(stat = \"identity\", position = \"dodge\") +\n  theme_bw()"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#what-do-you-prefer",
+    "href": "lectures/05-2dcat.html#what-do-you-prefer",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "What do you prefer?",
+    "text": "What do you prefer?"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#chi-squared-test-for-1d-categorical-data",
+    "href": "lectures/05-2dcat.html#chi-squared-test-for-1d-categorical-data",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "Chi-squared test for 1D categorical data:",
+    "text": "Chi-squared test for 1D categorical data:\n\n\nNull hypothesis \\(H_0\\): \\(p_1 = p_2 = \\dots = p_K\\), compute the test statistic:\n\n\\[\n\\chi^2 = \\sum_{j=1}^K \\frac{(O_j - E_j)^2}{E_j}\n\\]\n\n\\(O_j\\): observed counts in category \\(j\\)\n\\(E_j\\): expected counts under \\(H_0\\), i.e., each category is equally to occur \\(n / K = p_1 = p_2 = \\dots = p_K\\)\n\n\n\n\nchisq.test(table(penguins$species))\n\n\n    Chi-squared test for given probabilities\n\ndata:  table(penguins$species)\nX-squared = 31.907, df = 2, p-value = 1.179e-07"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#inference-for-2d-categorical-data",
+    "href": "lectures/05-2dcat.html#inference-for-2d-categorical-data",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "Inference for 2D categorical data",
+    "text": "Inference for 2D categorical data\n\nAgain we use the chi-squared test:\n\nNull hypothesis \\(H_0\\): variables \\(A\\) and \\(B\\) are independent, compute the test statistic:\n\n\\[\\chi^2 = \\sum_{i}^{K_A} \\sum_{j}^{K_B} \\frac{(O_{ij} - E_{ij})^2}{E_{ij}}\\]\n\n\\(O_{ij}\\): observed counts in contingency table\n\\(E_{ij}\\): expected counts under \\(H_0\\)\n\n\\[\n\\begin{aligned}\nE_{ij} &= n \\cdot P(A = a_i, B = b_j) \\\\\n&= n \\cdot P(A = a_i) P(B = b_j) \\\\\n&= n \\cdot \\left( \\frac{n_{i \\cdot}}{n} \\right) \\left( \\frac{ n_{\\cdot j}}{n} \\right)\n\\end{aligned}\n\\]"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#inference-for-2d-categorical-data-1",
+    "href": "lectures/05-2dcat.html#inference-for-2d-categorical-data-1",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "Inference for 2D categorical data",
+    "text": "Inference for 2D categorical data\n\nAgain we use the chi-squared test:\n\nNull hypothesis \\(H_0\\): variables \\(A\\) and \\(B\\) are independent, compute the test statistic:\n\n\\[\\chi^2 = \\sum_{i}^{K_A} \\sum_{j}^{K_B} \\frac{(O_{ij} - E_{ij})^2}{E_{ij}}\\]\n\n\\(O_{ij}\\): observed counts in contingency table\n\\(E_{ij}\\): expected counts under \\(H_0\\)\n\n\n\nchisq.test(table(penguins$species, penguins$island))\n\n\n    Pearson's Chi-squared test\n\ndata:  table(penguins$species, penguins$island)\nX-squared = 299.55, df = 4, p-value &lt; 2.2e-16"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#visualize-independence-test-with-mosaic-plots",
+    "href": "lectures/05-2dcat.html#visualize-independence-test-with-mosaic-plots",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "Visualize independence test with mosaic plots",
+    "text": "Visualize independence test with mosaic plots\n\nTwo variables are independent if knowing the level of one tells us nothing about the other\n\ni.e. \\(P(A | B) = P(A)\\), and that \\(P(A, B) = P(A) \\times P(B)\\)\n\nCreate a mosaic plot using base R\n\n\nmosaicplot(table(penguins$species, penguins$island))"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#shade-by-pearson-residuals",
+    "href": "lectures/05-2dcat.html#shade-by-pearson-residuals",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "Shade by Pearson residuals",
+    "text": "Shade by Pearson residuals\n\n\nThe test statistic is:\n\n\\[\\chi^2 = \\sum_{i}^{K_A} \\sum_{j}^{K_B} \\frac{(O_{ij} - E_{ij})^2}{E_{ij}}\\]\n\nDefine the Pearson residuals as:\n\n\\[r_{ij} = \\frac{O_{ij} - E_{ij}}{\\sqrt{E_{ij}}}\\]\n\nSide-note: In general, Pearson residuals are \\(\\frac{\\text{residuals}}{\\sqrt{\\text{variance}}}\\)\n\n\n\n\n\n\\(r_{ij} \\approx 0 \\rightarrow\\) observed counts are close to expected counts\n\\(|r_{ij}| &gt; 2 \\rightarrow\\) “significant” at level \\(\\alpha = 0.05\\).\nVery positive \\(r_{ij} \\rightarrow\\) more than expected, while very negative \\(r_{ij} \\rightarrow\\) fewer than expected\nColor by Pearson residuals to tell us which combos are much bigger/smaller than expected."
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#titanic-dataset-example",
+    "href": "lectures/05-2dcat.html#titanic-dataset-example",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "Titanic Dataset Example",
+    "text": "Titanic Dataset Example\n\ntitanic &lt;- read_csv(\"https://raw.githubusercontent.com/ryurko/DataViz-Class-Data/main/titanic.csv\")\n\nQuestion: Does survival (yes/no) depend on cabin (1st/2nd/3rd)?\n\ntable(\"Survived?\" = titanic$Survived, \"Class\" = titanic$Pclass)\n\n         Class\nSurvived?   1   2   3\n        0  64  90 270\n        1 120  83  85\n\n\n\n\nchisq.test(table(\"Survived?\" = titanic$Survived, \"Class\" = titanic$Pclass))\n\n\n    Pearson's Chi-squared test\n\ndata:  table(`Survived?` = titanic$Survived, Class = titanic$Pclass)\nX-squared = 91.081, df = 2, p-value &lt; 2.2e-16\n\n\nConclusion: Class and survival are dependent - but how?"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#guardian-1000-songs-to-hear-before-you-die",
+    "href": "lectures/05-2dcat.html#guardian-1000-songs-to-hear-before-you-die",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "Guardian: 1000 songs to hear before you die",
+    "text": "Guardian: 1000 songs to hear before you die"
+  },
+  {
+    "objectID": "lectures/05-2dcat.html#recap-and-next-steps",
+    "href": "lectures/05-2dcat.html#recap-and-next-steps",
+    "title": "Visualizations and Inference for 2D Categorical Data",
+    "section": "Recap and next steps",
+    "text": "Recap and next steps\n\n\nFor 2D categorical data we create visualizations for marginal, conditional, and joint distributions\nCan create stacked and side-by-side bar charts to visualize 2D categorical data\nPerform 2D Chi-squared test to test if two categorical variables are associated with each other\nCreate mosaic plots to visualize 2D categorical data\nShade mosaic plot tiles by Pearson residuals to see what drives association between two categorical variables (if any)\n\n\n\n\n\nHW1 is due TONIGHT and you have Lab 3 on Friday!\nNext time: Visualizing 1D quantitative data\nRecommended reading: CW Chapter 11 Visualizing nested proportions"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#announcements-previously-and-today",
+    "href": "lectures/06-1dquant.html#announcements-previously-and-today",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "Announcements, previously, and today…",
+    "text": "Announcements, previously, and today…\n\n\nHW2 is due Wednesday by 11:59 PM\nYou have Lab 4 again on Friday\n\nOffice hours schedule:\n\nMy office hours (BH 132D): Wednesdays and Thursdays @ 2 PM\nAnna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM\n\n\n\n\n\nCan create stacked and side-by-side bar charts to visualize 2D categorical data\nPerform 2D Chi-squared test to test if two categorical variables are associated with each other\nCreate mosaic plots to visualize 2D categorical data, shade by Pearson residuals\n\n\n\n\n\nTODAY:\n\nHow do we visualize 1D quantitative data?\nFor this week, we’ll focus on visualization issues and move to inference next week"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#d-quantitative-data",
+    "href": "lectures/06-1dquant.html#d-quantitative-data",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "1D Quantitative Data",
+    "text": "1D Quantitative Data\nObservations are collected into a vector \\((x_1, \\dots, x_n)\\), \\(x_i \\in \\mathbb{R}\\) (or \\(\\mathbb{R}^+\\), \\(\\mathbb{Z}\\))\nCommon summary statistics for 1D quantitative data:\n\n\nCenter: Mean, median, weighted mean, mode\n\nRelated to the first moment, i.e., \\(\\mathbb{E}[X]\\)\n\n\n\n\n\nSpread: Variance, range, min/max, quantiles, IQR\n\nRelated to the second moment, i.e., \\(\\mathbb{E}[X^2]\\)\n\n\n\n\n\nShape: symmetry, skew, kurtosis (“peakedness”)\n\nRelated to higher order moments, i.e., skewness is \\(\\mathbb{E}[X^3]\\), kurtosis is \\(\\mathbb{E}[X^4]\\)\n\n\nCompute various statistics with summary(), mean(), median(), quantile(), range(), sd(), var(), etc."
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#box-plots-visualize-summary-statistics",
+    "href": "lectures/06-1dquant.html#box-plots-visualize-summary-statistics",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "Box plots visualize summary statistics",
+    "text": "Box plots visualize summary statistics\n\npenguins |&gt;\n  ggplot(aes(y = flipper_length_mm)) +\n  geom_boxplot(aes(x = \"\")) +\n  coord_flip()"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#histograms-display-1d-continuous-distributions",
+    "href": "lectures/06-1dquant.html#histograms-display-1d-continuous-distributions",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "Histograms display 1D continuous distributions",
+    "text": "Histograms display 1D continuous distributions\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm)) +\n  geom_histogram()"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#do-not-rely-on-box-plots",
+    "href": "lectures/06-1dquant.html#do-not-rely-on-box-plots",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "Do NOT rely on box plots…",
+    "text": "Do NOT rely on box plots…"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#simulate-from-mixture-of-normal-distributions",
+    "href": "lectures/06-1dquant.html#simulate-from-mixture-of-normal-distributions",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "Simulate from mixture of Normal distributions",
+    "text": "Simulate from mixture of Normal distributions\nWill sample 100 draws from \\(N(-1.5, 1)\\) and 100 draws from \\(N(1.5, 1)\\)"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#can-we-trust-the-default",
+    "href": "lectures/06-1dquant.html#can-we-trust-the-default",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "Can we trust the default?",
+    "text": "Can we trust the default?\n\nset.seed(2025)\nfake_data &lt;- \n  tibble(fake_x = c(rnorm(100, -1.5), rnorm(100, 1.5))) |&gt;\n  mutate(component = c(rep(\"left\", 100), rep(\"right\", 100)))\n\nfake_data |&gt;\n  ggplot(aes(x = fake_x)) +\n  geom_histogram() +\n  scale_x_continuous(limits = c(-5, 5))"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins",
+    "href": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "What happens as we change the number of bins?",
+    "text": "What happens as we change the number of bins?\n\nfake_data |&gt;\n  ggplot(aes(x = fake_x)) +\n  geom_histogram(bins = 15) +\n  scale_x_continuous(limits = c(-5, 5))"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins-1",
+    "href": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins-1",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "What happens as we change the number of bins?",
+    "text": "What happens as we change the number of bins?\n\nfake_data |&gt;\n  ggplot(aes(x = fake_x)) +\n  geom_histogram(bins = 60) +\n  scale_x_continuous(limits = c(-5, 5))"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins-2",
+    "href": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins-2",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "What happens as we change the number of bins?",
+    "text": "What happens as we change the number of bins?\n\nfake_data |&gt;\n  ggplot(aes(x = fake_x)) +\n  geom_histogram(bins = 5) +\n  scale_x_continuous(limits = c(-5, 5))"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins-3",
+    "href": "lectures/06-1dquant.html#what-happens-as-we-change-the-number-of-bins-3",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "What happens as we change the number of bins?",
+    "text": "What happens as we change the number of bins?\n\nfake_data |&gt;\n  ggplot(aes(x = fake_x)) +\n  geom_histogram(bins = 100) +\n  scale_x_continuous(limits = c(-5, 5))"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#variability-of-graphs---30-bins",
+    "href": "lectures/06-1dquant.html#variability-of-graphs---30-bins",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "Variability of graphs - 30 bins",
+    "text": "Variability of graphs - 30 bins\n\nset.seed(2025)\nfake_data &lt;- \n  tibble(fake_x = c(rnorm(100, -1.5), rnorm(100, 1.5))) |&gt;\n  mutate(component = c(rep(\"left\", 100), rep(\"right\", 100)))\n\nfake_data |&gt;\n  ggplot(aes(x = fake_x)) +\n  geom_histogram() +\n  scale_x_continuous(limits = c(-5, 5))"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#what-happens-with-a-different-sample",
+    "href": "lectures/06-1dquant.html#what-happens-with-a-different-sample",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "What happens with a different sample?",
+    "text": "What happens with a different sample?\n\nset.seed(1985)\nfake_data2 &lt;- \n  tibble(fake_x = c(rnorm(100, -1.5), rnorm(100, 1.5))) |&gt;\n  mutate(component = c(rep(\"left\", 100), rep(\"right\", 100)))\n\nfake_data2 |&gt;\n  ggplot(aes(x = fake_x)) +\n  geom_histogram() +\n  scale_x_continuous(limits = c(-5, 5))"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#variability-of-graphs---15-bins",
+    "href": "lectures/06-1dquant.html#variability-of-graphs---15-bins",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "Variability of graphs - 15 bins",
+    "text": "Variability of graphs - 15 bins"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#variability-of-graphs---a-few-bins",
+    "href": "lectures/06-1dquant.html#variability-of-graphs---a-few-bins",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "Variability of graphs - a few bins",
+    "text": "Variability of graphs - a few bins"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#variability-of-graphs---too-many-bins",
+    "href": "lectures/06-1dquant.html#variability-of-graphs---too-many-bins",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "Variability of graphs - too many bins",
+    "text": "Variability of graphs - too many bins"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#what-about-displaying-conditional-distributions",
+    "href": "lectures/06-1dquant.html#what-about-displaying-conditional-distributions",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "What about displaying conditional distributions?",
+    "text": "What about displaying conditional distributions?\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm)) + \n  geom_histogram(aes(fill = species))"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#what-about-displaying-conditional-distributions-1",
+    "href": "lectures/06-1dquant.html#what-about-displaying-conditional-distributions-1",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "What about displaying conditional distributions?",
+    "text": "What about displaying conditional distributions?\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm)) + \n  geom_histogram(aes(fill = species),\n                 position = \"identity\", alpha = 0.3)"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#normalize-histogram-frequencies-with-density",
+    "href": "lectures/06-1dquant.html#normalize-histogram-frequencies-with-density",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "Normalize histogram frequencies with density",
+    "text": "Normalize histogram frequencies with density\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm)) + \n  geom_histogram(aes(y = after_stat(density), fill = species),\n                 position = \"identity\", alpha = 0.3)"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#can-use-density-curves-instead",
+    "href": "lectures/06-1dquant.html#can-use-density-curves-instead",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "Can use density curves instead",
+    "text": "Can use density curves instead\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm)) + \n  geom_density(aes(color = species))"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#we-should-not-fill-the-density-curves",
+    "href": "lectures/06-1dquant.html#we-should-not-fill-the-density-curves",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "We should NOT fill the density curves",
+    "text": "We should NOT fill the density curves\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm)) + \n  geom_density(aes(fill = species), alpha = .3)"
+  },
+  {
+    "objectID": "lectures/06-1dquant.html#recap-and-next-steps",
+    "href": "lectures/06-1dquant.html#recap-and-next-steps",
+    "title": "Visualizing 1D Quantitative Data",
+    "section": "Recap and next steps",
+    "text": "Recap and next steps\n\n\nVisualize 1D quantitative data to inspect center, spread, and shape\nBoxplots are only a display of summary statistics (i.e., they suck)\nHistograms display shape of the distribution, but comes with tradeoffs\nDensity curves provide an easy way to visualize conditional distributions\n\n\n\n\n\nHW2 is due Wednesday and you have Lab 4 on Friday\nNext time: Density estimation\nRecommended reading: CW Chapter 7 Visualizing distributions: Histograms and density plots"
   },
   {
     "objectID": "lectures/07-density-estimation.html#announcements-previously-and-today",

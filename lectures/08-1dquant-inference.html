@@ -10,8 +10,8 @@
   <meta name="generator" content="quarto-1.6.40">
 
   <meta name="author" content="Prof Ron Yurko">
-  <meta name="dcterms.date" content="2025-01-29">
-  <title>Statistical Graphics and Visualization 36-315 Spring 25 – Visualizations and Inference for 2D Categorical Data</title>
+  <meta name="dcterms.date" content="2025-02-10">
+  <title>Statistical Graphics and Visualization 36-315 Spring 25 – Graphical Inference for 1D Quantitative Data</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -195,7 +195,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Visualizations and Inference for 2D Categorical Data</h1>
+  <h1 class="title">Graphical Inference for 1D Quantitative Data</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -205,350 +205,345 @@ Prof Ron Yurko
 </div>
 </div>
 
-  <p class="date">2025-01-29</p>
+  <p class="date">2025-02-10</p>
 </section>
 <section id="announcements-previously-and-today" class="slide level2">
 <h2>Announcements, previously, and today…</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 75%;">
 <ul>
-<li><p><strong>HW1 is due TONIGHT by 11:59 PM</strong></p></li>
-<li><p><strong>You have Lab 3 again on Friday</strong></p></li>
+<li><strong>HW3 is due Wednesday by 11:59 PM and you have Lab 5 again on Friday!</strong></li>
 </ul>
 <p>Office hours schedule:</p>
 <ul>
 <li><p>My office hours (BH 132D): Wednesdays and Thursdays @ 2 PM</p></li>
-<li><p>Anna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM</p></li>
+<li><p>Anna (zoom): Mondays @ 2 PM; and Perry (zoom): <strong>Tuesdays</strong> @ 11 AM</p></li>
 </ul>
 </div>
 <div class="fragment">
-<div style="font-size: 80%;">
+<div style="font-size: 75%;">
 <ul>
-<li><p>Discussed how similar looking graphics can have very different statistical results (thinking about power)</p></li>
-<li><p>Discussed the challenges of multiple testing</p></li>
+<li><p>Smoothed densities are a flexible tool for visualizing 1D distribution</p></li>
+<li><p>There are two choices we need to make for kernel density estimation:</p>
+<ol type="1">
+<li><p>Bandwidth: Determines <em>smoothness</em> of distribution, usually data-driven choice</p></li>
+<li><p>Kernel: Determines how much <em>influence</em> each observation should have on each other during estimation, usually context driven</p></li>
+</ol></li>
+<li><p>Several other types of density-based displays: violins, ridges, beeswarm plots</p></li>
 </ul>
 </div>
 </div>
 <div class="fragment">
-<div style="font-size: 80%;">
+<div style="font-size: 75%;">
 <p><strong>TODAY:</strong></p>
 <ul>
-<li><p>Visuals for 2D categorical data</p></li>
-<li><p>How do we visualize inference for 2D categorical data?</p></li>
+<li><p>Graphical inference for 1D quantitative data</p></li>
+<li><p>Parametric density estimates</p></li>
+<li><p>ECDFs and Kolmogorov-Smirnov (KS) test</p></li>
 </ul>
 </div>
 </div>
 </section>
-<section id="d-categorical-basics" class="slide level2">
-<h2>2D categorical basics</h2>
-</section>
-<section id="d-categorical-basics-1" class="slide level2">
-<h2>2D categorical basics</h2>
+<section id="visualizing-conditional-distributions-violin-plots" class="slide level2">
+<h2>Visualizing conditional distributions: violin plots</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">addmargins</span>(<span class="fu">table</span>(<span class="st">"Species"</span> <span class="ot">=</span> penguins<span class="sc">$</span>species, <span class="st">"Island"</span> <span class="ot">=</span> penguins<span class="sc">$</span>island))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>           Island
-Species     Biscoe Dream Torgersen Sum
-  Adelie        44    56        52 152
-  Chinstrap      0    68         0  68
-  Gentoo       124     0         0 124
-  Sum          168   124        52 344</code></pre>
+<div class="sourceCode cell-code" id="cb1" data-code-line-numbers="2-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">y =</span> flipper_length_mm)) <span class="sc">+</span></span>
+<span id="cb1-3"><a></a>  <span class="fu">geom_violin</span>() <span class="sc">+</span></span>
+<span id="cb1-4"><a></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
+<img data-src="08-1dquant-inference_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="visualizing-conditional-distributions-violin-plots-1" class="slide level2">
+<h2>Visualizing conditional distributions: violin plots</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">y =</span> flipper_length_mm)) <span class="sc">+</span></span>
+<span id="cb2-3"><a></a>  <span class="fu">geom_violin</span>() <span class="sc">+</span> </span>
+<span id="cb2-4"><a></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> .<span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb2-5"><a></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
+<img data-src="08-1dquant-inference_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="visualizing-conditional-distributions-ggridges" class="slide level2">
+<h2>Visualizing conditional distributions: <a href="https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html"><code>ggridges</code></a></h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3" data-code-line-numbers="1,3-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">library</span>(ggridges)</span>
+<span id="cb3-2"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> species)) <span class="sc">+</span></span>
+<span id="cb3-4"><a></a>  <span class="fu">geom_density_ridges</span>(<span class="at">rel_min_height =</span> <span class="fl">0.01</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="08-1dquant-inference_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="gallery-of-ggridges-examples" class="slide level2">
+<h2><a href="https://wilkelab.org/ggridges/articles/gallery.html">Gallery of ggridges examples</a></h2>
+
+<img data-src="https://wilkelab.org/ggridges/articles/gallery_files/figure-html/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
+<section id="visualizing-conditional-distributions-ggbeeswarm" class="slide level2">
+<h2>Visualizing conditional distributions: <a href="https://github.com/eclarke/ggbeeswarm"><code>ggbeeswarm</code></a></h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="1,3-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">library</span>(ggbeeswarm)</span>
+<span id="cb4-2"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> species)) <span class="sc">+</span></span>
+<span id="cb4-4"><a></a>  <span class="fu">geom_beeswarm</span>(<span class="at">cex =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb4-5"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="08-1dquant-inference_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="kernel-density-estimation" class="slide level2">
+<h2>Kernel density estimation</h2>
+<p><strong>Goal</strong>: estimate PDF <span class="math inline">\(f(x)\)</span> for all possible values (assuming it is continuous &amp; smooth)</p>
+<p><span class="math display">\[
+\text{Kernel density estimate: } \hat{f}(x) = \frac{1}{n} \sum_{i=1}^n \frac{1}{h} K_h(x - x_i)
+\]</span></p>
+<div style="font-size: 75%;">
 <ul>
-<li><p>Column and row sums: marginal distributions</p></li>
-<li><p>Values within rows: conditional distribution for <code>Island</code> given <code>Species</code></p></li>
-<li><p>Values within columns: conditional distribution for <code>Species</code> given <code>Island</code></p></li>
-<li><p>Bottom right: total number of observations</p></li>
+<li><p><span class="math inline">\(n =\)</span> sample size, <span class="math inline">\(x =\)</span> new point to estimate <span class="math inline">\(f(x)\)</span> (does NOT have to be in dataset!)</p></li>
+<li><p><span class="math inline">\(h =\)</span> <strong>bandwidth</strong>, analogous to histogram bin width, ensures <span class="math inline">\(\hat{f}(x)\)</span> integrates to 1</p></li>
+<li><p><span class="math inline">\(x_i =\)</span> <span class="math inline">\(i\)</span>th observation in dataset</p></li>
+<li><p><span class="math inline">\(K_h(x - x_i)\)</span> is the <strong>Kernel</strong> function, creates <strong>weight</strong> given distance of <span class="math inline">\(i\)</span>th observation from new point</p>
+<ul>
+<li><p>as <span class="math inline">\(|x - x_i| \rightarrow \infty\)</span> then <span class="math inline">\(K_h(x - x_i) \rightarrow 0\)</span>, i.e.&nbsp;further apart <span class="math inline">\(i\)</span>th row is from <span class="math inline">\(x\)</span>, smaller the weight</p></li>
+<li><p>as <strong>bandwidth</strong> <span class="math inline">\(h \uparrow\)</span> weights are more evenly spread out (as <span class="math inline">\(h \downarrow\)</span> more concentrated around <span class="math inline">\(x\)</span>)</p></li>
+<li><p>typically use <a href="https://en.wikipedia.org/wiki/Normal_distribution"><strong>Gaussian</strong> / Normal</a> kernel: <span class="math inline">\(\propto e^{-(x - x_i)^2 / 2h^2}\)</span></p></li>
+<li><p><span class="math inline">\(K_h(x - x_i)\)</span> is large when <span class="math inline">\(x_i\)</span> is close to <span class="math inline">\(x\)</span></p></li>
+</ul></li>
 </ul>
+</div>
 </section>
-<section id="connecting-distributions-to-visualizations" class="slide level2">
-<h2>Connecting distributions to visualizations</h2>
-<p>Five distributions for two categorical variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>:</p>
-<ul>
-<li><p><strong>Marginals</strong>: <span class="math inline">\(P(A)\)</span> and <span class="math inline">\(P(B)\)</span></p></li>
-<li><p><strong>Conditionals</strong>: <span class="math inline">\(P(A | B)\)</span> and <span class="math inline">\(P(B|A)\)</span></p></li>
-<li><p><strong>Joint</strong>: <span class="math inline">\(P(A, B)\)</span></p></li>
-</ul>
-<p>We use bar charts to visualize marginal distributions for categorical variables…</p>
+<section id="from-the-pdf-to-the-cdf" class="slide level2">
+<h2>From the PDF to the CDF</h2>
+<div style="font-size: 80%;">
+<p><strong>Probability that continuous variable <span class="math inline">\(X\)</span> takes a particular value is 0</strong></p>
+<p>e.g., <span class="math inline">\(P\)</span> (<code>flipper_length_mm</code> <span class="math inline">\(= 200\)</span>) <span class="math inline">\(= 0\)</span></p>
+<p>Instead we use the <strong>probability density function (PDF)</strong> to provide a <strong>relative likelihood</strong></p>
+</div>
 <div class="fragment">
-<p><strong>And we’ll use more bar charts to visualize conditional and joint distributions!</strong></p>
+<div style="font-size: 80%;">
+<p>For continuous variables we can use the <strong>cumulative distribution function (CDF)</strong>,</p>
+<p><span class="math display">\[
+F(x) = P(X \leq x)
+\]</span></p>
 </div>
-</section>
-<section id="stacked-bar-charts---a-bar-chart-of-spine-charts" class="slide level2">
-<h2>Stacked bar charts - a bar chart of spine charts</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span></span>
-<span id="cb3-3"><a></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span> </span>
-<span id="cb3-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
+<div class="fragment">
+<div style="font-size: 80%;">
+<p>For <span class="math inline">\(n\)</span> observations we can easily compute the <strong>Empirical CDF (ECDF)</strong>:</p>
+<p><span class="math display">\[\hat{F}_n(x)  = \frac{\text{# obs. with variable} \leq x}{n} = \frac{1}{n} \sum_{i=1}^{n}1(x_i \leq x)\]</span></p>
 <ul>
-<li><p>Easy to see marginal of <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Harder to see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
+<li>where <span class="math inline">\(1()\)</span> is the indicator function, i.e.&nbsp;<code>ifelse(x_i &lt;= x, 1, 0)</code></li>
 </ul>
 </div>
-</section>
-<section id="side-by-side-bar-charts" class="slide level2">
-<h2>Side-by-side bar charts</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb4-3"><a></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb4-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
-<ul>
-<li><p>Easy to see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
-</ul>
 </div>
 </section>
-<section id="side-by-side-bar-charts-1" class="slide level2">
-<h2>Side-by-side bar charts</h2>
+<section id="display-full-distribution-with-ecdf-plot" class="slide level2">
+<h2>Display full distribution with ECDF plot</h2>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb5" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb5-3"><a></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">preserve =</span> <span class="st">"single"</span>)) <span class="sc">+</span></span>
+<span id="cb5-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm)) <span class="sc">+</span> </span>
+<span id="cb5-3"><a></a>  <span class="fu">stat_ecdf</span>() <span class="sc">+</span></span>
 <span id="cb5-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
-<ul>
-<li><p>Easy to see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
-</ul>
-</div>
-</section>
-<section id="complete-missing-values-to-preserve-location" class="slide level2">
-<h2><a href="https://tidyr.tidyverse.org/reference/complete.html">Complete</a> missing values to preserve location</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6" data-code-line-numbers="2-6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a></a>  <span class="fu">count</span>(species, island) <span class="sc">|&gt;</span></span>
-<span id="cb6-3"><a></a>  <span class="fu">complete</span>(<span class="at">species =</span> <span class="fu">unique</span>(species), <span class="at">island =</span> <span class="fu">unique</span>(island), </span>
-<span id="cb6-4"><a></a>           <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">n =</span> <span class="dv">0</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">y =</span> n, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb6-6"><a></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb6-7"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<img data-src="08-1dquant-inference_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="whats-the-relationship-between-these-two" class="slide level2">
+<h2>What’s the relationship between these two?</h2>
 
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="what-do-you-prefer" class="slide level2">
-<h2>What do you prefer?</h2>
-<div>
-
-</div>
-<div class="cell quarto-layout-panel" data-layout-align="center" data-layout-ncol="2">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<img data-src="08-1dquant-inference_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="comparing-to-theoretical-distributions" class="slide level2">
+<h2>Comparing to theoretical distributions</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+<p><img data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Normal_Distribution_PDF.svg/2560px-Normal_Distribution_PDF.svg.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
 </figure>
 </div>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+</div><div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-7-2.png" class="quarto-figure quarto-figure-center" width="960"></p>
+<p><img data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Normal_Distribution_CDF.svg/2560px-Normal_Distribution_CDF.svg.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
 </figure>
 </div>
-</div>
-</div>
-</div>
+</div></div>
 </section>
-<section id="chi-squared-test-for-1d-categorical-data" class="slide level2">
-<h2>Chi-squared test for 1D categorical data:</h2>
-<div style="font-size: 75%;">
+<section id="one-sample-kolmogorov-smirnov-test" class="slide level2">
+<h2>One-Sample Kolmogorov-Smirnov Test</h2>
 <ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: <span class="math inline">\(p_1 = p_2 = \dots = p_K\)</span>, compute the test statistic:</li>
+<li><p>We compare the ECDF <span class="math inline">\(\hat{F}(x)\)</span> to a theoretical distribution’s CDF <span class="math inline">\(F(x)\)</span></p></li>
+<li><p>The one sample KS test statistic is: <span class="math inline">\(\text{max}_x |\hat{F}(x) - F(x)|\)</span></p></li>
+</ul>
+
+<img data-src="https://upload.wikimedia.org/wikipedia/commons/c/cf/KS_Example.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
+<section id="parametric-density-estimation" class="slide level2">
+<h2>Parametric Density Estimation</h2>
+<ul>
+<li><p>Instead of trying to estimate the whole <span class="math inline">\(f(x)\)</span> non-parametrically, we can assume a particular <span class="math inline">\(f(x)\)</span> and estimate its parameters</p></li>
+<li><p>For example, assume <span class="math inline">\(X_i \sim N(\mu, \sigma^2)\)</span>. Then estimate the parameters:</p></li>
 </ul>
 <p><span class="math display">\[
-\chi^2 = \sum_{j=1}^K \frac{(O_j - E_j)^2}{E_j}
+\hat{\mu} = \bar{x}, \hspace{0.1in} \hat{\sigma}^2 = \frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n-1}
 \]</span></p>
 <ul>
-<li><p><span class="math inline">\(O_j\)</span>: observed counts in category <span class="math inline">\(j\)</span></p></li>
-<li><p><span class="math inline">\(E_j\)</span>: expected counts under <span class="math inline">\(H_0\)</span>, i.e., each category is equally to occur <span class="math inline">\(n / K = p_1 = p_2 = \dots = p_K\)</span></p></li>
-</ul>
-</div>
-<div class="fragment">
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Chi-squared test for given probabilities
-
-data:  table(penguins$species)
-X-squared = 31.907, df = 2, p-value = 1.179e-07</code></pre>
-</div>
-</div>
-</div>
-</section>
-<section id="inference-for-2d-categorical-data" class="slide level2">
-<h2>Inference for 2D categorical data</h2>
-<div style="font-size: 75%;">
-<p>Again we use the <strong>chi-squared test</strong>:</p>
-<ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent, compute the test statistic:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_{ij}\)</span>: observed counts in contingency table</p></li>
-<li><p><span class="math inline">\(E_{ij}\)</span>: expected counts under <span class="math inline">\(H_0\)</span></p></li>
+<li>Then our density estimate is:</li>
 </ul>
 <p><span class="math display">\[
-\begin{aligned}
-E_{ij} &amp;= n \cdot P(A = a_i, B = b_j) \\
-&amp;= n \cdot P(A = a_i) P(B = b_j) \\
-&amp;= n \cdot \left( \frac{n_{i \cdot}}{n} \right) \left( \frac{ n_{\cdot j}}{n} \right)
-\end{aligned}
+\hat{f}(x) = \frac{1}{\sqrt{2\pi} \hat{\sigma}} \exp \left( - \frac{(x - \hat{\mu})^2}{2\hat{\sigma}^2} \right)
 \]</span></p>
-</div>
 </section>
-<section id="inference-for-2d-categorical-data-1" class="slide level2">
-<h2>Inference for 2D categorical data</h2>
-<div style="font-size: 75%;">
-<p>Again we use the <strong>chi-squared test</strong>:</p>
+<section id="flipper-length-example" class="slide level2">
+<h2>Flipper length example</h2>
+<p>What if we assume <code>flipper_length_mm</code> follows Normal distribution?</p>
 <ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent, compute the test statistic:</li>
+<li>i.e., <code>flipper_length_mm</code> <span class="math inline">\(\sim N(\mu, \sigma^2)\)</span></li>
 </ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_{ij}\)</span>: observed counts in contingency table</p></li>
-<li><p><span class="math inline">\(E_{ij}\)</span>: expected counts under <span class="math inline">\(H_0\)</span></p></li>
-</ul>
-</div>
+<p>Need estimates for mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span>:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>flipper_length_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(penguins<span class="sc">$</span>flipper_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-2"><a></a>flipper_length_sd <span class="ot">&lt;-</span> <span class="fu">sd</span>(penguins<span class="sc">$</span>flipper_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="fragment">
+<p>Perform one-sample KS test using <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/ks.test.html"><code>ks.test()</code></a>:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">ks.test</span>(<span class="at">x =</span> penguins<span class="sc">$</span>flipper_length_mm, <span class="at">y =</span> <span class="st">"pnorm"</span>,</span>
+<span id="cb7-2"><a></a>        <span class="at">mean =</span> flipper_length_mean, <span class="at">sd =</span> flipper_length_sd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-    Pearson's Chi-squared test
+    Asymptotic one-sample Kolmogorov-Smirnov test
 
-data:  table(penguins$species, penguins$island)
-X-squared = 299.55, df = 4, p-value &lt; 2.2e-16</code></pre>
+data:  penguins$flipper_length_mm
+D = 0.12428, p-value = 5.163e-05
+alternative hypothesis: two-sided</code></pre>
+</div>
 </div>
 </div>
 </section>
-<section id="visualize-independence-test-with-mosaic-plots" class="slide level2">
-<h2>Visualize independence test with mosaic plots</h2>
-<div style="font-size: 75%;">
-<p>Two variables are <strong>independent</strong> if knowing the level of one tells us nothing about the other</p>
-<ul>
-<li>i.e.&nbsp;<span class="math inline">\(P(A | B) = P(A)\)</span>, and that <span class="math inline">\(P(A, B) = P(A) \times P(B)\)</span></li>
-</ul>
-<p>Create a <strong>mosaic</strong> plot using <strong>base <code>R</code></strong></p>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="flipper-length-example-1" class="slide level2">
+<h2>Flipper length example</h2>
 
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="shade-by-pearson-residuals" class="slide level2">
-<h2>Shade by <em>Pearson residuals</em></h2>
-<div style="font-size: 75%;">
+<img data-src="08-1dquant-inference_files/figure-revealjs/kstest-plot-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="statistical-tests-for-comparing-distributions" class="slide level2">
+<h2>Statistical Tests for Comparing Distributions</h2>
+<div style="font-size: 85%;">
 <ul>
-<li>The <strong>test statistic</strong> is:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
+<li><p>We’ve focused on assessing if a single quantitative variable follows a particular distribution</p>
 <ul>
-<li>Define the <em>Pearson residuals</em> as:</li>
-</ul>
-<p><span class="math display">\[r_{ij} = \frac{O_{ij} - E_{ij}}{\sqrt{E_{ij}}}\]</span></p>
-<ul>
-<li>Side-note: In general, Pearson residuals are <span class="math inline">\(\frac{\text{residuals}}{\sqrt{\text{variance}}}\)</span></li>
+<li>Logic of one-sample KS test: Compare empirical distribution to theoretical distribution</li>
+</ul></li>
 </ul>
 </div>
 <div class="fragment">
-<div style="font-size: 75%;">
+<div style="font-size: 85%;">
+<p><strong>How do we compare multiple empirical distributions?</strong></p>
+<p>Very common scenario: Determine if a quantitative variable depends on a categorical variable, examples:</p>
 <ul>
-<li><p><span class="math inline">\(r_{ij} \approx 0 \rightarrow\)</span> observed counts are close to expected counts</p></li>
-<li><p><span class="math inline">\(|r_{ij}| &gt; 2 \rightarrow\)</span> “significant” at level <span class="math inline">\(\alpha = 0.05\)</span>.</p></li>
-<li><p>Very positive <span class="math inline">\(r_{ij} \rightarrow\)</span> more than expected, while very negative <span class="math inline">\(r_{ij} \rightarrow\)</span> fewer than expected</p></li>
-<li><p><strong>Color by Pearson residuals</strong> to tell us which combos are much bigger/smaller than expected.</p></li>
+<li><p>Clinical trials with multiple treatments</p></li>
+<li><p>Assessing differences across race, gender, socioeconomic status</p></li>
+<li><p>Industrial experiments, A/B testing</p></li>
+<li><p><em>Comparing song duration across different genres?</em></p></li>
 </ul>
+<p>Can use overlayed densities, side-by-side violin plots, facetted histograms</p>
+<p>Remember: plotting conditional distributions… but when are differences in a graphic <em>statistically significant</em>?</p>
 </div>
 </div>
 </section>
-<section class="slide level2">
+<section id="tidytuesday-spotify-songs---duration-by-genre" class="slide level2">
+<h2><a href="https://github.com/rfordatascience/tidytuesday">TidyTuesday</a> <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-21/readme.md">Spotify Songs</a> - Duration by Genre</h2>
 
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island), <span class="at">shade =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<img data-src="08-1dquant-inference_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="tidytuesday-spotify-songs---duration-by-genre-1" class="slide level2">
+<h2><a href="https://github.com/rfordatascience/tidytuesday">TidyTuesday</a> <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-21/readme.md">Spotify Songs</a> - Duration by Genre</h2>
 
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section class="slide level2">
+<img data-src="08-1dquant-inference_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="test-difference-between-rap-and-rock" class="slide level2">
+<h2>Test difference between rap and rock?</h2>
 
+<img data-src="08-1dquant-inference_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="kolmogorov-smirnov-test-again" class="slide level2">
+<h2>Kolmogorov-Smirnov Test… Again</h2>
+<p>KS test can also be used to compare two empirical distributions <span class="math inline">\(\hat{F}_A(x)\)</span> and <span class="math inline">\(\hat{F}_B\)</span>, via test statistic for <strong>two samples</strong>:</p>
+<p><span class="math display">\[
+\text{max}_x |\hat{F}_A(x) - \hat{F}_B(x)|
+\]</span></p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>island, penguins<span class="sc">$</span>sex), <span class="at">shade =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb13-2"><a></a>           <span class="at">main =</span> <span class="st">"Distribution of penguins' sex does not vary across islands"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="titanic-dataset-example" class="slide level2">
-<h2>Titanic Dataset Example</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>titanic <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/ryurko/DataViz-Class-Data/main/titanic.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><strong>Question</strong>: Does survival (yes/no) depend on cabin (1st/2nd/3rd)?</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">table</span>(<span class="st">"Survived?"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Survived, <span class="st">"Class"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Pclass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>         Class
-Survived?   1   2   3
-        0  64  90 270
-        1 120  83  85</code></pre>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(<span class="st">"Survived?"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Survived, <span class="st">"Class"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Pclass))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>spotify_songs <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv'</span>)</span>
+<span id="cb9-2"><a></a>rap_duration <span class="ot">&lt;-</span> spotify_songs <span class="sc">|&gt;</span> <span class="fu">filter</span>(playlist_genre <span class="sc">==</span> <span class="st">"rap"</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(duration_ms)</span>
+<span id="cb9-3"><a></a>rock_duration <span class="ot">&lt;-</span> spotify_songs <span class="sc">|&gt;</span> <span class="fu">filter</span>(playlist_genre <span class="sc">==</span> <span class="st">"rock"</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(duration_ms)</span>
+<span id="cb9-4"><a></a></span>
+<span id="cb9-5"><a></a><span class="fu">ks.test</span>(rap_duration, <span class="at">y =</span> rock_duration)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-    Pearson's Chi-squared test
+    Asymptotic two-sample Kolmogorov-Smirnov test
 
-data:  table(`Survived?` = titanic$Survived, Class = titanic$Pclass)
-X-squared = 91.081, df = 2, p-value &lt; 2.2e-16</code></pre>
+data:  rap_duration and rock_duration
+D = 0.22386, p-value &lt; 2.2e-16
+alternative hypothesis: two-sided</code></pre>
 </div>
-</div>
-<p><strong>Conclusion</strong>: Class and survival are dependent - but how?</p>
 </div>
 </section>
-<section class="slide level2">
-
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(titanic<span class="sc">$</span>Pclass, titanic<span class="sc">$</span>Survived), <span class="at">shade =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb19-2"><a></a>           <span class="at">xlab =</span> <span class="st">"Passenger Class"</span>, <span class="at">ylab =</span> <span class="st">"Survived?"</span>, <span class="at">main =</span> <span class="st">"How are they related?"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
+<section id="kolmogorov-smirnov-test-again-1" class="slide level2">
+<h2>Kolmogorov-Smirnov Test… Again</h2>
+<p>KS test can also be used to compare two empirical distributions <span class="math inline">\(\hat{F}_A(x)\)</span> and <span class="math inline">\(\hat{F}_B\)</span>, via test statistic for <strong>two samples</strong>:</p>
+<p><span class="math display">\[
+\text{max}_x |\hat{F}_A(x) - \hat{F}_B(x)|
+\]</span></p>
+</section>
+<section id="statistical-tests-for-comparing-distributions-1" class="slide level2">
+<h2>Statistical Tests for Comparing Distributions</h2>
+<div style="font-size: 75%;">
+<p>Infinite number of ways that you can compare multiple quantitative distributions, 3 common ways:</p>
+<ol type="1">
+<li><p><strong>Any difference at all?</strong> <!--Two sample KS test--></p></li>
+<li><p><strong>Difference in means?</strong></p></li>
+</ol>
+<ul>
+<li><p>Null hypothesis: <span class="math inline">\(H_0: \mu_1 = \mu_2 = \cdots = \mu_K\)</span> (use <code>t.test</code> or <code>oneway.test()</code> functions)</p></li>
+<li><p>Can assume the variances are all the same or differ</p></li>
+<li><p>If reject, can only conclude <strong>not all means are equal</strong></p></li>
+</ul>
+<ol start="3" type="1">
+<li><strong>Difference in variances?</strong></li>
+</ol>
+<ul>
+<li><p>Null hypothesis: <span class="math inline">\(H_0: \sigma^2_1 = \sigma^2_2 = \cdots = \sigma^2_K\)</span> (use <code>bartlett.test()</code> function)</p></li>
+<li><p>If reject, can only conclude <strong>not all variances are equal</strong></p></li>
+</ul>
+<p>Unlike the KS test, <strong>difference in means and variances are sensitive to non-Normality</strong></p>
+<ul>
+<li>Different distributions can yield insignificant results</li>
+</ul>
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="guardian-1000-songs-to-hear-before-you-die" class="slide level2">
-<h2><a href="https://www.theguardian.com/news/datablog/2009/mar/20/1">Guardian</a>: 1000 songs to hear before you die</h2>
+</section>
+<section id="test-difference-between-rap-and-rock-1" class="slide level2">
+<h2>Test difference between rap and rock?</h2>
 
-<img data-src="https://upload.wikimedia.org/wikipedia/commons/8/84/Mosaic-big.png?20090726044211" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
-<section class="slide level2">
+<img data-src="08-1dquant-inference_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="test-difference-between-rap-and-rock-2" class="slide level2">
+<h2>Test difference between rap and rock?</h2>
 
+<img data-src="08-1dquant-inference_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="test-difference-between-pop-and-rap" class="slide level2">
+<h2>Test difference between pop and rap?</h2>
 
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<img data-src="08-1dquant-inference_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="recap-and-next-steps" class="slide level2">
 <h2>Recap and next steps</h2>
-<div style="font-size: 75%;">
+<div style="font-size: 85%;">
 <ul>
-<li><p>For 2D categorical data we create visualizations for marginal, conditional, and joint distributions</p></li>
-<li><p>Can create stacked and side-by-side bar charts to visualize 2D categorical data</p></li>
-<li><p>Perform 2D Chi-squared test to test if two categorical variables are associated with each other</p></li>
-<li><p>Create mosaic plots to visualize 2D categorical data</p></li>
-<li><p>Shade mosaic plot tiles by Pearson residuals to see what drives association between two categorical variables (if any)</p></li>
+<li><p>Introduced KS tests for testing differences in distributions</p></li>
+<li><p>But when are the differences we’re seeing statistically significant?</p>
+<ul>
+<li><p><em>Any</em> distributional difference? <span class="math inline">\(\rightarrow\)</span> KS test</p></li>
+<li><p>Just care about mean differences? <span class="math inline">\(\rightarrow\)</span> t-test</p></li>
+<li><p>Just care about variance differences? <span class="math inline">\(\rightarrow\)</span> Bartlett’s test</p></li>
+</ul></li>
 </ul>
 </div>
 <div class="fragment">
-<div style="font-size: 75%;">
+<div style="font-size: 85%;">
 <ul>
-<li><p><strong>HW1 is due TONIGHT and you have Lab 3 on Friday!</strong></p></li>
-<li><p><strong>Next time</strong>: Visualizing 1D quantitative data</p></li>
-<li><p>Recommended reading: <a href="https://clauswilke.com/dataviz/nested-proportions.html">CW Chapter 11 Visualizing nested proportions</a></p></li>
+<li><p><strong>HW3 is due Wednesday and you have Lab 5 on Friday</strong></p></li>
+<li><p><strong>Next time</strong>: Comparing Distributions and Statistical Power</p></li>
+<li><p>Recommended reading: <a href="https://clauswilke.com/dataviz/ecdf-qq.html">CW Chapter 8 Visualizing distributions: Empirical cumulative distribution functions and q-q plots</a></p></li>
 </ul>
 </div>
 
