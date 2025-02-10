@@ -1,0 +1,601 @@
+---
+title: "Graphical Inference for 1D Quantitative Data"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-02-10
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 75%;"}
+
++ **HW3 is due Wednesday by 11:59 PM and you have Lab 5 again on Friday!**
+
+Office hours schedule:
+
++ My office hours (BH 132D): Wednesdays and Thursdays @ 2 PM
+
++ Anna (zoom): Mondays @ 2 PM; and Perry (zoom): **Tuesdays** @ 11 AM
+
+:::
+
+. . .
+
+::: {style="font-size: 75%;"}
+
+
++ Smoothed densities are a flexible tool for visualizing 1D distribution
+
++ There are two choices we need to make for kernel density estimation:
+
+  1. Bandwidth: Determines _smoothness_ of distribution, usually data-driven choice
+  
+  2. Kernel: Determines how much _influence_ each observation should have on each other during estimation, usually context driven
+
++ Several other types of density-based displays: violins, ridges, beeswarm plots
+
+:::
+
+. . .
+
+::: {style="font-size: 75%;"}
+
+**TODAY:**
+
++ Graphical inference for 1D quantitative data
+
++ Parametric density estimates
+
++ ECDFs and Kolmogorov-Smirnov (KS) test
+
+:::
+
+---
+
+## Visualizing conditional distributions: violin plots
+
+```{r}
+#| code-line-numbers: "2-4"
+penguins |>
+  ggplot(aes(x = species, y = flipper_length_mm)) +
+  geom_violin() +
+  coord_flip()
+```
+
+---
+
+## Visualizing conditional distributions: violin plots
+
+```{r}
+#| code-line-numbers: "4"
+penguins |>
+  ggplot(aes(x = species, y = flipper_length_mm)) +
+  geom_violin() + 
+  geom_boxplot(width = .2) +
+  coord_flip()
+```
+
+
+---
+
+## Visualizing conditional distributions: [`ggridges`](https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html)
+
+```{r}
+#| code-line-numbers: "1,3-4"
+library(ggridges)
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = species)) +
+  geom_density_ridges(rel_min_height = 0.01)
+```
+
+---
+
+## [Gallery of ggridges examples](https://wilkelab.org/ggridges/articles/gallery.html)
+
+![](https://wilkelab.org/ggridges/articles/gallery_files/figure-html/unnamed-chunk-4-1.png){fig-align="center" width=100%}
+
+
+---
+
+## Visualizing conditional distributions: [`ggbeeswarm`](https://github.com/eclarke/ggbeeswarm)
+
+```{r}
+#| code-line-numbers: "1,3-4"
+library(ggbeeswarm)
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = species)) +
+  geom_beeswarm(cex = 1.5) +
+  theme_bw()
+```
+
+
+---
+
+## Kernel density estimation
+
+__Goal__: estimate PDF $f(x)$ for all possible values (assuming it is continuous & smooth)
+
+$$
+\text{Kernel density estimate: } \hat{f}(x) = \frac{1}{n} \sum_{i=1}^n \frac{1}{h} K_h(x - x_i)
+$$
+
+::: {style="font-size: 75%;"}
+
+- $n =$ sample size, $x =$ new point to estimate $f(x)$ (does NOT have to be in dataset!)
+
+- $h =$ __bandwidth__, analogous to histogram bin width, ensures $\hat{f}(x)$ integrates to 1
+
+- $x_i =$ $i$th observation in dataset
+
+- $K_h(x - x_i)$ is the __Kernel__ function, creates __weight__ given distance of $i$th observation from new point 
+  - as $|x - x_i| \rightarrow \infty$ then $K_h(x - x_i) \rightarrow 0$, i.e. further apart $i$th row is from $x$, smaller the weight
+  
+  - as __bandwidth__ $h \uparrow$ weights are more evenly spread out (as $h \downarrow$ more concentrated around $x$) 
+
+  - typically use [__Gaussian__ / Normal](https://en.wikipedia.org/wiki/Normal_distribution) kernel: $\propto e^{-(x - x_i)^2 / 2h^2}$
+  
+  - $K_h(x - x_i)$ is large when $x_i$ is close to $x$
+  
+:::
+
+---
+
+## From the PDF to the CDF
+
+::: {style="font-size: 80%;"}
+
+__Probability that continuous variable $X$ takes a particular value is 0__ 
+
+e.g., $P$ (`flipper_length_mm` $= 200$) $= 0$
+
+Instead we use the __probability density function (PDF)__ to provide a __relative likelihood__ 
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+For continuous variables we can use the __cumulative distribution function (CDF)__,
+
+$$
+F(x) = P(X \leq x)
+$$
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+For $n$ observations we can easily compute the __Empirical CDF (ECDF)__:
+
+
+$$\hat{F}_n(x)  = \frac{\text{# obs. with variable} \leq x}{n} = \frac{1}{n} \sum_{i=1}^{n}1(x_i \leq x)$$
+
+
+- where $1()$ is the indicator function, i.e. `ifelse(x_i <= x, 1, 0)`
+
+:::
+
+---
+
+## Display full distribution with ECDF plot
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm)) + 
+  stat_ecdf() +
+  theme_bw()
+```
+
+---
+
+## What's the relationship between these two?
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(patchwork)
+pens_hist <- penguins |>
+  ggplot(aes(x = flipper_length_mm)) +
+  geom_histogram(aes(y = after_stat(density))) +
+  geom_density(color = "darkblue") +
+  theme_bw()
+pens_ecdf <- penguins |>
+  ggplot(aes(x = flipper_length_mm)) + 
+  stat_ecdf() +
+  theme_bw()
+pens_hist + pens_ecdf
+```
+
+---
+
+## Comparing to theoretical distributions
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Normal_Distribution_PDF.svg/2560px-Normal_Distribution_PDF.svg.png){fig-align="center" width=100%}
+
+:::
+
+::: {.column width="50%"}
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Normal_Distribution_CDF.svg/2560px-Normal_Distribution_CDF.svg.png){fig-align="center" width=100%}
+
+:::
+
+::::
+
+
+---
+
+## One-Sample Kolmogorov-Smirnov Test
+
+- We compare the ECDF $\hat{F}(x)$ to a theoretical distribution's CDF $F(x)$
+
+- The one sample KS test statistic is: $\text{max}_x |\hat{F}(x) - F(x)|$
+
+![](https://upload.wikimedia.org/wikipedia/commons/c/cf/KS_Example.png){fig-align="center" width=80%}
+
+---
+
+## Parametric Density Estimation
+
++ Instead of trying to estimate the whole $f(x)$ non-parametrically, we can assume a particular $f(x)$ and estimate its parameters
+
++ For example, assume $X_i \sim N(\mu, \sigma^2)$. Then estimate the parameters:
+
+$$
+\hat{\mu} = \bar{x}, \hspace{0.1in} \hat{\sigma}^2 = \frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n-1}
+$$
+
++ Then our density estimate is:
+
+$$
+\hat{f}(x) = \frac{1}{\sqrt{2\pi} \hat{\sigma}} \exp \left( - \frac{(x - \hat{\mu})^2}{2\hat{\sigma}^2} \right)
+$$
+
+---
+
+## Flipper length example
+
+What if we assume `flipper_length_mm` follows Normal distribution? 
+
++ i.e., `flipper_length_mm` $\sim N(\mu, \sigma^2)$
+
+Need estimates for mean $\mu$ and standard deviation $\sigma$:
+
+```{r}
+flipper_length_mean <- mean(penguins$flipper_length_mm, na.rm = TRUE)
+flipper_length_sd <- sd(penguins$flipper_length_mm, na.rm = TRUE)
+```
+
+. . .
+
+Perform one-sample KS test using [`ks.test()`](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/ks.test.html):
+
+```{r}
+ks.test(x = penguins$flipper_length_mm, y = "pnorm",
+        mean = flipper_length_mean, sd = flipper_length_sd)
+```
+
+
+---
+
+## Flipper length example
+
+```{r}
+#| label: kstest-plot
+#| echo: false
+# First create the ECDF function for the variable:
+fl_ecdf <- ecdf(penguins$flipper_length_mm)
+# Compute the absolute value of the differences between the ECDF for the values
+# and the theoretical values with assumed Normal distribution:
+abs_ecdf_diffs <- abs(fl_ecdf(penguins$flipper_length_mm) - pnorm(penguins$flipper_length_mm,
+                                                                  mean = flipper_length_mean, sd = flipper_length_sd))
+# Now find where the maximum difference is:
+max_abs_ecdf_diff_i <- which.max(abs_ecdf_diffs)
+# Get this flipper length value:
+max_fl_diff_value <- penguins$flipper_length_mm[max_abs_ecdf_diff_i]
+# Plot the ECDF with the theoretical Normal and KS test info:
+penguins |>
+  ggplot(aes(x = flipper_length_mm)) +
+  stat_ecdf(color = "darkblue") +
+  # Use stat_function to draw the Normal ECDF
+  stat_function(fun = pnorm, args = list(mean = flipper_length_mean, sd = flipper_length_sd), color = "black", linetype = "dashed") +
+  # Draw KS test line:
+  geom_vline(xintercept = max_fl_diff_value, color = "red") +
+  # Add text with the test results (x and y are manually entered locations)
+  annotate(geom = "text", x = 215, y = .25, label = "KS test stat = 0.12428\np-value = 5.163e-05") + 
+  labs(x = "Flipper length (mm)", y = "Fn(x)") + theme_bw()
+```
+
+---
+
+## Statistical Tests for Comparing Distributions
+
+::: {style="font-size: 85%;"}
+
++ We've focused on assessing if a single quantitative variable follows a particular distribution
+
+  + Logic of one-sample KS test: Compare empirical distribution to theoretical distribution
+  
+:::
+
+. . .
+
+::: {style="font-size: 85%;"}
+
+**How do we compare multiple empirical distributions?**
+
+Very common scenario: Determine if a quantitative variable depends on a categorical variable, examples:
+  
++ Clinical trials with multiple treatments
+  
++ Assessing differences across race, gender, socioeconomic status
+  
++ Industrial experiments, A/B testing
+  
++ _Comparing song duration across different genres?_
+    
+Can use overlayed densities, side-by-side violin plots, facetted histograms
+
+Remember: plotting conditional distributions... but when are differences in a graphic _statistically significant_?
+
+:::
+
+---
+
+## [TidyTuesday](https://github.com/rfordatascience/tidytuesday) [Spotify Songs](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-21/readme.md) - Duration by Genre
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| warning: false
+#| message: false
+# Read in the data
+spotify_songs <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv')
+
+# Create density plot
+spotify_songs |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  geom_density() +
+  # Use the ggthemes package for the colorblind legend
+  ggthemes::scale_color_colorblind() +
+  labs(x = "Duration (ms)", color = "Genre") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## [TidyTuesday](https://github.com/rfordatascience/tidytuesday) [Spotify Songs](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-21/readme.md) - Duration by Genre
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Create ECDF plot
+spotify_songs |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  stat_ecdf() +
+  ggthemes::scale_color_colorblind() +
+  labs(x = "Duration (ms)", color = "Genre",
+       y = "Fn(x)") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## Test difference between rap and rock?
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Create ECDF plot for just rap and rock
+spotify_songs |>
+  filter(playlist_genre %in% c("rap", "rock")) |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  stat_ecdf() +
+  # Use the same colors based on palette printed out from:
+  # ggthemes::colorblind_pal()(6) - grabbing the last two colors
+  scale_color_manual(values = c("#F0E442", "#0072B2")) +
+  labs(x = "Duration (ms)", color = "Genre",
+       y = "Fn(x)") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## Kolmogorov-Smirnov Test... Again
+
+KS test can also be used to compare two empirical distributions $\hat{F}_A(x)$ and $\hat{F}_B$, via test statistic for __two samples__:
+
+$$
+\text{max}_x |\hat{F}_A(x) - \hat{F}_B(x)|
+$$
+
+
+```{r}
+#| warning: false
+spotify_songs <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv')
+rap_duration <- spotify_songs |> filter(playlist_genre == "rap") |> pull(duration_ms)
+rock_duration <- spotify_songs |> filter(playlist_genre == "rock") |> pull(duration_ms)
+
+ks.test(rap_duration, y = rock_duration)
+```
+
+
+
+---
+
+
+## Kolmogorov-Smirnov Test... Again
+
+KS test can also be used to compare two empirical distributions $\hat{F}_A(x)$ and $\hat{F}_B$, via test statistic for __two samples__:
+
+$$
+\text{max}_x |\hat{F}_A(x) - \hat{F}_B(x)|
+$$
+
+
+
+
+---
+
+## Statistical Tests for Comparing Distributions
+
+::: {style="font-size: 75%;"}
+
+Infinite number of ways that you can compare multiple quantitative distributions, 3 common ways:
+
+1. __Any difference at all?__ <!--Two sample KS test-->
+
+
+2. __Difference in means?__
+
+  - Null hypothesis: $H_0: \mu_1 = \mu_2 = \cdots = \mu_K$ (use `t.test` or `oneway.test()` functions)
+  
+  - Can assume the variances are all the same or differ
+  
+  - If reject, can only conclude __not all means are equal__
+  
+3. __Difference in variances?__
+
+  - Null hypothesis: $H_0: \sigma^2_1 = \sigma^2_2 = \cdots = \sigma^2_K$ (use `bartlett.test()` function)
+  
+  - If reject, can only conclude __not all variances are equal__
+  
+Unlike the KS test, __difference in means and variances are sensitive to non-Normality__
+
+  + Different distributions can yield insignificant results
+
+:::
+
+---
+
+## Test difference between rap and rock?
+
+```{r, echo = FALSE, fig.align='center'}
+# Create ECDF plot for just rap and rock
+spotify_songs |>
+  filter(playlist_genre %in% c("rap", "rock")) |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  stat_ecdf() +
+  # Use the same colors based on palette printed out from:
+  # ggthemes::colorblind_pal()(6) - grabbing the last two colors
+  scale_color_manual(values = c("#F0E442", "#0072B2")) +
+  labs(x = "Duration (ms)", color = "Genre",
+       y = "Fn(x)") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+
+```
+
+
+---
+
+## Test difference between rap and rock?
+
+```{r, echo = FALSE, fig.align='center'}
+# Create density plot for just rap and rock
+spotify_songs |>
+  filter(playlist_genre %in% c("rap", "rock")) |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  geom_density() +
+  # Use the same colors based on palette printed out from:
+  # ggthemes::colorblind_pal()(6) - grabbing the last two colors
+  scale_color_manual(values = c("#F0E442", "#0072B2")) +
+  labs(x = "Duration (ms)", color = "Genre") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## Test difference between pop and rap?
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Create density plot for just rap and rock
+spotify_songs |>
+  filter(playlist_genre %in% c("rap", "pop")) |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  geom_density() +
+  # Use the same colors based on palette printed out from:
+  # ggthemes::colorblind_pal()(6) - grabbing the last two colors
+  scale_color_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Duration (ms)", color = "Genre") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## Recap and next steps
+
+::: {style="font-size: 85%;"}
+
++ Introduced KS tests for testing differences in distributions
+
++ But when are the differences we're seeing statistically significant?
+
+  + _Any_ distributional difference? $\rightarrow$ KS test
+  
+  + Just care about mean differences? $\rightarrow$ t-test
+  
+  + Just care about variance differences? $\rightarrow$ Bartlett's test
+
+:::
+
+. . .
+
+::: {style="font-size: 85%;"}
+
++ **HW3 is due Wednesday and you have Lab 5 on Friday**
+
++ **Next time**: Comparing Distributions and Statistical Power
+
++ Recommended reading: [CW Chapter 8 Visualizing distributions: Empirical cumulative distribution functions and q-q plots](https://clauswilke.com/dataviz/ecdf-qq.html)
+
+:::
+
