@@ -1,0 +1,760 @@
+---
+title: "Comparing Distributions and Statistical Power"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-02-12
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 80%;"}
+
++ **HW3 is due TONIGHT by 11:59 PM and you have Lab 5 again on Friday!**
+
+Office hours schedule:
+
++ My office hours (BH 132D): Wednesdays and Thursdays @ 2 PM
+
++ Anna (zoom): Mondays @ 2 PM; and Perry (zoom): **Tuesdays** @ 11 AM
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+
+Finished discussed density based visualizations
+
+Introduced KS test for testing if distribution follows a particular distribution
+
+Graphics are extremely useful because human eyes can quickly compare and contrast distributions...
+
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+**TODAY:**
+
++ Understanding the statistical power of tests and graphics
+
+:::
+
+---
+
+## Flipper length example
+
+```{r}
+#| label: kstest-plot
+#| echo: false
+fl_mean <- mean(penguins$flipper_length_mm, na.rm = TRUE)
+fl_sd <- sd(penguins$flipper_length_mm, na.rm = TRUE)
+# First create the ECDF function for the variable:
+fl_ecdf <- ecdf(penguins$flipper_length_mm)
+# Compute the absolute value of the differences between the ECDF for the values
+# and the theoretical values with assumed Normal distribution:
+abs_ecdf_diffs <- abs(fl_ecdf(penguins$flipper_length_mm) - pnorm(penguins$flipper_length_mm,
+                                                                  mean = fl_mean, sd = fl_sd))
+# Now find where the maximum difference is:
+max_abs_ecdf_diff_i <- which.max(abs_ecdf_diffs)
+# Get this flipper length value:
+max_fl_diff_value <- penguins$flipper_length_mm[max_abs_ecdf_diff_i]
+# Plot the ECDF with the theoretical Normal and KS test info:
+penguins |>
+  ggplot(aes(x = flipper_length_mm)) +
+  stat_ecdf(color = "darkblue") +
+  # Use stat_function to draw the Normal ECDF
+  stat_function(fun = pnorm, args = list(mean = fl_mean, sd = fl_sd), color = "black", linetype = "dashed") +
+  # Draw KS test line:
+  geom_vline(xintercept = max_fl_diff_value, color = "red") +
+  # Add text with the test results (x and y are manually entered locations)
+  annotate(geom = "text", x = 215, y = .25, label = "KS test stat = 0.12428\np-value = 5.163e-05") + 
+  labs(x = "Flipper length (mm)", y = "Fn(x)") + theme_bw()
+```
+
+---
+
+## Statistical Tests for Comparing Distributions
+
+::: {style="font-size: 85%;"}
+
++ We've focused on assessing if a single quantitative variable follows a particular distribution
+
+  + Logic of one-sample KS test: Compare empirical distribution to theoretical distribution
+  
+:::
+
+. . .
+
+::: {style="font-size: 85%;"}
+
+**How do we compare multiple empirical distributions?**
+
+Very common scenario: Determine if a quantitative variable depends on a categorical variable, examples:
+  
++ Clinical trials with multiple treatments
+  
++ Assessing differences across race, gender, socioeconomic status
+  
++ Industrial experiments, A/B testing
+  
++ _Comparing song duration across different genres?_
+    
+Can use overlayed densities, side-by-side violin plots, facetted histograms
+
+Remember: plotting conditional distributions... but when are differences in a graphic _statistically significant_?
+
+:::
+
+---
+
+## [TidyTuesday](https://github.com/rfordatascience/tidytuesday) [Spotify Songs](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-21/readme.md) - Duration by Genre
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| warning: false
+#| message: false
+# Read in the data
+spotify_songs <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv')
+
+# Create density plot
+spotify_songs |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  geom_density() +
+  # Use the ggthemes package for the colorblind legend
+  ggthemes::scale_color_colorblind() +
+  labs(x = "Duration (ms)", color = "Genre") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## [TidyTuesday](https://github.com/rfordatascience/tidytuesday) [Spotify Songs](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-21/readme.md) - Duration by Genre
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Create ECDF plot
+spotify_songs |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  stat_ecdf() +
+  ggthemes::scale_color_colorblind() +
+  labs(x = "Duration (ms)", color = "Genre",
+       y = "Fn(x)") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## Test difference between rap and rock?
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Create ECDF plot for just rap and rock
+spotify_songs |>
+  filter(playlist_genre %in% c("rap", "rock")) |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  stat_ecdf() +
+  # Use the same colors based on palette printed out from:
+  # ggthemes::colorblind_pal()(6) - grabbing the last two colors
+  scale_color_manual(values = c("#F0E442", "#0072B2")) +
+  labs(x = "Duration (ms)", color = "Genre",
+       y = "Fn(x)") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## Kolmogorov-Smirnov Test... Again
+
+KS test can also be used to compare two empirical distributions $\hat{F}_A(x)$ and $\hat{F}_B$, via test statistic for __two samples__:
+
+$$
+\text{max}_x |\hat{F}_A(x) - \hat{F}_B(x)|
+$$
+
+
+```{r}
+#| warning: false
+spotify_songs <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv')
+rap_duration <- spotify_songs |> filter(playlist_genre == "rap") |> pull(duration_ms)
+rock_duration <- spotify_songs |> filter(playlist_genre == "rock") |> pull(duration_ms)
+
+ks.test(rap_duration, y = rock_duration)
+```
+
+
+
+---
+
+
+## Kolmogorov-Smirnov Test... Again
+
+KS test can also be used to compare two empirical distributions $\hat{F}_A(x)$ and $\hat{F}_B$, via test statistic for __two samples__:
+
+$$
+\text{max}_x |\hat{F}_A(x) - \hat{F}_B(x)|
+$$
+
+
+
+
+---
+
+## Statistical Tests for Comparing Distributions
+
+::: {style="font-size: 75%;"}
+
+Infinite number of ways that you can compare multiple quantitative distributions, 3 common ways:
+
+1. __Any difference at all?__ <!--Two sample KS test-->
+
+
+2. __Difference in means?__
+
+  - Null hypothesis: $H_0: \mu_1 = \mu_2 = \cdots = \mu_K$ (use `t.test` or `oneway.test()` functions)
+  
+  - Can assume the variances are all the same or differ
+  
+  - If reject, can only conclude __not all means are equal__
+  
+3. __Difference in variances?__
+
+  - Null hypothesis: $H_0: \sigma^2_1 = \sigma^2_2 = \cdots = \sigma^2_K$ (use `bartlett.test()` function)
+  
+  - If reject, can only conclude __not all variances are equal__
+  
+Unlike the KS test, __difference in means and variances are sensitive to non-Normality__
+
+  + Different distributions can yield insignificant results
+
+:::
+
+---
+
+## Test difference between rap and rock?
+
+```{r, echo = FALSE, fig.align='center'}
+# Create ECDF plot for just rap and rock
+spotify_songs |>
+  filter(playlist_genre %in% c("rap", "rock")) |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  stat_ecdf() +
+  # Use the same colors based on palette printed out from:
+  # ggthemes::colorblind_pal()(6) - grabbing the last two colors
+  scale_color_manual(values = c("#F0E442", "#0072B2")) +
+  labs(x = "Duration (ms)", color = "Genre",
+       y = "Fn(x)") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+
+```
+
+
+---
+
+## Test difference between rap and rock?
+
+```{r, echo = FALSE, fig.align='center'}
+# Create density plot for just rap and rock
+spotify_songs |>
+  filter(playlist_genre %in% c("rap", "rock")) |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  geom_density() +
+  # Use the same colors based on palette printed out from:
+  # ggthemes::colorblind_pal()(6) - grabbing the last two colors
+  scale_color_manual(values = c("#F0E442", "#0072B2")) +
+  labs(x = "Duration (ms)", color = "Genre") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## Test difference between pop and rap?
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Create density plot for just rap and rock
+spotify_songs |>
+  filter(playlist_genre %in% c("rap", "pop")) |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  geom_density() +
+  # Use the same colors based on palette printed out from:
+  # ggthemes::colorblind_pal()(6) - grabbing the last two colors
+  scale_color_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Duration (ms)", color = "Genre") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## Recap: One-Sample KS Test
+
+::: {style="font-size: 75%;"}
+
++ Have a single sample $\mathbf{X} = (X_1,\dots,X_n)$
+
++ Want to test: Does $\mathbf{X}$ follow a particular distribution?
+
++ Compares the empirical CDF of $\mathbf{X}$ to the theoretical CDF of a particular distribution:
+
+$$\underbrace{F(x) = P(X \leq x)}_{\text{theoretical CDF}}, \hspace{0.2in} \underbrace{\hat{F}(x) = \frac{1}{n} \sum_{i=1}^n \mathbb{I}(X_i \leq x)}_{\text{empirical CDF}}$$
+
++ Null hypothesis: $\mathbf{X}$ follows a distribution with CDF $F(x)$
+
++ Alternative hypothesis: $\mathbf{X}$ does not follow this distribution
+
++ Test statistic: $\max_x |\hat{F}(x) - F(x)|$
+
++ If $\hat{F}(x)$ is far away from $F(x)$ $\rightarrow$ __reject null__
+
+:::
+
+---
+
+## Recap: Two-Sample KS Test
+
+::: {style="font-size: 75%;"}
+
++ Have two samples $\mathbf{X} = (X_1,\dots,X_m)$, $\mathbf{Y} = (Y_1,\dots,Y_n)$
+
++ Want to test: Do $\mathbf{X}$ and $\mathbf{Y}$ follow the same distribution?
+
++ Compares the empirical CDFs of $\mathbf{X}$ and $\mathbf{Y}$:
+
+$$\underbrace{\hat{F}_X(z) = \frac{1}{m} \sum_{i=1}^m \mathbb{I}(X_i \leq z)}_{\text{empirical CDF of } \mathbf{X}} \hspace{0.2in} \underbrace{\hat{F}_Y(z) = \frac{1}{n} \sum_{i=1}^n \mathbb{I}(Y_i \leq z)}_{\text{empirical CDF of } \mathbf{Y}}$$
+
++ Null hypothesis: $\mathbf{X}$ and $\mathbf{Y}$ follow the same distribution.
+
++ Alternative hypothesis: $\mathbf{X}$ and $\mathbf{Y}$ do not follow the same distribution
+
++ Test statistic: $\max_z |\hat{F}_X(z) - \hat{F}_Y(z)|$
+
++ If $\hat{F}_X$ and $\hat{F}_Y$ are far away from each other $\rightarrow$ __reject null__
+
+:::
+
+---
+
+## [TidyTuesday](https://github.com/rfordatascience/tidytuesday) [Spotify Songs](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-01-21/readme.md) - Duration by Genre
+
+```{r}
+#| echo: false
+#| fig-align: center
+spotify_songs |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  geom_density() +
+  ggthemes::scale_color_colorblind() +
+  labs(x = "Duration (ms)", color = "Genre") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## What about the difference between pop and rap?
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Create density plot for just rap and pop
+spotify_songs |>
+  filter(playlist_genre %in% c("rap", "pop")) |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  geom_density() +
+  # Use the same colors based on palette printed out from:
+  # ggthemes::colorblind_pal()(6) - grabbing the last two colors
+  scale_color_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Duration (ms)", color = "Genre") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## What about the difference between pop and rap?
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Create ECDF plot for just rap and rock
+spotify_songs |>
+  filter(playlist_genre %in% c("rap", "pop")) |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  stat_ecdf() +
+  # Use the same colors based on palette printed out from:
+  # ggthemes::colorblind_pal()(6) - grabbing the last two colors
+  scale_color_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Duration (ms)", color = "Genre",
+       y = "Fn(x)") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## Significant difference with large sample size
+
+```{r}
+#| warning: false
+spotify_songs <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv')
+table(spotify_songs$playlist_genre)
+rap_duration <- spotify_songs |> filter(playlist_genre == "rap") |> pull(duration_ms)
+pop_duration <- spotify_songs |> filter(playlist_genre == "pop") |> pull(duration_ms)
+
+ks.test(rap_duration, y = pop_duration)
+```
+
+
+---
+
+## What happens if we had a smaller sample?
+
+```{r}
+set.seed(2017)
+sample_songs <- spotify_songs |>
+  group_by(playlist_genre) |> 
+  slice_sample(n = 100)
+
+table(sample_songs$playlist_genre)
+sample_rap_duration <- sample_songs |> filter(playlist_genre == "rap") |> pull(duration_ms)
+sample_pop_duration <- sample_songs |> filter(playlist_genre == "pop") |> pull(duration_ms)
+
+ks.test(sample_rap_duration, y = sample_pop_duration)
+```
+
+
+---
+
+
+## But it still looks different???
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Create ECDF plot for just rap and rock
+sample_songs |>
+  filter(playlist_genre %in% c("rap", "pop")) |>
+  ggplot(aes(x = duration_ms, color = playlist_genre)) +
+  stat_ecdf() +
+  # Use the same colors based on palette printed out from:
+  # ggthemes::colorblind_pal()(6) - grabbing the last two colors
+  scale_color_manual(values = c("#56B4E9", "#F0E442")) +
+  labs(x = "Duration (ms)", color = "Genre",
+       y = "Fn(x)") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## Test difference between means and variances?
+
+Can test difference in means using `t.test()`:
+
+```{r}
+t.test(sample_rap_duration, sample_pop_duration)
+```
+
+
+---
+
+## Test difference between means and variances?
+
+Can test difference in variances using `bartlett.test()`:
+
+```{r}
+bartlett.test(list(sample_rap_duration, sample_pop_duration))
+```
+
+
+**Rejects at $\alpha = 0.05$ even with this smaller sample size!**
+
+. . .
+
++ Why did the KS test say they weren't different when the graph were clearly different? Two possible reasons:
+
+  + The sample size might be too small to detect a difference
+  
+  + The KS test is known to have low power
+
+---
+
+## Statistical power
+  
+__Statistical power__ is key to really understanding graphics - you need to know when you're looking at real effects versus noise
+
+Here are two definitions of power (one in English, one in math):
+
++ English: The probability that we reject the null hypothesis when the null hypothesis is false.
+  
++ Math: $P(\text{p-value} \leq \alpha | H_0$ is false)
+  
+<!--
+
++ Main things that affect statistical power:
+
+  + Bigger differences in the data $\rightarrow$ more power
+  
+  + Smaller variance/error in differences $\rightarrow$ more power
+  
+  + Bigger sample size $\rightarrow$ more power
+  
+  + More appropriate statistical test $\rightarrow$ more power
+
+Also remember: Type 1 error is falsely rejecting; Type 2 error is falsely failing to reject
+-->
+
+---
+
+## Toy example for understanding statistical power
+
+::: {style="font-size: 85%;"}
+
+Consider two samples:
+
+$$(X_1,\dots,X_n) \sim N(0, 1)$$
+$$(Y_1,\dots,Y_n) \sim N(\delta, 1)$$
+
+
+Let's say we use `t.test(x, y)`
+
+We'll simulate $\mathbf{X}$ and $\mathbf{Y}$ 1000 times for some $n$ and $\delta > 0$
+
+
+We'll count the number of times we reject
+
+$$\text{Power} = P(\text{p-value} \leq \alpha | H_0 \text{ false}) \\
+            = P(\text{p-value} \leq \alpha | \delta > 0) \\
+            \approx \frac{\text{# times reject}}{1000}$$
+            
+We'll consider $n = 10, 20, \dots, 1000$ and $\delta = 0.1$ or $\delta = 0.25$
+
+:::
+
+---
+
+## Toy example: power of $t$-test
+
+```{r}
+#| echo: false
+#| cache: true
+# This code chunk sets up the simulation data results:
+ttest_power_table <-
+  # First iterate over the two effect sizes:
+  map_dfr(c(.1, .25),
+          function(effect_size) {
+            
+            # Now iterate over n:
+            map_dfr(seq(10, 1000, by = 10),
+                    function(n_i) {
+                      
+                      # Run the follow 1000 times:
+                      map_dfr(1:1000,
+                              function(sim_i) {
+                                
+                                # Generate the first sample x:
+                                x <- rnorm(n_i, 0, 1)
+                                # And now y with the effect size:
+                                y <- rnorm(n_i, effect_size, 1)
+                                
+                                # Compute the t.test result:
+                                ttest_result <- t.test(x, y)
+                                
+                                # Return a table with the settings and decision
+                                # to reject with respect to alpha 0.05:
+                                tibble(delta = effect_size,
+                                       sample_size = n_i,
+                                       is_rej = 
+                                         as.numeric(ttest_result$p.value <= 0.05),
+                                       sim_id = sim_i)
+                                
+                              })
+                    })
+          }) |>
+  group_by(delta, sample_size) |>
+  summarize(power = mean(is_rej))
+```
+
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Generate power curve data for two effect sizes:
+library(latex2exp) # package to use latex math symbols in plots
+ttest_power_table |>
+  ggplot(aes(x = sample_size, y = power, color = as.factor(delta))) +
+  geom_point() +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Sample size n", y = "Power (across 1000 simulations)",
+       color = TeX(r'(Mean shift $\delta$)')) +
+  theme(legend.position = "bottom")
+
+
+```
+
+
+---
+
+## Another toy example 
+
+Consider two samples:
+
+$$(X_1,\dots,X_n) \sim N(0, 1)$$
+$$(Y_1,\dots,Y_n) \sim N(0, 1.5)$$
+
+
+Let's consider three ways to test differences:
+
+1. `t.test(x, y)`
+
+2. `bartlett.test(list(x, y))`
+
+3. `ks.test(x,y)`
+
+We'll simulate $\mathbf{X}$ and $\mathbf{Y}$ 1000 times for samples sizes $n = 10, 20, \dots, 1000$
+
+__What do you think the power curves will look like for these methods?__
+
+---
+
+## Comparison of power for the different tests
+
+```{r}
+#| echo: false
+#| cache: true
+# This code chunk sets up the simulation data results:
+comp_power_table <-
+  # Iterate over n:
+  map_dfr(seq(10, 1000, by = 10),
+          function(n_i) {
+            
+            # Run the follow 1000 times:
+            map_dfr(1:1000,
+                    function(sim_i) {
+                      
+                      # Generate the first sample x:
+                      x <- rnorm(n_i, 0, 1)
+                      # And now y with the different variance:
+                      y <- rnorm(n_i, 0, sqrt(1.5))
+                      
+                      # Compute the test results:
+                      ttest_result <- t.test(x, y)
+                      bartlett_result <- bartlett.test(list(x, y))
+                      ks_result <- ks.test(x, y)
+                      
+                      # Return a table with the settings and decision
+                      # to reject with respect to alpha 0.05:
+                      tibble(test_type = c("t-test", "Bartlett's test", 
+                                           "KS test"),
+                             pval = c(ttest_result$p.value,
+                                      bartlett_result$p.value,
+                                      ks_result$p.value)) |>
+                        mutate(is_rej = as.numeric(pval <= 0.05),
+                               sample_size = n_i,
+                               sim_id = sim_i)
+                      
+                    })
+          }) |>
+  group_by(test_type, sample_size) |>
+  summarize(power = mean(is_rej))
+```
+
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Generate power curve data for these methods
+comp_power_table |>
+  ggplot(aes(x = sample_size, y = power, color = test_type)) +
+  geom_point() +
+  geom_line() +
+  ggthemes::scale_color_colorblind() +
+  theme_bw() +
+  labs(x = "Sample size n", y = "Power (across 1000 simulations)",
+       color = "Test") +
+  theme(legend.position = "bottom")
+
+
+```
+
+---
+
+## Recap and next steps
+
+::: {style="font-size: 80%;"}
+
+Graphics should be paired with statistical analyses to determine if what you see is a _true effect_ versus noise
+
+__Even if there is a true effect, you may have limited power to detect it__ (some effects are easier to detect than others)
+  
+__Remember: Power is the probability you reject when the null is false.__ Things that increase statistical power:
+
++ Increase sample size
+
++ Reduce variance/error
+
++ Increase differences / effects
+
++ Choose appropriate tests!
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
++ **HW3 is due TONIGHT and you have Lab 5 on Friday**
+
++ **Next time**: 2D Quantitative Data - Scatterplots and Linear Regression
+
+:::
+
