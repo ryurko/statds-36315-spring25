@@ -2,50 +2,54 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://ryurko.github.io/statds-36315-spring25/lectures/04-power-multiple-testing.html</loc>
-    <lastmod>2025-02-10T01:52:14.350Z</lastmod>
+    <lastmod>2025-02-12T03:35:20.585Z</lastmod>
   </url>
   <url>
     <loc>https://ryurko.github.io/statds-36315-spring25/lectures/08-1dquant-inference.html</loc>
-    <lastmod>2025-02-10T01:52:14.350Z</lastmod>
+    <lastmod>2025-02-12T03:35:20.586Z</lastmod>
   </url>
   <url>
     <loc>https://ryurko.github.io/statds-36315-spring25/lectures/03-1dcat-infer.html</loc>
-    <lastmod>2025-02-10T01:52:14.350Z</lastmod>
+    <lastmod>2025-02-12T03:35:20.585Z</lastmod>
   </url>
   <url>
-    <loc>https://ryurko.github.io/statds-36315-spring25/lectures/01-intro.html</loc>
-    <lastmod>2025-02-10T01:52:14.350Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ryurko.github.io/statds-36315-spring25/index.html</loc>
-    <lastmod>2025-02-10T01:52:14.350Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ryurko.github.io/statds-36315-spring25/lectures.html</loc>
-    <lastmod>2025-02-10T01:52:14.350Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ryurko.github.io/statds-36315-spring25/demos/01-into-tidyverse.html</loc>
-    <lastmod>2025-02-10T01:52:14.350Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ryurko.github.io/statds-36315-spring25/demos.html</loc>
-    <lastmod>2025-02-10T01:52:14.349Z</lastmod>
+    <loc>https://ryurko.github.io/statds-36315-spring25/lectures/09-compare-distr-power.html</loc>
+    <lastmod>2025-02-12T03:35:20.586Z</lastmod>
   </url>
   <url>
     <loc>https://ryurko.github.io/statds-36315-spring25/lectures/02-1dcat.html</loc>
-    <lastmod>2025-02-10T01:52:14.350Z</lastmod>
+    <lastmod>2025-02-12T03:35:20.585Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ryurko.github.io/statds-36315-spring25/demos.html</loc>
+    <lastmod>2025-02-12T03:35:20.585Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ryurko.github.io/statds-36315-spring25/demos/01-into-tidyverse.html</loc>
+    <lastmod>2025-02-12T03:35:20.585Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ryurko.github.io/statds-36315-spring25/lectures.html</loc>
+    <lastmod>2025-02-12T03:35:20.585Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ryurko.github.io/statds-36315-spring25/index.html</loc>
+    <lastmod>2025-02-12T03:35:20.585Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ryurko.github.io/statds-36315-spring25/lectures/01-intro.html</loc>
+    <lastmod>2025-02-12T03:35:20.585Z</lastmod>
   </url>
   <url>
     <loc>https://ryurko.github.io/statds-36315-spring25/lectures/05-2dcat.html</loc>
-    <lastmod>2025-02-10T01:52:14.350Z</lastmod>
+    <lastmod>2025-02-12T03:35:20.586Z</lastmod>
   </url>
   <url>
     <loc>https://ryurko.github.io/statds-36315-spring25/lectures/06-1dquant.html</loc>
-    <lastmod>2025-02-10T01:52:14.350Z</lastmod>
+    <lastmod>2025-02-12T03:35:20.586Z</lastmod>
   </url>
   <url>
     <loc>https://ryurko.github.io/statds-36315-spring25/lectures/07-density-estimation.html</loc>
-    <lastmod>2025-02-10T01:52:14.350Z</lastmod>
+    <lastmod>2025-02-12T03:35:20.586Z</lastmod>
   </url>
 </urlset>
