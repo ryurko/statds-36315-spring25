@@ -10,8 +10,8 @@
   <meta name="generator" content="quarto-1.6.40">
 
   <meta name="author" content="Prof Ron Yurko">
-  <meta name="dcterms.date" content="2025-01-29">
-  <title>Statistical Graphics and Visualization 36-315 Spring 25 – Visualizations and Inference for 2D Categorical Data</title>
+  <meta name="dcterms.date" content="2025-02-17">
+  <title>Statistical Graphics and Visualization 36-315 Spring 25 – 2D Quantitative Data: Scatterplots and Linear Regression</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -195,7 +195,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Visualizations and Inference for 2D Categorical Data</h1>
+  <h1 class="title">2D Quantitative Data: Scatterplots and Linear Regression</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -205,350 +205,269 @@ Prof Ron Yurko
 </div>
 </div>
 
-  <p class="date">2025-01-29</p>
+  <p class="date">2025-02-17</p>
 </section>
 <section id="announcements-previously-and-today" class="slide level2">
 <h2>Announcements, previously, and today…</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 60%;">
+<p><strong>HW4 is due Wednesday by 11:59 PM and you have Lab 6 again on Friday!</strong></p>
+<p><strong>Take-home exam is next week Wednesday Feb 26th</strong></p>
+<p>Here’s how the exam will work:</p>
 <ul>
-<li><p><strong>HW1 is due TONIGHT by 11:59 PM</strong></p></li>
-<li><p><strong>You have Lab 3 again on Friday</strong></p></li>
-</ul>
-<p>Office hours schedule:</p>
-<ul>
-<li><p>My office hours (BH 132D): Wednesdays and Thursdays @ 2 PM</p></li>
-<li><p>Anna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM</p></li>
+<li><p>I’ll post the exam Monday evening, and it’s due Wednesday by 11:59 PM EDT (Feb 26th)</p></li>
+<li><p>Exam will cover material from HW 1-4 and Labs 1-6</p></li>
+<li><p>Questions will be similar to homeworks but more open-ended, e.g, instead of “make a side-by-side violin plot…” I’ll ask “Make a plot that compares the conditional distributions…”</p></li>
+<li><p><strong>There will NOT be class on Wednesday Feb 26th</strong></p></li>
+<li><p>Conflict Feb 26th? <strong>Let me know ASAP!</strong> Day-of accommodations will NOT be made, late submissions will NOT be accepted</p></li>
 </ul>
 </div>
 <div class="fragment">
-<div style="font-size: 80%;">
+<div style="font-size: 60%;">
+<p>Discussed power in the context of visualizations and statistical tests</p>
+<p>Even if there is a true effect, you may have limited power to detect it</p>
+<p>Several ways to formally compare distributions:</p>
 <ul>
-<li><p>Discussed how similar looking graphics can have very different statistical results (thinking about power)</p></li>
-<li><p>Discussed the challenges of multiple testing</p></li>
+<li><p><span class="math inline">\(t\)</span>-test: Compare means</p></li>
+<li><p>Bartlett’s test: Compare variances</p></li>
+<li><p>KS test: Compare distributions</p></li>
 </ul>
 </div>
 </div>
 <div class="fragment">
 <div style="font-size: 80%;">
-<p><strong>TODAY:</strong></p>
+<p><strong>TODAY:</strong> 2D quantitative data, scatterplots, and linear regression</p>
+</div>
+</div>
+</section>
+<section id="d-quantitative-data" class="slide level2">
+<h2>2D quantitative data</h2>
 <ul>
-<li><p>Visuals for 2D categorical data</p></li>
-<li><p>How do we visualize inference for 2D categorical data?</p></li>
+<li>We’re working with two variables: <span class="math inline">\((X, Y) \in \mathbb{R}^2\)</span>, i.e., dataset with <span class="math inline">\(n\)</span> rows and 2 columns</li>
+</ul>
+<div class="fragment">
+<ul>
+<li><p>Goals:</p>
+<ul>
+<li><p>describing the relationships between two variables</p></li>
+<li><p>describing the conditional distribution <span class="math inline">\(Y | X\)</span> via regression analysis</p></li>
+<li><p>describing the joint distribution <span class="math inline">\(X,Y\)</span> via contours, heatmaps, etc.</p></li>
+</ul></li>
 </ul>
 </div>
+<div class="fragment">
+<ul>
+<li><p>Few big picture ideas to keep in mind:</p>
+<ul>
+<li><p>scatterplots are by far the most common visual</p></li>
+<li><p>regression analysis is by far the most popular analysis (you have a whole class on this…)</p></li>
+<li><p>relationships may vary across other variables, e.g., categorical variables</p></li>
+</ul></li>
+</ul>
 </div>
 </section>
-<section id="d-categorical-basics" class="slide level2">
-<h2>2D categorical basics</h2>
-</section>
-<section id="d-categorical-basics-1" class="slide level2">
-<h2>2D categorical basics</h2>
+<section id="making-scatterplots-with-geom_point" class="slide level2">
+<h2>Making scatterplots with <code>geom_point()</code></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">addmargins</span>(<span class="fu">table</span>(<span class="st">"Species"</span> <span class="ot">=</span> penguins<span class="sc">$</span>species, <span class="st">"Island"</span> <span class="ot">=</span> penguins<span class="sc">$</span>island))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>           Island
-Species     Biscoe Dream Torgersen Sum
-  Adelie        44    56        52 152
-  Chinstrap      0    68         0  68
-  Gentoo       124     0         0 124
-  Sum          168   124        52 344</code></pre>
-</div>
-</div>
-<ul>
-<li><p>Column and row sums: marginal distributions</p></li>
-<li><p>Values within rows: conditional distribution for <code>Island</code> given <code>Species</code></p></li>
-<li><p>Values within columns: conditional distribution for <code>Species</code> given <code>Island</code></p></li>
-<li><p>Bottom right: total number of observations</p></li>
-</ul>
-</section>
-<section id="connecting-distributions-to-visualizations" class="slide level2">
-<h2>Connecting distributions to visualizations</h2>
-<p>Five distributions for two categorical variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>:</p>
-<ul>
-<li><p><strong>Marginals</strong>: <span class="math inline">\(P(A)\)</span> and <span class="math inline">\(P(B)\)</span></p></li>
-<li><p><strong>Conditionals</strong>: <span class="math inline">\(P(A | B)\)</span> and <span class="math inline">\(P(B|A)\)</span></p></li>
-<li><p><strong>Joint</strong>: <span class="math inline">\(P(A, B)\)</span></p></li>
-</ul>
-<p>We use bar charts to visualize marginal distributions for categorical variables…</p>
-<div class="fragment">
-<p><strong>And we’ll use more bar charts to visualize conditional and joint distributions!</strong></p>
-</div>
-</section>
-<section id="stacked-bar-charts---a-bar-chart-of-spine-charts" class="slide level2">
-<h2>Stacked bar charts - a bar chart of spine charts</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span></span>
-<span id="cb3-3"><a></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span> </span>
-<span id="cb3-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1" data-code-line-numbers="2-3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g)) <span class="sc">+</span></span>
+<span id="cb1-3"><a></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
-<ul>
-<li><p>Easy to see marginal of <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Harder to see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
-</ul>
+<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="always-adjust-the-alpha" class="slide level2">
+<h2>ALWAYS adjust the <code>alpha</code></h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g)) <span class="sc">+</span></span>
+<span id="cb2-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
-</section>
-<section id="side-by-side-bar-charts" class="slide level2">
-<h2>Side-by-side bar charts</h2>
+<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="map-categorical-variable-to-color" class="slide level2">
+<h2>Map categorical variable to <code>color</code></h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g,</span>
+<span id="cb3-3"><a></a>             <span class="at">color =</span> species)) <span class="sc">+</span></span>
+<span id="cb3-4"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="map-continuous-variable-to-color" class="slide level2">
+<h2>Map continuous variable to <code>color</code></h2>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb4" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb4-3"><a></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb4-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g,</span>
+<span id="cb4-3"><a></a>             <span class="at">color =</span> body_mass_g)) <span class="sc">+</span></span>
+<span id="cb4-4"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
-<ul>
-<li><p>Easy to see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
-</ul>
-</div>
-</section>
-<section id="side-by-side-bar-charts-1" class="slide level2">
-<h2>Side-by-side bar charts</h2>
+<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="map-continuous-variable-to-color-1" class="slide level2">
+<h2>Map continuous variable to <code>color</code></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb5-3"><a></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">preserve =</span> <span class="st">"single"</span>)) <span class="sc">+</span></span>
-<span id="cb5-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g,</span>
+<span id="cb5-3"><a></a>             <span class="at">color =</span> body_mass_g)) <span class="sc">+</span></span>
+<span id="cb5-4"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb5-5"><a></a>  <span class="fu">scale_color_gradient</span>(<span class="at">low =</span> <span class="st">"darkblue"</span>, <span class="at">high =</span> <span class="st">"darkorange"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
-<ul>
-<li><p>Easy to see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
-</ul>
-</div>
-</section>
-<section id="complete-missing-values-to-preserve-location" class="slide level2">
-<h2><a href="https://tidyr.tidyverse.org/reference/complete.html">Complete</a> missing values to preserve location</h2>
+<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="map-continuous-variable-to-size" class="slide level2">
+<h2>Map continuous variable to <code>size</code></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6" data-code-line-numbers="2-6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a></a>  <span class="fu">count</span>(species, island) <span class="sc">|&gt;</span></span>
-<span id="cb6-3"><a></a>  <span class="fu">complete</span>(<span class="at">species =</span> <span class="fu">unique</span>(species), <span class="at">island =</span> <span class="fu">unique</span>(island), </span>
-<span id="cb6-4"><a></a>           <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">n =</span> <span class="dv">0</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">y =</span> n, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb6-6"><a></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb6-7"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g,</span>
+<span id="cb6-3"><a></a>             <span class="at">size =</span> body_mass_g)) <span class="sc">+</span></span>
+<span id="cb6-4"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="what-do-you-prefer" class="slide level2">
-<h2>What do you prefer?</h2>
-<div>
+<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="map-categorical-variable-to-shape" class="slide level2">
+<h2>Map categorical variable to <code>shape</code></h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g,</span>
+<span id="cb7-3"><a></a>             <span class="at">shape =</span> species)) <span class="sc">+</span></span>
+<span id="cb7-4"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
+<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="all-at-once" class="slide level2">
+<h2>ALL AT ONCE!</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> bill_depth_mm, <span class="at">y =</span> bill_length_mm,</span>
+<span id="cb8-3"><a></a>             <span class="at">color =</span> species, <span class="at">shape =</span> island, <span class="at">size =</span> body_mass_g)) <span class="sc">+</span></span>
+<span id="cb8-4"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
+<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section class="slide level2">
+
+
+<img data-src="https://images.squarespace-cdn.com/content/v1/5ce45e9df03bfe000172d138/1597870238202-3OWP5306LOI8P2HP02EN/Jeff+Goldblum+Your+Scientists+Were+so+preoccupied+with+whether+or+not+they+could+they+didn%27t+stop+to+think+if+they+should.jpg" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="displaying-trend-lines-linear-regression" class="slide level2">
+<h2>Displaying trend lines: linear regression</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb9" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g)) <span class="sc">+</span></span>
+<span id="cb9-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb9-4"><a></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-7-2.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
+<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="setup-and-motivation-for-linear-regression" class="slide level2">
+<h2>Setup and motivation for linear regression</h2>
+<div style="font-size: 85%;">
+<p>Consider an outcome <span class="math inline">\(Y \in \mathbb{R}\)</span> and covariate <span class="math inline">\(X \in \mathbb{R}\)</span></p>
+<ul>
+<li>We have <span class="math inline">\(n\)</span> observations: <span class="math inline">\((X_1, Y_1), \dots, (X_n, Y_n)\)</span></li>
+</ul>
+<p>Purpose of regression is to model <span class="math inline">\(\mathbb{E}[Y | X]\)</span></p>
+<p>Consider the case where <span class="math inline">\(X\)</span> takes on discrete values <span class="math inline">\(c_1, \dots, c_k\)</span></p>
+<p>Then most straightforward way to estimate <span class="math inline">\(\mathbb{E}[Y | X = c_j]\)</span> is to use the sample mean for subgroup <span class="math inline">\(X_i = c_j\)</span>:</p>
+<p><span class="math display">\[\hat{\mathbb{E}}[Y|X = c_j] = \frac{1}{N_j} \sum_{i: X_i = c_j} Y_i\]</span></p>
+<ul>
+<li>Graphs like side-by-side violin plots, facetted histograms, and overlaid density plots essentially compare <span class="math inline">\(\hat{\mathbb{E}}[Y|X = c_j]\)</span> for different categories</li>
+</ul>
+<p>But when <span class="math inline">\(X\)</span> is quantitative, what do we do?</p>
+<ul>
+<li>Use statistical model to “guess” <span class="math inline">\(\mathbb{E}[Y|X = x]\)</span>, even when we don’t observe <span class="math inline">\(X = x\)</span></li>
+</ul>
 </div>
 </section>
-<section id="chi-squared-test-for-1d-categorical-data" class="slide level2">
-<h2>Chi-squared test for 1D categorical data:</h2>
-<div style="font-size: 75%;">
+<section id="statistical-model-for-linear-regression" class="slide level2">
+<h2>Statistical Model for Linear Regression</h2>
+<p>Linear regression assumes <span class="math inline">\(Y_i \overset{iid}{\sim} N(\beta_0 + \beta_1 X_i, \sigma^2)\)</span></p>
 <ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: <span class="math inline">\(p_1 = p_2 = \dots = p_K\)</span>, compute the test statistic:</li>
+<li><p><span class="math inline">\(\beta_0\)</span>: <em>intercept</em> - population mean outcome when <span class="math inline">\(X = 0\)</span>; i.e., <span class="math inline">\(\mathbb{E}[Y | X = 0]\)</span></p></li>
+<li><p><span class="math inline">\(\beta_1\)</span>: <em>slope</em> - population mean <em>change</em> in <span class="math inline">\(Y\)</span> when <span class="math inline">\(X\)</span> increases by 1</p></li>
+<li><p><span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are parameters that must be estimated</p></li>
 </ul>
-<p><span class="math display">\[
-\chi^2 = \sum_{j=1}^K \frac{(O_j - E_j)^2}{E_j}
-\]</span></p>
+<!--
+
+The assumptions baked into this model are:
+
+1. Normality
+
+2. Equal variance
+
+3. Independent errors
+
+4. Linearity
+
+5. Fixed $X$
+
+-->
+</section>
+<section id="assessing-assumptions-of-linear-regression" class="slide level2">
+<h2>Assessing assumptions of linear regression</h2>
+<p>Linear regression assumes <span class="math inline">\(Y_i \overset{iid}{\sim} N(\beta_0 + \beta_1 X_i, \sigma^2)\)</span></p>
 <ul>
-<li><p><span class="math inline">\(O_j\)</span>: observed counts in category <span class="math inline">\(j\)</span></p></li>
-<li><p><span class="math inline">\(E_j\)</span>: expected counts under <span class="math inline">\(H_0\)</span>, i.e., each category is equally to occur <span class="math inline">\(n / K = p_1 = p_2 = \dots = p_K\)</span></p></li>
+<li>If this is true, then <span class="math inline">\(Y_i - \hat{Y}_i \overset{iid}{\sim} N(0, \sigma^2)\)</span></li>
+</ul>
+<div class="fragment">
+<p>Plot residuals against <span class="math inline">\(\hat{Y}_i\)</span>, <strong>residuals vs fit</strong> plot</p>
+<ul>
+<li><p>Used to assess linearity, any divergence from mean 0</p></li>
+<li><p>Used to assess equal variance, i.e., if <span class="math inline">\(\sigma^2\)</span> is homogenous across predictions/fits <span class="math inline">\(\hat{Y}_i\)</span></p></li>
 </ul>
 </div>
 <div class="fragment">
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Chi-squared test for given probabilities
-
-data:  table(penguins$species)
-X-squared = 31.907, df = 2, p-value = 1.179e-07</code></pre>
-</div>
-</div>
+<p>More difficult to assess the independence and fixed <span class="math inline">\(X\)</span> assumptions</p>
+<ul>
+<li>Make these assumptions based on subject-matter knowledge</li>
+</ul>
 </div>
 </section>
-<section id="inference-for-2d-categorical-data" class="slide level2">
-<h2>Inference for 2D categorical data</h2>
-<div style="font-size: 75%;">
-<p>Again we use the <strong>chi-squared test</strong>:</p>
-<ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent, compute the test statistic:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_{ij}\)</span>: observed counts in contingency table</p></li>
-<li><p><span class="math inline">\(E_{ij}\)</span>: expected counts under <span class="math inline">\(H_0\)</span></p></li>
-</ul>
-<p><span class="math display">\[
-\begin{aligned}
-E_{ij} &amp;= n \cdot P(A = a_i, B = b_j) \\
-&amp;= n \cdot P(A = a_i) P(B = b_j) \\
-&amp;= n \cdot \left( \frac{n_{i \cdot}}{n} \right) \left( \frac{ n_{\cdot j}}{n} \right)
-\end{aligned}
-\]</span></p>
+<section id="residual-vs-fit-plots" class="slide level2">
+<h2>Residual vs fit plots</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>lin_reg <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> flipper_length_mm, <span class="at">data =</span> penguins)</span>
+<span id="cb10-2"><a></a></span>
+<span id="cb10-3"><a></a><span class="fu">tibble</span>(<span class="at">fits =</span> <span class="fu">fitted</span>(lin_reg), <span class="at">residuals =</span> <span class="fu">residuals</span>(lin_reg)) <span class="sc">|&gt;</span></span>
+<span id="cb10-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> fits, <span class="at">y =</span> residuals)) <span class="sc">+</span></span>
+<span id="cb10-5"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb10-6"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
+<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="residual-vs-fit-plots-1" class="slide level2">
+<h2>Residual vs fit plots</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb11" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">tibble</span>(<span class="at">fits =</span> <span class="fu">fitted</span>(lin_reg), <span class="at">residuals =</span> <span class="fu">residuals</span>(lin_reg)) <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> fits, <span class="at">y =</span> residuals)) <span class="sc">+</span></span>
+<span id="cb11-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb11-4"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb11-5"><a></a>  <span class="fu">geom_smooth</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="examples-of-residual-vs-fit-plots" class="slide level2">
+<h2>Examples of Residual-vs-Fit Plots</h2>
 </section>
-<section id="inference-for-2d-categorical-data-1" class="slide level2">
-<h2>Inference for 2D categorical data</h2>
-<div style="font-size: 75%;">
-<p>Again we use the <strong>chi-squared test</strong>:</p>
-<ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent, compute the test statistic:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_{ij}\)</span>: observed counts in contingency table</p></li>
-<li><p><span class="math inline">\(E_{ij}\)</span>: expected counts under <span class="math inline">\(H_0\)</span></p></li>
-</ul>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Pearson's Chi-squared test
-
-data:  table(penguins$species, penguins$island)
-X-squared = 299.55, df = 4, p-value &lt; 2.2e-16</code></pre>
-</div>
-</div>
-</section>
-<section id="visualize-independence-test-with-mosaic-plots" class="slide level2">
-<h2>Visualize independence test with mosaic plots</h2>
-<div style="font-size: 75%;">
-<p>Two variables are <strong>independent</strong> if knowing the level of one tells us nothing about the other</p>
-<ul>
-<li>i.e.&nbsp;<span class="math inline">\(P(A | B) = P(A)\)</span>, and that <span class="math inline">\(P(A, B) = P(A) \times P(B)\)</span></li>
-</ul>
-<p>Create a <strong>mosaic</strong> plot using <strong>base <code>R</code></strong></p>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="shade-by-pearson-residuals" class="slide level2">
-<h2>Shade by <em>Pearson residuals</em></h2>
-<div style="font-size: 75%;">
-<ul>
-<li>The <strong>test statistic</strong> is:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li>Define the <em>Pearson residuals</em> as:</li>
-</ul>
-<p><span class="math display">\[r_{ij} = \frac{O_{ij} - E_{ij}}{\sqrt{E_{ij}}}\]</span></p>
-<ul>
-<li>Side-note: In general, Pearson residuals are <span class="math inline">\(\frac{\text{residuals}}{\sqrt{\text{variance}}}\)</span></li>
-</ul>
-</div>
-<div class="fragment">
-<div style="font-size: 75%;">
-<ul>
-<li><p><span class="math inline">\(r_{ij} \approx 0 \rightarrow\)</span> observed counts are close to expected counts</p></li>
-<li><p><span class="math inline">\(|r_{ij}| &gt; 2 \rightarrow\)</span> “significant” at level <span class="math inline">\(\alpha = 0.05\)</span>.</p></li>
-<li><p>Very positive <span class="math inline">\(r_{ij} \rightarrow\)</span> more than expected, while very negative <span class="math inline">\(r_{ij} \rightarrow\)</span> fewer than expected</p></li>
-<li><p><strong>Color by Pearson residuals</strong> to tell us which combos are much bigger/smaller than expected.</p></li>
-</ul>
-</div>
-</div>
-</section>
-<section class="slide level2">
-
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island), <span class="at">shade =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section class="slide level2">
-
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>island, penguins<span class="sc">$</span>sex), <span class="at">shade =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb13-2"><a></a>           <span class="at">main =</span> <span class="st">"Distribution of penguins' sex does not vary across islands"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="titanic-dataset-example" class="slide level2">
-<h2>Titanic Dataset Example</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>titanic <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/ryurko/DataViz-Class-Data/main/titanic.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><strong>Question</strong>: Does survival (yes/no) depend on cabin (1st/2nd/3rd)?</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">table</span>(<span class="st">"Survived?"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Survived, <span class="st">"Class"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Pclass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>         Class
-Survived?   1   2   3
-        0  64  90 270
-        1 120  83  85</code></pre>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(<span class="st">"Survived?"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Survived, <span class="st">"Class"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Pclass))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Pearson's Chi-squared test
-
-data:  table(`Survived?` = titanic$Survived, Class = titanic$Pclass)
-X-squared = 91.081, df = 2, p-value &lt; 2.2e-16</code></pre>
-</div>
-</div>
-<p><strong>Conclusion</strong>: Class and survival are dependent - but how?</p>
-</div>
-</section>
-<section class="slide level2">
-
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(titanic<span class="sc">$</span>Pclass, titanic<span class="sc">$</span>Survived), <span class="at">shade =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb19-2"><a></a>           <span class="at">xlab =</span> <span class="st">"Passenger Class"</span>, <span class="at">ylab =</span> <span class="st">"Survived?"</span>, <span class="at">main =</span> <span class="st">"How are they related?"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="guardian-1000-songs-to-hear-before-you-die" class="slide level2">
-<h2><a href="https://www.theguardian.com/news/datablog/2009/mar/20/1">Guardian</a>: 1000 songs to hear before you die</h2>
-
-<img data-src="https://upload.wikimedia.org/wikipedia/commons/8/84/Mosaic-big.png?20090726044211" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
-<section class="slide level2">
-
-
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="recap-and-next-steps" class="slide level2">
 <h2>Recap and next steps</h2>
-<div style="font-size: 75%;">
+<div style="font-size: 80%;">
+<p>Scatterplots are the most common visual for 2D quantitative variables</p>
 <ul>
-<li><p>For 2D categorical data we create visualizations for marginal, conditional, and joint distributions</p></li>
-<li><p>Can create stacked and side-by-side bar charts to visualize 2D categorical data</p></li>
-<li><p>Perform 2D Chi-squared test to test if two categorical variables are associated with each other</p></li>
-<li><p>Create mosaic plots to visualize 2D categorical data</p></li>
-<li><p>Shade mosaic plot tiles by Pearson residuals to see what drives association between two categorical variables (if any)</p></li>
+<li>Many ways to incorporate additional dimensions in scatterplots, e.g., color and shape</li>
 </ul>
+<p>Linear regression is by far the most common model for describing the relationship between 2+ quantitative variables</p>
+<ul>
+<li>Can also: transform the outcome, transform the covariates, do nonparametric “smoothing”</li>
+</ul>
+<p>Use graphs to assess linear regression assumptions, i.e., residual diagnostic plots</p>
 </div>
 <div class="fragment">
-<div style="font-size: 75%;">
+<div style="font-size: 80%;">
 <ul>
-<li><p><strong>HW1 is due TONIGHT and you have Lab 3 on Friday!</strong></p></li>
-<li><p><strong>Next time</strong>: Visualizing 1D quantitative data</p></li>
-<li><p>Recommended reading: <a href="https://clauswilke.com/dataviz/nested-proportions.html">CW Chapter 11 Visualizing nested proportions</a></p></li>
+<li><p><strong>HW4 due Wednesday and you have Lab 6 on Friday</strong></p></li>
+<li><p><strong>Graphics critique due Feb 28th!</strong></p></li>
+<li><p><strong>Next time</strong>: Inference with Linear Regression</p></li>
+<li><p>Recommended reading: <a href="https://clauswilke.com/dataviz/visualizing-associations.html">CW Chapter 12 Visualizing associations among two or more quantitative variables</a></p></li>
 </ul>
 </div>
 
