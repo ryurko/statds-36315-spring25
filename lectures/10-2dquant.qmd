@@ -1,0 +1,368 @@
+---
+title: "2D Quantitative Data: Scatterplots and Linear Regression"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-02-17
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 60%;"}
+
+**HW4 is due Wednesday by 11:59 PM and you have Lab 6 again on Friday!**
+
+**Take-home exam is next week Wednesday Feb 26th**
+
+Here's how the exam will work:
+
++ I'll post the exam Monday evening, and it's due Wednesday by 11:59 PM EDT (Feb 26th)
+  
++ Exam will cover material from HW 1-4 and Labs 1-6
+  
++ Questions will be similar to homeworks but more open-ended, e.g, instead of "make a side-by-side violin plot..." I'll ask "Make a plot that compares the conditional distributions..."
+  
++ __There will NOT be class on Wednesday Feb 26th__ 
+  
++ Conflict Feb 26th? __Let me know ASAP!__ Day-of accommodations will NOT be made, late submissions will NOT be accepted
+
+:::
+
+. . .
+
+::: {style="font-size: 60%;"}
+
+
+Discussed power in the context of visualizations and statistical tests
+
+Even if there is a true effect, you may have limited power to detect it
+
+Several ways to formally compare distributions:
+
+* $t$-test: Compare means
+
+* Bartlett's test: Compare variances
+
+* KS test: Compare distributions
+
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+**TODAY:** 2D quantitative data, scatterplots, and linear regression
+
+:::
+
+---
+
+## 2D quantitative data
+
+- We're working with two variables: $(X, Y) \in \mathbb{R}^2$, i.e., dataset with $n$ rows and 2 columns
+
+. . .
+
+- Goals:
+
+  - describing the relationships between two variables
+  
+  - describing the conditional distribution $Y | X$ via regression analysis
+  
+  - describing the joint distribution $X,Y$ via contours, heatmaps, etc.
+  
+. . .
+
+- Few big picture ideas to keep in mind:
+
+  - scatterplots are by far the most common visual
+  
+  - regression analysis is by far the most popular analysis (you have a whole class on this...)
+  
+  - relationships may vary across other variables, e.g., categorical variables
+  
+---
+
+## Making scatterplots with `geom_point()`
+
+```{r}
+#| code-line-numbers: "2-3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point()
+```
+
+
+---
+
+## ALWAYS adjust the `alpha`
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(alpha = 0.5)
+```
+
+---
+
+## Map categorical variable to `color`
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g,
+             color = species)) +
+  geom_point(alpha = 0.5)
+```
+
+---
+
+## Map continuous variable to `color`
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g,
+             color = body_mass_g)) +
+  geom_point(alpha = 0.5)
+```
+
+---
+
+## Map continuous variable to `color`
+
+```{r}
+#| code-line-numbers: "5"
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g,
+             color = body_mass_g)) +
+  geom_point(alpha = 0.5) +
+  scale_color_gradient(low = "darkblue", high = "darkorange")
+```
+
+---
+
+## Map continuous variable to `size`
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g,
+             size = body_mass_g)) +
+  geom_point(alpha = 0.5)
+```
+
+---
+
+## Map categorical variable to `shape`
+
+
+```{r}
+#| code-line-numbers: "3"
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g,
+             shape = species)) +
+  geom_point(alpha = 0.5)
+```
+
+---
+
+## ALL AT ONCE!
+
+```{r}
+penguins |>
+  ggplot(aes(x = bill_depth_mm, y = bill_length_mm,
+             color = species, shape = island, size = body_mass_g)) +
+  geom_point(alpha = 0.5) 
+```
+
+
+---
+
+![](https://images.squarespace-cdn.com/content/v1/5ce45e9df03bfe000172d138/1597870238202-3OWP5306LOI8P2HP02EN/Jeff+Goldblum+Your+Scientists+Were+so+preoccupied+with+whether+or+not+they+could+they+didn%27t+stop+to+think+if+they+should.jpg){fig-align="center"}
+
+
+---
+
+## Displaying trend lines: linear regression
+
+```{r}
+#| code-line-numbers: "4"
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm")
+```
+
+
+---
+
+## Setup and motivation for linear regression
+
+
+::: {style="font-size: 85%;"}
+
+Consider an outcome $Y \in \mathbb{R}$ and covariate $X \in \mathbb{R}$
+
+  + We have $n$ observations: $(X_1, Y_1), \dots, (X_n, Y_n)$
+  
+Purpose of regression is to model $\mathbb{E}[Y | X]$
+
+Consider the case where $X$ takes on discrete values $c_1, \dots, c_k$
+
+Then most straightforward way to estimate $\mathbb{E}[Y | X = c_j]$ is to use the sample mean for subgroup $X_i = c_j$:
+
+$$\hat{\mathbb{E}}[Y|X = c_j] = \frac{1}{N_j} \sum_{i: X_i = c_j} Y_i$$
+
++ Graphs like side-by-side violin plots, facetted histograms, and overlaid density plots essentially compare $\hat{\mathbb{E}}[Y|X = c_j]$ for different categories
+
+But when $X$ is quantitative, what do we do?
+
++ Use statistical model to "guess" $\mathbb{E}[Y|X = x]$, even when we don't observe $X = x$
+
+:::
+
+---
+
+## Statistical Model for Linear Regression
+
+Linear regression assumes $Y_i \overset{iid}{\sim} N(\beta_0 + \beta_1 X_i, \sigma^2)$
+
+- $\beta_0$: _intercept_ - population mean outcome when $X = 0$; i.e., $\mathbb{E}[Y | X = 0]$
+
+- $\beta_1$: _slope_ - population mean _change_ in $Y$ when $X$ increases by 1
+
+- $\beta_0$ and $\beta_1$ are parameters that must be estimated
+
+<!--
+
+The assumptions baked into this model are:
+
+1. Normality
+
+2. Equal variance
+
+3. Independent errors
+
+4. Linearity
+
+5. Fixed $X$
+
+-->
+
+---
+
+## Assessing assumptions of linear regression
+
+Linear regression assumes $Y_i \overset{iid}{\sim} N(\beta_0 + \beta_1 X_i, \sigma^2)$
+
+- If this is true, then $Y_i - \hat{Y}_i \overset{iid}{\sim} N(0, \sigma^2)$
+
+. . .
+
+Plot residuals against $\hat{Y}_i$, __residuals vs fit__ plot
+
+- Used to assess linearity, any divergence from mean 0
+
+- Used to assess equal variance, i.e., if $\sigma^2$ is homogenous across predictions/fits $\hat{Y}_i$
+
+. . .
+
+More difficult to assess the independence and fixed $X$ assumptions
+
+- Make these assumptions based on subject-matter knowledge
+
+---
+
+## Residual vs fit plots
+
+
+```{r}
+lin_reg <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
+
+tibble(fits = fitted(lin_reg), residuals = residuals(lin_reg)) |>
+  ggplot(aes(x = fits, y = residuals)) +
+  geom_point(alpha = 0.5) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red")
+```
+
+
+---
+
+## Residual vs fit plots
+
+```{r}
+#| code-line-numbers: "5"
+tibble(fits = fitted(lin_reg), residuals = residuals(lin_reg)) |>
+  ggplot(aes(x = fits, y = residuals)) +
+  geom_point(alpha = 0.5) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  geom_smooth()
+```
+
+---
+
+## Examples of Residual-vs-Fit Plots
+
+
+
+
+---
+
+## Recap and next steps
+
+::: {style="font-size: 80%;"}
+
+Scatterplots are the most common visual for 2D quantitative variables
+
++ Many ways to incorporate additional dimensions in scatterplots, e.g., color and shape
+
+Linear regression is by far the most common model for describing the relationship between 2+ quantitative variables
+
++ Can also: transform the outcome, transform the covariates, do nonparametric "smoothing"
+
+Use graphs to assess linear regression assumptions, i.e., residual diagnostic plots
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
++ **HW4 due Wednesday and you have Lab 6 on Friday**
+
++ **Graphics critique due Feb 28th!**
+
++ **Next time**: Inference with Linear Regression
+
++ Recommended reading: [CW Chapter 12 Visualizing associations among two or more quantitative variables](https://clauswilke.com/dataviz/visualizing-associations.html)
+
+:::
+
