@@ -14,5 +14,6 @@ title: "Lectures"
 | 8         | Feb 10  | Graphical Inference for 1D Quantitative Data  | [slides](lectures/08-1dquant-inference.qmd)        |
 | 9         | Feb 12  | Comparing Distributions and Statistical Power  | [slides](lectures/09-compare-distr-power.qmd)        |
 | 10        | Feb 17  | Scatterplots and Linear Regression  | [slides](lectures/10-2dquant.qmd)        |
+| 11        | Feb 19  | Inference with Linear Regression  | [slides](lectures/11-regression-inference.qmd)        |
 
 

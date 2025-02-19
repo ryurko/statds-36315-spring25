@@ -6,4 +6,5 @@ title: "Demos"
 |--------|---------|--------------------|--------------------------------------|
 | 1      | Jan 13  | Into the tidyverse | [HTML](demos/01-into-tidyverse.qmd)  |
 | 2      | Feb 17  | Scatterplots and Linear Regression | [HTML](demos/02-plot-2dquant.qmd)  |
+| 3      | Feb 19  | More Regression with Penguins | [HTML](demos/03-regression.qmd)  |
 
