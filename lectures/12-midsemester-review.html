@@ -10,8 +10,8 @@
   <meta name="generator" content="quarto-1.6.41">
 
   <meta name="author" content="Prof Ron Yurko">
-  <meta name="dcterms.date" content="2025-02-05">
-  <title>Statistical Graphics and Visualization 36-315 Spring 25 – Density Estimation</title>
+  <meta name="dcterms.date" content="2025-02-24">
+  <title>Statistical Graphics and Visualization 36-315 Spring 25 – Midsemester Review</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -195,7 +195,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Density Estimation</h1>
+  <h1 class="title">Midsemester Review</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -205,256 +205,308 @@ Prof Ron Yurko
 </div>
 </div>
 
-  <p class="date">2025-02-05</p>
+  <p class="date">2025-02-24</p>
 </section>
 <section id="announcements-previously-and-today" class="slide level2">
 <h2>Announcements, previously, and today…</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 70%;">
+<p><strong>Take-home exam is Wednesday Feb 26th!</strong></p>
+<p>Here’s how the exam will work:</p>
 <ul>
-<li><p><strong>HW2 is due TONIGHT by 11:59 PM</strong></p></li>
-<li><p><strong>You have Lab 4 again on Friday!</strong></p></li>
-</ul>
-<p>Office hours schedule:</p>
-<ul>
-<li><p>My office hours (BH 132D): Wednesdays and Thursdays @ 2 PM</p></li>
-<li><p>Anna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM</p></li>
+<li><p>I’ll post the exam tonight, and it’s due Wednesday by 11:59 PM EDT (Feb 26th)</p></li>
+<li><p>Exam will cover material from HW 1-4 and Labs 1-6</p></li>
+<li><p>Questions will be similar to homeworks but more open-ended, e.g, instead of “make a side-by-side violin plot…” I’ll ask “Make a plot that compares the conditional distributions…”</p></li>
+<li><p><strong>We do NOT have class on Wednesday Feb 26th</strong></p></li>
 </ul>
 </div>
 <div class="fragment">
-<div style="font-size: 80%;">
-<ul>
-<li><p>Visualize 1D quantitative data to inspect center, spread, and shape</p></li>
-<li><p>Boxplots are only a display of summary statistics (i.e., they suck)</p></li>
-<li><p>Histograms display shape of the distribution, but comes with tradeoffs</p></li>
-<li><p>Density curves provide an easy way to visualize conditional distributions</p></li>
-</ul>
+<div style="font-size: 70%;">
+<p>Use graphs to assess linear regression assumptions, i.e., residual diagnostic plots</p>
+<p>Discussed interpretation of coefficients, the role of categorical variables, and interactions</p>
 </div>
 </div>
 <div class="fragment">
 <div style="font-size: 80%;">
-<p><strong>TODAY:</strong></p>
-<ul>
-<li><p>Displaying smooth densities</p></li>
-<li><p>How does kernel density estimation work?</p></li>
-</ul>
+<p><strong>TODAY:</strong> Wrapping up regression and midsemester review!</p>
 </div>
 </div>
 </section>
-<section id="continuous-densities" class="slide level2">
-<h2>Continuous Densities</h2>
-<p>Distribution of any <strong>continuous</strong> random variable <span class="math inline">\(X\)</span> is defined by a <strong>probability density function</strong> (PDF), typically denoted by <span class="math inline">\(f(x)\)</span></p>
-<ul>
-<li><strong>Probability continuous variable <span class="math inline">\(X\)</span> takes a particular value is 0</strong>, <em>why?</em></li>
-</ul>
-<p>Use PDF to provide a relative likelihood,</p>
-<ul>
-<li>e.g., Normal distribution: <span class="math inline">\(f(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp(- \frac{(x - \mu)^2}{2\sigma^2})\)</span></li>
-</ul>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><strong>Properties of densities</strong></p>
-</div><div class="column" style="width:50%;">
-<p><strong>How do we estimate densities?</strong></p>
-</div></div>
-</section>
-<section id="normal-distribution" class="slide level2">
-<h2>Normal distribution</h2>
-
-<img data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Normal_Distribution_PDF.svg/440px-Normal_Distribution_PDF.svg.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
-<section id="uniform-distribution" class="slide level2">
-<h2>Uniform distribution</h2>
-
-<img data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Uniform_Distribution_PDF_SVG.svg/500px-Uniform_Distribution_PDF_SVG.svg.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
-<section id="gamma-also-exponential-and-chi-squared-distribution" class="slide level2">
-<h2>Gamma (also Exponential and Chi-squared) distribution</h2>
-
-<img data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Gamma_distribution_pdf.svg/650px-Gamma_distribution_pdf.svg.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
-<section id="beta-distribution" class="slide level2">
-<h2>Beta distribution</h2>
-
-<img data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Beta_distribution_pdf.svg/650px-Beta_distribution_pdf.svg.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
-<section id="normalize-histogram-frequencies-with-density" class="slide level2">
-<h2>Normalize histogram frequencies with density</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1" data-code-line-numbers="3-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb1-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm)) <span class="sc">+</span> </span>
-<span id="cb1-3"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density), <span class="at">fill =</span> species),</span>
-<span id="cb1-4"><a></a>                 <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="07-density-estimation_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="can-use-density-curves-instead" class="slide level2">
-<h2>Can use density curves instead</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb2" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm)) <span class="sc">+</span> </span>
-<span id="cb2-3"><a></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">color =</span> species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="07-density-estimation_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="kernel-density-estimation" class="slide level2">
-<h2>Kernel density estimation</h2>
-<p><strong>Goal</strong>: estimate PDF <span class="math inline">\(f(x)\)</span> for all possible values (assuming it is continuous &amp; smooth)</p>
-<div class="fragment">
-<p><span class="math display">\[
-\text{Kernel density estimate: } \hat{f}(x) = \frac{1}{n} \sum_{i=1}^n \frac{1}{h} K_h(x - x_i)
-\]</span></p>
-</div>
-<div class="fragment">
-<div style="font-size: 75%;">
-<ul>
-<li><span class="math inline">\(n =\)</span> sample size, <span class="math inline">\(x =\)</span> new point to estimate <span class="math inline">\(f(x)\)</span> (does NOT have to be in dataset!)</li>
-</ul>
-</div>
-</div>
-<div class="fragment">
-<div style="font-size: 75%;">
-<ul>
-<li><p><span class="math inline">\(h =\)</span> <strong>bandwidth</strong>, analogous to histogram bin width, ensures <span class="math inline">\(\hat{f}(x)\)</span> integrates to 1</p></li>
-<li><p><span class="math inline">\(x_i =\)</span> <span class="math inline">\(i\)</span>th observation in dataset</p></li>
-</ul>
-</div>
-</div>
-<div class="fragment">
-<div style="font-size: 75%;">
-<ul>
-<li><span class="math inline">\(K_h(x - x_i)\)</span> is the <strong>Kernel</strong> function, creates <strong>weight</strong> given distance of <span class="math inline">\(i\)</span>th observation from new point
-<ul>
-<li><p>as <span class="math inline">\(|x - x_i| \rightarrow \infty\)</span> then <span class="math inline">\(K_h(x - x_i) \rightarrow 0\)</span>, i.e.&nbsp;further apart <span class="math inline">\(i\)</span>th row is from <span class="math inline">\(x\)</span>, smaller the weight</p></li>
-<li><p>as <strong>bandwidth</strong> <span class="math inline">\(h \uparrow\)</span> weights are more evenly spread out (as <span class="math inline">\(h \downarrow\)</span> more concentrated around <span class="math inline">\(x\)</span>)</p></li>
-<li><p>typically use <a href="https://en.wikipedia.org/wiki/Normal_distribution"><strong>Gaussian</strong> / Normal</a> kernel: <span class="math inline">\(\propto e^{-(x - x_i)^2 / 2h^2}\)</span></p></li>
-<li><p><span class="math inline">\(K_h(x - x_i)\)</span> is large when <span class="math inline">\(x_i\)</span> is close to <span class="math inline">\(x\)</span></p></li>
-</ul></li>
-</ul>
-</div>
-</div>
-</section>
-<section id="wikipedia-example" class="slide level2">
-<h2><a href="https://en.wikipedia.org/wiki/Kernel_density_estimation">Wikipedia example</a></h2>
-
-<img data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Comparison_of_1D_histogram_and_KDE.png/1000px-Comparison_of_1D_histogram_and_KDE.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
-<section id="we-display-kernel-density-estimates-with-geom_density" class="slide level2">
-<h2>We display <strong>kernel density estimates</strong> with <a href="https://ggplot2.tidyverse.org/reference/geom_density.html"><code>geom_density()</code></a></h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm)) <span class="sc">+</span> </span>
-<span id="cb3-3"><a></a>  <span class="fu">geom_density</span>() <span class="sc">+</span></span>
-<span id="cb3-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="07-density-estimation_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="choice-of-kernel" class="slide level2">
-<h2>Choice of <a href="https://en.wikipedia.org/wiki/Kernel_(statistics)">kernel?</a></h2>
-
-<img data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Kernels.svg/1000px-Kernels.svg.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
-<section id="what-about-the-bandwidth" class="slide level2">
-<h2>What about the bandwidth?</h2>
-<p>Use <strong>Gaussian reference rule</strong> (<em>rule-of-thumb</em>) <span class="math inline">\(\approx 1.06 \cdot \sigma \cdot n^{-1/5}\)</span>, where <span class="math inline">\(\sigma\)</span> is the observed standard deviation</p>
-<p>Modify the bandwidth using the <code>adjust</code> argument - <strong>value to multiply default bandwidth by</strong></p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm)) <span class="sc">+</span> </span>
-<span id="cb4-3"><a></a>  <span class="fu">geom_density</span>(<span class="at">adjust =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb4-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="07-density-estimation_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="what-about-the-bandwidth-1" class="slide level2">
-<h2>What about the bandwidth?</h2>
-<p>Use <strong>Gaussian reference rule</strong> (<em>rule-of-thumb</em>) <span class="math inline">\(\approx 1.06 \cdot \sigma \cdot n^{-1/5}\)</span>, where <span class="math inline">\(\sigma\)</span> is the observed standard deviation</p>
-<p>Modify the bandwidth using the <code>adjust</code> argument - <strong>value to multiply default bandwidth by</strong></p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm)) <span class="sc">+</span> </span>
-<span id="cb5-3"><a></a>  <span class="fu">geom_density</span>(<span class="at">adjust =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb5-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="07-density-estimation_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="caution-dealing-with-bounded-data" class="slide level2">
-<h2>CAUTION: dealing with bounded data…</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">set.seed</span>(<span class="dv">101</span>)</span>
-<span id="cb6-2"><a></a>bound_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">fake_x =</span> <span class="fu">runif</span>(<span class="dv">100</span>))</span>
-<span id="cb6-3"><a></a></span>
-<span id="cb6-4"><a></a>bound_data <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> fake_x)) <span class="sc">+</span></span>
-<span id="cb6-6"><a></a>  <span class="fu">geom_density</span>() <span class="sc">+</span></span>
-<span id="cb6-7"><a></a>  <span class="fu">geom_rug</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> <span class="co">#&lt;&lt;</span></span>
-<span id="cb6-8"><a></a>  <span class="fu">stat_function</span>(<span class="at">data =</span> </span>
-<span id="cb6-9"><a></a>                  <span class="fu">tibble</span>(<span class="at">fake_x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)),</span>
-<span id="cb6-10"><a></a>                <span class="at">fun =</span> dunif, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb6-11"><a></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span>.<span class="dv">5</span>, <span class="fl">1.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="07-density-estimation_files/figure-revealjs/bound-dens-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="visualizing-conditional-distributions-violin-plots" class="slide level2">
-<h2>Visualizing conditional distributions: violin plots</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7" data-code-line-numbers="2-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">y =</span> flipper_length_mm)) <span class="sc">+</span></span>
-<span id="cb7-3"><a></a>  <span class="fu">geom_violin</span>() <span class="sc">+</span></span>
-<span id="cb7-4"><a></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="07-density-estimation_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="visualizing-conditional-distributions-violin-plots-1" class="slide level2">
-<h2>Visualizing conditional distributions: violin plots</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb8" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb8-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">y =</span> flipper_length_mm)) <span class="sc">+</span></span>
-<span id="cb8-3"><a></a>  <span class="fu">geom_violin</span>() <span class="sc">+</span> </span>
-<span id="cb8-4"><a></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> .<span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb8-5"><a></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="07-density-estimation_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="visualizing-conditional-distributions-ggridges" class="slide level2">
-<h2>Visualizing conditional distributions: <a href="https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html"><code>ggridges</code></a></h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9" data-code-line-numbers="1,3-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">library</span>(ggridges)</span>
-<span id="cb9-2"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> species)) <span class="sc">+</span></span>
-<span id="cb9-4"><a></a>  <span class="fu">geom_density_ridges</span>(<span class="at">rel_min_height =</span> <span class="fl">0.01</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="07-density-estimation_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="visualizing-conditional-distributions-ggbeeswarm" class="slide level2">
-<h2>Visualizing conditional distributions: <a href="https://github.com/eclarke/ggbeeswarm"><code>ggbeeswarm</code></a></h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb10" data-code-line-numbers="1,3-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">library</span>(ggbeeswarm)</span>
-<span id="cb10-2"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb10-3"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> species)) <span class="sc">+</span></span>
-<span id="cb10-4"><a></a>  <span class="fu">geom_beeswarm</span>(<span class="at">cex =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb10-5"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="07-density-estimation_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="recap-and-next-steps" class="slide level2">
-<h2>Recap and next steps</h2>
+<section id="understanding-interactions-categorical-example" class="slide level2">
+<h2>Understanding Interactions (Categorical Example)</h2>
 <div style="font-size: 80%;">
-<ul>
-<li><p>Smoothed densities are a flexible tool for visualizing 1D distribution</p></li>
-<li><p>There are two choices we need to make for kernel density estimation:</p>
+<p>Say we also have a quantitative variable <span class="math inline">\(X\)</span> (bill length). Consider two statistical models:</p>
 <ol type="1">
-<li><p>Bandwidth: Determines <em>smoothness</em> of distribution, usually data-driven choice</p></li>
-<li><p>Kernel: Determines how much <em>influence</em> each observation should have on each other during estimation, usually context driven</p></li>
-</ol></li>
-<li><p>Several other types of density-based displays: violins, ridges, beeswarm plots</p></li>
+<li><p><span class="math inline">\(Y_i \stackrel{iid}{\sim} N(\beta_0 + \beta_X X + \beta_C I_C + \beta_G I_G, \sigma^2)\)</span></p></li>
+<li><p><span class="math inline">\(Y_i \stackrel{iid}{\sim} N(\beta_0 + \beta_X X + \beta_C I_C + \beta_G I_G + \beta_{CX} I_C X + \beta_{GX} I_G X, \sigma^2)\)</span></p></li>
+</ol>
+</div>
+<div class="fragment">
+<div style="font-size: 80%;">
+<p>For Model 1…</p>
+<ul>
+<li><p>The intercept for Adelie is <span class="math inline">\(\beta_0\)</span>; for Chinstrap it is <span class="math inline">\(\beta_0 + \beta_C\)</span>; for Gentoo it is <span class="math inline">\(\beta_0 + \beta_G\)</span></p></li>
+<li><p>The slope for all species is <span class="math inline">\(\beta_X\)</span>.</p></li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<div style="font-size: 80%;">
+<p>For Model 2…</p>
+<ul>
+<li><p>The intercept for Adelie is <span class="math inline">\(\beta_0\)</span>; for Chinstrap it is <span class="math inline">\(\beta_0 + \beta_C\)</span>; for Gentoo it is <span class="math inline">\(\beta_0 + \beta_G\)</span>.</p></li>
+<li><p>The slope for Adelie is <span class="math inline">\(\beta_X\)</span>; for Chinstrap it is <span class="math inline">\(\beta_X + \beta_{CX}\)</span>; for Gentoo it is <span class="math inline">\(\beta_X + \beta_{GX}\)</span></p></li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<div style="font-size: 80%;">
+<p>Significant coefficient for categorical variables by themselves? Significantly different intercepts</p>
+<p>Significant coefficient for interactions with categorical variables? Significantly different slopes</p>
+</div>
+</div>
+</section>
+<section id="model-2-bill_depth_mm-bill_length_mm-species" class="slide level2">
+<h2>Model 2: <code>bill_depth_mm</code> ~ <code>bill_length_mm</code> + <code>species</code></h2>
+
+<img data-src="12-midsemester-review_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section class="slide level2">
+
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">summary</span>(<span class="fu">lm</span>(bill_depth_mm <span class="sc">~</span> bill_length_mm <span class="sc">+</span> species, <span class="at">data =</span> penguins))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre style="font-size: 0.6em;"><code>
+Call:
+lm(formula = bill_depth_mm ~ bill_length_mm + species, data = penguins)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.4529 -0.6864 -0.0508  0.5519  3.5915 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      10.59218    0.68302  15.508  &lt; 2e-16 ***
+bill_length_mm    0.19989    0.01749  11.427  &lt; 2e-16 ***
+speciesChinstrap -1.93319    0.22416  -8.624 2.55e-16 ***
+speciesGentoo    -5.10602    0.19142 -26.674  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9533 on 338 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.769, Adjusted R-squared:  0.7669 
+F-statistic: 375.1 on 3 and 338 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="model-3-bill_depth_mm-bill_length_mm-species-bill_length_mm-times-species" class="slide level2">
+<h2>Model 3: <code>bill_depth_mm</code> ~ <code>bill_length_mm</code> + <code>species</code> + <code>bill_length_mm</code> <span class="math inline">\(\times\)</span> <code>species</code></h2>
+
+<img data-src="12-midsemester-review_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section class="slide level2">
+
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">summary</span>(<span class="fu">lm</span>(bill_depth_mm <span class="sc">~</span> bill_length_mm <span class="sc">*</span> species, <span class="at">data =</span> penguins))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre style="font-size: 0.5em;"><code>
+Call:
+lm(formula = bill_depth_mm ~ bill_length_mm * species, data = penguins)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.6574 -0.6675 -0.0524  0.5383  3.5032 
+
+Coefficients:
+                                Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                     11.40912    1.13812  10.025  &lt; 2e-16 ***
+bill_length_mm                   0.17883    0.02927   6.110 2.76e-09 ***
+speciesChinstrap                -3.83998    2.05398  -1.870 0.062419 .  
+speciesGentoo                   -6.15812    1.75451  -3.510 0.000509 ***
+bill_length_mm:speciesChinstrap  0.04338    0.04558   0.952 0.341895    
+bill_length_mm:speciesGentoo     0.02601    0.04054   0.642 0.521590    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9548 on 336 degrees of freedom
+  (2 observations deleted due to missingness)
+Multiple R-squared:  0.7697,    Adjusted R-squared:  0.7662 
+F-statistic: 224.5 on 5 and 336 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="a-few-linear-regression-warnings" class="slide level2">
+<h2>A Few Linear Regression Warnings</h2>
+<div style="font-size: 90%;">
+<p><strong>Simpson’s Paradox</strong></p>
+<ul>
+<li><p>There is a negative linear relationship between two variables but a positive linear relationship within every subpopulation</p></li>
+<li><p>In these cases, subgroup analysis is especially important</p></li>
+</ul>
+</div>
+<div class="fragment">
+<div style="font-size: 90%;">
+<p><strong>Is the intercept meaningful?</strong></p>
+<ul>
+<li>Think about whether <span class="math inline">\(X = 0\)</span> makes scientific sense for a particular variable before you interpret the intercept</li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<div style="font-size: 90%;">
+<p><strong>Interpolation versus Extrapolation</strong></p>
+<ul>
+<li><p>Interpolation is defined as prediction within the range of a variable</p></li>
+<li><p>Extrapolation is defined as prediction outside the range of a variable</p></li>
+<li><p>Generally speaking, interpolation is more reliable than extrapolation (less sensitive to model misspecification)</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="extrapolation-example" class="slide level2">
+<h2>Extrapolation Example</h2>
+
+<img data-src="12-midsemester-review_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="extrapolation-example-1" class="slide level2">
+<h2>Extrapolation Example</h2>
+
+<img data-src="12-midsemester-review_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="extrapolation-example-2" class="slide level2">
+<h2>Extrapolation Example</h2>
+
+<img data-src="12-midsemester-review_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="take-home-exam-logistics" class="slide level2">
+<h2>Take-home exam logistics</h2>
+<p><strong>I will post it today, due Wednesday Feb 26th by 11:59 PM ET on Gradescope</strong></p>
+<p>While the exam is in progress…</p>
+<ul>
+<li><p>You can <strong>NOT</strong> talk to anyone else about 36-315</p></li>
+<li><p>You can <strong>NOT</strong> post on Piazza</p></li>
+<li><p>You <strong>can</strong> use any materials that are available to you from class (lectures, labs, homeworks, R demos)</p></li>
+</ul>
+<p>Best way to prepare:</p>
+<ul>
+<li>Look over lecture notes, R demos, homework/lab solutions</li>
+</ul>
+</section>
+<section id="main-skill-ive-wanted-you-to-learn" class="slide level2">
+<h2>Main skill I’ve wanted you to learn…</h2>
+<div style="font-size: 80%;">
+<p><strong>Pick graph types that are most appropriate for a particular dataset</strong></p>
+<ul>
+<li><p>Requires a working knowledge of different graph types and need to appropriately distinguish categorical vs quantitative variables</p></li>
+<li><p>For any graph, need to know what information is visible vs hidden</p></li>
 </ul>
 </div>
 <div class="fragment">
 <div style="font-size: 80%;">
+<p><strong>Characterizing distributions (visually and quantitatively)</strong></p>
 <ul>
-<li><p><strong>HW2 is due TONIGHT and you have Lab 4 on Friday</strong></p></li>
-<li><p><strong>Next time</strong>: Graphical inference for 1D quantitative data</p></li>
-<li><p>Recommended reading: <a href="https://clauswilke.com/dataviz/histograms-density-plots.html">CW Chapter 7 Visualizing distributions: Histograms and density plots</a></p></li>
+<li><p>Need a “distributional vocabulary” (center/mode, spread, skewness) and need to choose graphs that showcase distributional quantities</p></li>
+<li><p>Need to choose graph specifications that showcase distribution quantities (e.g., binwidth/bandwidth)</p></li>
 </ul>
 </div>
-
-
+</div>
+<div class="fragment">
+<div style="font-size: 80%;">
+<p><strong>Conduct statistical inference to complement graphs</strong></p>
+<ul>
+<li><p>For most differences you spot in a graph, should be able to follow-up with an analysis to determine if that difference is significant</p></li>
+<li><p>Requires a working knowledge of different statistical tests</p></li>
+<li><p>Need to know how to interpret the output from statistical tests (knowing the null/alternative hypotheses is key!)</p></li>
+</ul>
+</div>
 </div>
 </section>
+<section id="variable-types" class="slide level2">
+<h2>Variable Types</h2>
+<div style="font-size: 80%;">
+<p>First thing to do when looking at a dataset is determine what the variable types are.</p>
+<p><strong>Categorical</strong>: May have order (ordinal) or no order (nominal).</p>
+<ul>
+<li><p>Often represented as a <code>factor</code> in <code>R</code></p></li>
+<li><p>May be coded with numbers!</p></li>
+<li><p>If only 3-5 values, probably appropriate to treat as categorical.</p></li>
+</ul>
+<p><strong>Quantitative</strong>: Represented numerically. Always has order.</p>
+<ul>
+<li>Represented as <code>numeric</code> or <code>integer</code> in <code>R</code>.</li>
+</ul>
+<p>How to determine if a variable is quantitative or categorical?</p>
+<ul>
+<li><p>Often obvious, but not always.</p></li>
+<li><p><em>Subtraction test</em>: Does <span class="math inline">\(X_1 - X_2\)</span> lead to a sensible value? If so, it’s quantitative.</p></li>
+<li><p>If a variable is used in scatterplots/regression, it shouldn’t have a super strict range. 1-to-5 Likert scale variables fail this.</p></li>
+</ul>
+</div>
+</section>
+<section id="variable-type-situations" class="slide level2">
+<h2>Variable Type Situations</h2>
+</section>
+<section id="variable-type-situations-1" class="slide level2">
+<h2>Variable Type Situations</h2>
+</section>
+<section id="statistical-testsanalyses" class="slide level2">
+<h2>Statistical Tests/Analyses</h2>
+<div style="font-size: 80%;">
+<p><strong>Chi-square test for equal proportions</strong>: <span class="math inline">\(H_0: p_1 = \cdots = p_K\)</span>.</p>
+<p><strong>Chi-square test for independence</strong>: <span class="math inline">\(H_0:\)</span> Variables are independent.</p>
+<ul>
+<li>Dependence: <span class="math inline">\(P(A | B) \neq P(A)\)</span></li>
+</ul>
+</div>
+<div class="fragment">
+<div style="font-size: 80%;">
+<p><strong>One-sample KS test</strong>: <span class="math inline">\(H_0\)</span>: Variable follows a distribution.</p>
+<p><strong>t-test/ANOVA</strong>: <span class="math inline">\(H_0\)</span>: Group means equal.</p>
+<p><strong>Bartlett’s test</strong>: <span class="math inline">\(H_0\)</span>: Group variances equal.</p>
+<p><strong>Two-Sample KS Test</strong>: <span class="math inline">\(H_0\)</span>: Variables follow the same distribution.</p>
+</div>
+</div>
+<div class="fragment">
+<div style="font-size: 80%;">
+<p><strong>Linear Regression</strong>: <span class="math inline">\(H_0: \beta = 0\)</span></p>
+<ul>
+<li>Need to distinguish between intercepts and slopes!</li>
+</ul>
+<p><strong>Remember: Different tests have different <em>power</em> (chance of rejecting <span class="math inline">\(H_0\)</span> when you should)</strong></p>
+</div>
+</div>
+</section>
+<section id="distribution-terminology" class="slide level2">
+<h2>Distribution Terminology</h2>
+<div style="font-size: 80%;">
+<p><strong>Marginal Distributions</strong>: <span class="math inline">\(P(A)\)</span> - plot a graph of a single variable <span class="math inline">\(A\)</span>.</p>
+<ul>
+<li>Perhaps compare confidence intervals for different categories of <span class="math inline">\(A\)</span>.</li>
+</ul>
+</div>
+<div class="fragment">
+<div style="font-size: 80%;">
+<p><strong>Conditional Distributions</strong>: <span class="math inline">\(P(A | B)\)</span> - in English: Distribution of <span class="math inline">\(A\)</span> given a particular value of <span class="math inline">\(B\)</span>.</p>
+<ul>
+<li><p>Goal: Compare <span class="math inline">\(P(A | B = b)\)</span> for different <span class="math inline">\(b\)</span> when <span class="math inline">\(A\)</span> is quantitative and <span class="math inline">\(B\)</span> categorical</p></li>
+<li><p>A univariate graph (histograms, densities, violins) for each category.</p></li>
+<li><p>When <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are categorical, can visualize with stacked bar plots or mosaic plots.</p></li>
+<li><p>Note: Linear regression estimates <span class="math inline">\(\mathbb{E}[Y | X]\)</span></p></li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<div style="font-size: 80%;">
+<p><strong>Joint Distribution</strong>: <span class="math inline">\(P(A, B)\)</span></p>
+<ul>
+<li><p>Use mosaic plots when <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are categorical.</p></li>
+<li><p><span class="math inline">\(P(A | B) P(B) = P(A, B)\)</span></p></li>
+<li><p>Scatterplots display joint distribution for continuous.</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="good-luck" class="slide level2">
+<h2>Good luck!</h2>
+
+
+
+<img data-src="https://media.tenor.com/jLWC97XT1ZIAAAAC/star-wars-han-solo.gif" class="r-stretch"></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

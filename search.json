@@ -595,102 +595,433 @@
     "text": "Recap and next steps\n\nUse graphs to assess linear regression assumptions, i.e., residual diagnostic plots\nDiscussed interpretation of coefficients, the role of categorical variables, and interactions\nHighlighted common problems to consider: Simpson’s Paradox, intercept meaning, and extrapolation\n\n\n\n\nHW4 is due TONIGHT and you have Lab 6 on Friday\nGraphics critique due Feb 28th!\nNext time: Midsemester Review (take-home exam on Feb 26th)\nRecommended reading: CW Chapter 12 Visualizing associations among two or more quantitative variables"
   },
   {
-    "objectID": "lectures/04-power-multiple-testing.html#announcements-previously-and-today",
-    "href": "lectures/04-power-multiple-testing.html#announcements-previously-and-today",
-    "title": "Power and multiple testing",
+    "objectID": "lectures/12-midsemester-review.html#announcements-previously-and-today",
+    "href": "lectures/12-midsemester-review.html#announcements-previously-and-today",
+    "title": "Midsemester Review",
     "section": "Announcements, previously, and today…",
-    "text": "Announcements, previously, and today…\n\n\nHW1 is due this Wednesday Jan 29 by 11:59 PM\nYou have Lab 3 again on Friday\n\nOffice hours schedule:\n\nMy office hours (BH 132D): Wednesdays and Thursdays @ 2 PM\nAnna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM\n\n\n\n\n\nMain estimators: \\(\\underbrace{\\hat{p}_1,\\dots,\\hat{p}_K}_{\\text{proportions}}\\) for \\(K\\)-many categories\nChi-square test is the main statistical test for 1D categorical data, tests \\(H_0: p_1 = \\cdots = p_K\\)\nCan also make confidence intervals for \\(\\hat{p}_1,\\dots,\\hat{p}_K\\) (just multiply CIs by \\(n\\))\n\n\n\n\n\nTODAY:\n\nInterpreting CIs on graphs is tricky and have to be careful with multiple testing"
+    "text": "Announcements, previously, and today…\n\nTake-home exam is Wednesday Feb 26th!\nHere’s how the exam will work:\n\nI’ll post the exam tonight, and it’s due Wednesday by 11:59 PM EDT (Feb 26th)\nExam will cover material from HW 1-4 and Labs 1-6\nQuestions will be similar to homeworks but more open-ended, e.g, instead of “make a side-by-side violin plot…” I’ll ask “Make a plot that compares the conditional distributions…”\nWe do NOT have class on Wednesday Feb 26th\n\n\n\n\nUse graphs to assess linear regression assumptions, i.e., residual diagnostic plots\nDiscussed interpretation of coefficients, the role of categorical variables, and interactions\n\n\n\n\nTODAY: Wrapping up regression and midsemester review!"
   },
   {
-    "objectID": "lectures/04-power-multiple-testing.html#graphics-versus-statistical-inference",
-    "href": "lectures/04-power-multiple-testing.html#graphics-versus-statistical-inference",
-    "title": "Power and multiple testing",
-    "section": "Graphics versus Statistical Inference",
-    "text": "Graphics versus Statistical Inference\n\nReminder Anscombe’s Quartet: where statistical inference was the same but the graphics were very different\n\n\n\nThe opposite can be true! Graphics are the same, but statistical inference is very different…"
+    "objectID": "lectures/12-midsemester-review.html#understanding-interactions-categorical-example",
+    "href": "lectures/12-midsemester-review.html#understanding-interactions-categorical-example",
+    "title": "Midsemester Review",
+    "section": "Understanding Interactions (Categorical Example)",
+    "text": "Understanding Interactions (Categorical Example)\n\nSay we also have a quantitative variable \\(X\\) (bill length). Consider two statistical models:\n\n\\(Y_i \\stackrel{iid}{\\sim} N(\\beta_0 + \\beta_X X + \\beta_C I_C + \\beta_G I_G, \\sigma^2)\\)\n\\(Y_i \\stackrel{iid}{\\sim} N(\\beta_0 + \\beta_X X + \\beta_C I_C + \\beta_G I_G + \\beta_{CX} I_C X + \\beta_{GX} I_G X, \\sigma^2)\\)\n\n\n\n\nFor Model 1…\n\nThe intercept for Adelie is \\(\\beta_0\\); for Chinstrap it is \\(\\beta_0 + \\beta_C\\); for Gentoo it is \\(\\beta_0 + \\beta_G\\)\nThe slope for all species is \\(\\beta_X\\).\n\n\n\n\n\nFor Model 2…\n\nThe intercept for Adelie is \\(\\beta_0\\); for Chinstrap it is \\(\\beta_0 + \\beta_C\\); for Gentoo it is \\(\\beta_0 + \\beta_G\\).\nThe slope for Adelie is \\(\\beta_X\\); for Chinstrap it is \\(\\beta_X + \\beta_{CX}\\); for Gentoo it is \\(\\beta_X + \\beta_{GX}\\)\n\n\n\n\n\nSignificant coefficient for categorical variables by themselves? Significantly different intercepts\nSignificant coefficient for interactions with categorical variables? Significantly different slopes"
   },
   {
-    "objectID": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14",
-    "href": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14",
-    "title": "Power and multiple testing",
-    "section": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)",
-    "text": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)"
+    "objectID": "lectures/12-midsemester-review.html#model-2-bill_depth_mm-bill_length_mm-species",
+    "href": "lectures/12-midsemester-review.html#model-2-bill_depth_mm-bill_length_mm-species",
+    "title": "Midsemester Review",
+    "section": "Model 2: bill_depth_mm ~ bill_length_mm + species",
+    "text": "Model 2: bill_depth_mm ~ bill_length_mm + species"
   },
   {
-    "objectID": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14-1",
-    "href": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14-1",
-    "title": "Power and multiple testing",
-    "section": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)",
-    "text": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)"
+    "objectID": "lectures/12-midsemester-review.html#model-3-bill_depth_mm-bill_length_mm-species-bill_length_mm-times-species",
+    "href": "lectures/12-midsemester-review.html#model-3-bill_depth_mm-bill_length_mm-species-bill_length_mm-times-species",
+    "title": "Midsemester Review",
+    "section": "Model 3: bill_depth_mm ~ bill_length_mm + species + bill_length_mm \\(\\times\\) species",
+    "text": "Model 3: bill_depth_mm ~ bill_length_mm + species + bill_length_mm \\(\\times\\) species"
   },
   {
-    "objectID": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14-2",
-    "href": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14-2",
-    "title": "Power and multiple testing",
-    "section": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)",
-    "text": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)"
+    "objectID": "lectures/12-midsemester-review.html#a-few-linear-regression-warnings",
+    "href": "lectures/12-midsemester-review.html#a-few-linear-regression-warnings",
+    "title": "Midsemester Review",
+    "section": "A Few Linear Regression Warnings",
+    "text": "A Few Linear Regression Warnings\n\nSimpson’s Paradox\n\nThere is a negative linear relationship between two variables but a positive linear relationship within every subpopulation\nIn these cases, subgroup analysis is especially important\n\n\n\n\nIs the intercept meaningful?\n\nThink about whether \\(X = 0\\) makes scientific sense for a particular variable before you interpret the intercept\n\n\n\n\n\nInterpolation versus Extrapolation\n\nInterpolation is defined as prediction within the range of a variable\nExtrapolation is defined as prediction outside the range of a variable\nGenerally speaking, interpolation is more reliable than extrapolation (less sensitive to model misspecification)"
   },
   {
-    "objectID": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14-3",
-    "href": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14-3",
-    "title": "Power and multiple testing",
-    "section": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)",
-    "text": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)"
+    "objectID": "lectures/12-midsemester-review.html#extrapolation-example",
+    "href": "lectures/12-midsemester-review.html#extrapolation-example",
+    "title": "Midsemester Review",
+    "section": "Extrapolation Example",
+    "text": "Extrapolation Example"
   },
   {
-    "objectID": "lectures/04-power-multiple-testing.html#power-under-this-scenario-2n4-n4-n4",
-    "href": "lectures/04-power-multiple-testing.html#power-under-this-scenario-2n4-n4-n4",
-    "title": "Power and multiple testing",
-    "section": "Power under this scenario: (2n/4, n/4, n/4)",
-    "text": "Power under this scenario: (2n/4, n/4, n/4)"
+    "objectID": "lectures/12-midsemester-review.html#extrapolation-example-1",
+    "href": "lectures/12-midsemester-review.html#extrapolation-example-1",
+    "title": "Midsemester Review",
+    "section": "Extrapolation Example",
+    "text": "Extrapolation Example"
   },
   {
-    "objectID": "lectures/04-power-multiple-testing.html#how-do-we-combine-graphs-with-inference",
-    "href": "lectures/04-power-multiple-testing.html#how-do-we-combine-graphs-with-inference",
-    "title": "Power and multiple testing",
-    "section": "How do we combine graphs with inference?",
-    "text": "How do we combine graphs with inference?\n\nSimply add \\(p\\)-values (or other info) to graph via text\nAdd confidence intervals to the graph\n\n\nNeed to remember what each CI is for!\nOur CIs on previous slides are for each \\(\\hat{p}_j\\) marginally, NOT jointly\nHave to be careful with multiple testing…"
+    "objectID": "lectures/12-midsemester-review.html#extrapolation-example-2",
+    "href": "lectures/12-midsemester-review.html#extrapolation-example-2",
+    "title": "Midsemester Review",
+    "section": "Extrapolation Example",
+    "text": "Extrapolation Example"
   },
   {
-    "objectID": "lectures/04-power-multiple-testing.html#cis-will-visually-capture-uncertainty-in-estimates",
-    "href": "lectures/04-power-multiple-testing.html#cis-will-visually-capture-uncertainty-in-estimates",
-    "title": "Power and multiple testing",
-    "section": "CIs will visually capture uncertainty in estimates",
-    "text": "CIs will visually capture uncertainty in estimates"
+    "objectID": "lectures/12-midsemester-review.html#take-home-exam-logistics",
+    "href": "lectures/12-midsemester-review.html#take-home-exam-logistics",
+    "title": "Midsemester Review",
+    "section": "Take-home exam logistics",
+    "text": "Take-home exam logistics\nI will post it today, due Wednesday Feb 26th by 11:59 PM ET on Gradescope\nWhile the exam is in progress…\n\nYou can NOT talk to anyone else about 36-315\nYou can NOT post on Piazza\nYou can use any materials that are available to you from class (lectures, labs, homeworks, R demos)\n\nBest way to prepare:\n\nLook over lecture notes, R demos, homework/lab solutions"
   },
   {
-    "objectID": "lectures/04-power-multiple-testing.html#rough-rules-for-comparing-cis-on-bar-charts",
-    "href": "lectures/04-power-multiple-testing.html#rough-rules-for-comparing-cis-on-bar-charts",
-    "title": "Power and multiple testing",
-    "section": "Rough rules for comparing CIs on bar charts",
-    "text": "Rough rules for comparing CIs on bar charts\n\n\nComparing overlap of two CIs is NOT exactly the same as directly testing for a significant difference…\n\nReally you want CI( \\(\\hat{p}_1 - \\hat{p}_2\\) ), not CI( \\(\\hat{p_1}\\) ) and CI( \\(\\hat{p_2}\\) )\nCI( \\(\\hat{p_1}\\) ) and CI( \\(\\hat{p_2}\\) ) not overlapping implies \\(0 \\notin\\) CI( \\(\\hat{p}_1 - \\hat{p}_2\\) )\nHowever CI( \\(\\hat{p_1}\\) ) and CI( \\(\\hat{p_2}\\) ) overlapping DOES NOT imply \\(0 \\in\\) CI( \\(\\hat{p}_1 - \\hat{p}_2\\) )\n\n\nRoughly speaking:\n\nIf CIs don’t overlap \\(\\rightarrow\\) significant difference\nIf CIs overlap a little \\(\\rightarrow\\) ambiguous\nIf CIs overlap a lot \\(\\rightarrow\\) no significant difference\n\n\n\n\nBut if we’re comparing more than two CIs simultaneously, we need to account for multiple testing!\n\nWhen you look for all non-overlapping CIs: making \\(\\binom{K}{2} = \\frac{K!}{2!(K-2)!}\\) pairwise tests in your head!"
+    "objectID": "lectures/12-midsemester-review.html#main-skill-ive-wanted-you-to-learn",
+    "href": "lectures/12-midsemester-review.html#main-skill-ive-wanted-you-to-learn",
+    "title": "Midsemester Review",
+    "section": "Main skill I’ve wanted you to learn…",
+    "text": "Main skill I’ve wanted you to learn…\n\nPick graph types that are most appropriate for a particular dataset\n\nRequires a working knowledge of different graph types and need to appropriately distinguish categorical vs quantitative variables\nFor any graph, need to know what information is visible vs hidden\n\n\n\n\nCharacterizing distributions (visually and quantitatively)\n\nNeed a “distributional vocabulary” (center/mode, spread, skewness) and need to choose graphs that showcase distributional quantities\nNeed to choose graph specifications that showcase distribution quantities (e.g., binwidth/bandwidth)\n\n\n\n\n\nConduct statistical inference to complement graphs\n\nFor most differences you spot in a graph, should be able to follow-up with an analysis to determine if that difference is significant\nRequires a working knowledge of different statistical tests\nNeed to know how to interpret the output from statistical tests (knowing the null/alternative hypotheses is key!)"
   },
   {
-    "objectID": "lectures/04-power-multiple-testing.html#corrections-for-multiple-testing",
-    "href": "lectures/04-power-multiple-testing.html#corrections-for-multiple-testing",
-    "title": "Power and multiple testing",
-    "section": "Corrections for multiple testing",
-    "text": "Corrections for multiple testing\n\n\nIn those bar plots, when we determine whether CIs overlap we make 3 comparisons:\n\nA vs B\nA vs C\nB vs C\n\n\nThis is a multiple testing issue\n\n\n\n\nIn short: we will make Type 1 errors (chance of false rejecting) more than 5% of the time!\nReminder: Type 1 error = Rejecting \\(H_0\\) when \\(H_0\\) is true\ne.g., CIs don’t overlap but actually \\(H_0: p_A = p_B\\) is true\nIf only interested in A vs B and nothing else, then just construct 95% CI for A vs B and control error rate at 5%\nHowever, if we construct several CIs, where A vs B is just one comparison we make, our Type 1 error rate &gt; 5%!"
+    "objectID": "lectures/12-midsemester-review.html#variable-types",
+    "href": "lectures/12-midsemester-review.html#variable-types",
+    "title": "Midsemester Review",
+    "section": "Variable Types",
+    "text": "Variable Types\n\nFirst thing to do when looking at a dataset is determine what the variable types are.\nCategorical: May have order (ordinal) or no order (nominal).\n\nOften represented as a factor in R\nMay be coded with numbers!\nIf only 3-5 values, probably appropriate to treat as categorical.\n\nQuantitative: Represented numerically. Always has order.\n\nRepresented as numeric or integer in R.\n\nHow to determine if a variable is quantitative or categorical?\n\nOften obvious, but not always.\nSubtraction test: Does \\(X_1 - X_2\\) lead to a sensible value? If so, it’s quantitative.\nIf a variable is used in scatterplots/regression, it shouldn’t have a super strict range. 1-to-5 Likert scale variables fail this."
   },
   {
-    "objectID": "lectures/04-power-multiple-testing.html#corrections-for-multiple-testing-1",
-    "href": "lectures/04-power-multiple-testing.html#corrections-for-multiple-testing-1",
-    "title": "Power and multiple testing",
-    "section": "Corrections for multiple testing",
-    "text": "Corrections for multiple testing\n\nVast literature on corrections for multiple testing (beyond the scope of this class… but in my thesis!)\nBut you should understand the following:\n\nCorrections for multiple testing inflate \\(p\\)-values (i.e., make them bigger)\nEquivalently, they inflate CIs (i.e., make them wider)\nPurpose of these corrections is to control Type 1 error rate \\(\\leq 5\\%\\)\n\n\n\n\nWe’ll focus on the Bonferroni correction, which inflates \\(p\\)-values the most but is easy to implement and very popular:\n\nWe usually reject null hypothesis when \\(p\\)-value \\(\\leq .05\\)\nBonferroni: if making \\(K\\) comparisons, reject only if \\(p\\)-value \\(\\leq .05/K\\)\nFor CIs: instead of plotting 95% CIs, we plot (1 - \\(0.05/K\\))% CIs\n\ne.g., for \\(K = 3\\) then plot 98.3% CIs"
+    "objectID": "lectures/12-midsemester-review.html#variable-type-situations",
+    "href": "lectures/12-midsemester-review.html#variable-type-situations",
+    "title": "Midsemester Review",
+    "section": "Variable Type Situations",
+    "text": "Variable Type Situations"
   },
   {
-    "objectID": "lectures/04-power-multiple-testing.html#impact-of-bonferroni-correction-on-cis",
-    "href": "lectures/04-power-multiple-testing.html#impact-of-bonferroni-correction-on-cis",
-    "title": "Power and multiple testing",
-    "section": "Impact of Bonferroni correction on CIs…",
-    "text": "Impact of Bonferroni correction on CIs…"
+    "objectID": "lectures/12-midsemester-review.html#variable-type-situations-1",
+    "href": "lectures/12-midsemester-review.html#variable-type-situations-1",
+    "title": "Midsemester Review",
+    "section": "Variable Type Situations",
+    "text": "Variable Type Situations"
   },
   {
-    "objectID": "lectures/04-power-multiple-testing.html#recap-and-next-steps",
-    "href": "lectures/04-power-multiple-testing.html#recap-and-next-steps",
-    "title": "Power and multiple testing",
+    "objectID": "lectures/12-midsemester-review.html#statistical-testsanalyses",
+    "href": "lectures/12-midsemester-review.html#statistical-testsanalyses",
+    "title": "Midsemester Review",
+    "section": "Statistical Tests/Analyses",
+    "text": "Statistical Tests/Analyses\n\nChi-square test for equal proportions: \\(H_0: p_1 = \\cdots = p_K\\).\nChi-square test for independence: \\(H_0:\\) Variables are independent.\n\nDependence: \\(P(A | B) \\neq P(A)\\)\n\n\n\n\nOne-sample KS test: \\(H_0\\): Variable follows a distribution.\nt-test/ANOVA: \\(H_0\\): Group means equal.\nBartlett’s test: \\(H_0\\): Group variances equal.\nTwo-Sample KS Test: \\(H_0\\): Variables follow the same distribution.\n\n\n\n\nLinear Regression: \\(H_0: \\beta = 0\\)\n\nNeed to distinguish between intercepts and slopes!\n\nRemember: Different tests have different power (chance of rejecting \\(H_0\\) when you should)"
+  },
+  {
+    "objectID": "lectures/12-midsemester-review.html#distribution-terminology",
+    "href": "lectures/12-midsemester-review.html#distribution-terminology",
+    "title": "Midsemester Review",
+    "section": "Distribution Terminology",
+    "text": "Distribution Terminology\n\nMarginal Distributions: \\(P(A)\\) - plot a graph of a single variable \\(A\\).\n\nPerhaps compare confidence intervals for different categories of \\(A\\).\n\n\n\n\nConditional Distributions: \\(P(A | B)\\) - in English: Distribution of \\(A\\) given a particular value of \\(B\\).\n\nGoal: Compare \\(P(A | B = b)\\) for different \\(b\\) when \\(A\\) is quantitative and \\(B\\) categorical\nA univariate graph (histograms, densities, violins) for each category.\nWhen \\(A\\) and \\(B\\) are categorical, can visualize with stacked bar plots or mosaic plots.\nNote: Linear regression estimates \\(\\mathbb{E}[Y | X]\\)\n\n\n\n\n\nJoint Distribution: \\(P(A, B)\\)\n\nUse mosaic plots when \\(A\\) and \\(B\\) are categorical.\n\\(P(A | B) P(B) = P(A, B)\\)\nScatterplots display joint distribution for continuous."
+  },
+  {
+    "objectID": "lectures/12-midsemester-review.html#good-luck",
+    "href": "lectures/12-midsemester-review.html#good-luck",
+    "title": "Midsemester Review",
+    "section": "Good luck!",
+    "text": "Good luck!"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#announcements-previously-and-today",
+    "href": "lectures/02-1dcat.html#announcements-previously-and-today",
+    "title": "1D Categorical Data",
+    "section": "Announcements, previously, and today…",
+    "text": "Announcements, previously, and today…\n\nComplete HW0 by tonight! Confirms you have everything installed and can render .qmd files to PDF via tinytex\nOffice hours will be announced soon… (I’ll be in my office BH 132D today at 2:30 PM)\n\n\n\nDiscussed the importance of data visualization in your role as a statistician / data scientist\nIntroduced the Grammar of Graphics as a framework for building visualizations\nDiscussed historical examples and principles of visualization to keep in mind\n\n\n\nTODAY: 1D Categorical Data\n\nBriefly talk about variable types\nWalk through different graphs for visualizing 1D categorical data"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#reminder-tidy-data-structure",
+    "href": "lectures/02-1dcat.html#reminder-tidy-data-structure",
+    "title": "1D Categorical Data",
+    "section": "Reminder: tidy data structure",
+    "text": "Reminder: tidy data structure\nData are often stored in tabular (or matrix) form:\n\n\n# A tibble: 5 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;\n\n\n\nEach row == unit of observation, e.g., penguins\nEach column == variable/measurement about each observation, e.g., flipper_length_mm\nKnown as a data.frame in base R and tibble in the tidyverse\nTwo main variable types: quantitative and categorical"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#variable-types",
+    "href": "lectures/02-1dcat.html#variable-types",
+    "title": "1D Categorical Data",
+    "section": "Variable Types",
+    "text": "Variable Types\n\nMost visualizations are about understanding the distribution of different variables (which are stored in columns of tabular/matrix data)\nThe variable type often dictates the type of graphs you should make\nThere are two main types of variables:"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#d-categorical-data",
+    "href": "lectures/02-1dcat.html#d-categorical-data",
+    "title": "1D Categorical Data",
+    "section": "1D Categorical Data",
+    "text": "1D Categorical Data\nTwo different versions of categorical:\n\nNominal: coded with arbitrary numbers, i.e., no real order\n\n\nExamples: race, gender, species, text\n\n\n\nOrdinal: levels with a meaningful order\n\n\nExamples: education level, grades, ranks\n\n\n\nNOTE: R and ggplot considers a categorical variable to be factor\n\nR will always treat categorical variables as ordinal! Defaults to alphabetical…\nWe will need to manually define the factor levels"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#d-categorical-data-structure",
+    "href": "lectures/02-1dcat.html#d-categorical-data-structure",
+    "title": "1D Categorical Data",
+    "section": "1D categorical data structure",
+    "text": "1D categorical data structure\n\nObservations are collected into a vector \\((x_1, \\dots, x_n)\\), where \\(n\\) is number of observations\nEach observed value \\(x_i\\) can only belong to one category level \\(\\{ C_1, C_2, \\dots \\}\\)\n\n\nLook at penguins data from the palmerpenguins package, focusing on species:\n\nlibrary(palmerpenguins)\nhead(penguins$species)\n\n[1] Adelie Adelie Adelie Adelie Adelie Adelie\nLevels: Adelie Chinstrap Gentoo\n\n\nHow could we summarize these data? What information would you report?\n\n\n\ntable(penguins$species)\n\n\n   Adelie Chinstrap    Gentoo \n      152        68       124"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#area-plots",
+    "href": "lectures/02-1dcat.html#area-plots",
+    "title": "1D Categorical Data",
+    "section": "Area plots",
+    "text": "Area plots\n\n\nEach area corresponds to one categorical level\nArea is proportional to counts/frequencies/percentages\nDifferences between areas correspond to differences between counts/frequencies/percentages"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#bar-charts",
+    "href": "lectures/02-1dcat.html#bar-charts",
+    "title": "1D Categorical Data",
+    "section": "Bar charts",
+    "text": "Bar charts\n\nlibrary(tidyverse)\npenguins |&gt;\n  ggplot(aes(x = species)) +\n  geom_bar()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#behind-the-scenes-statistical-summaries",
+    "href": "lectures/02-1dcat.html#behind-the-scenes-statistical-summaries",
+    "title": "1D Categorical Data",
+    "section": "Behind the scenes: statistical summaries",
+    "text": "Behind the scenes: statistical summaries\n\nFrom Chapter 3 of R for Data Science"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#spine-charts---height-version",
+    "href": "lectures/02-1dcat.html#spine-charts---height-version",
+    "title": "1D Categorical Data",
+    "section": "Spine charts - height version",
+    "text": "Spine charts - height version\n\npenguins |&gt;\n  ggplot(aes(fill = species, x = \"\")) +\n  geom_bar()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#spine-charts---width-version",
+    "href": "lectures/02-1dcat.html#spine-charts---width-version",
+    "title": "1D Categorical Data",
+    "section": "Spine charts - width version",
+    "text": "Spine charts - width version\n\npenguins |&gt;\n  ggplot(aes(fill = species, x = \"\")) +\n  geom_bar() +\n  coord_flip()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#so-you-want-to-make-pie-charts",
+    "href": "lectures/02-1dcat.html#so-you-want-to-make-pie-charts",
+    "title": "1D Categorical Data",
+    "section": "So you want to make pie charts…",
+    "text": "So you want to make pie charts…\n\npenguins |&gt; \n  ggplot(aes(fill = species, x = \"\")) + \n  geom_bar(aes(y = after_stat(count))) +\n  coord_polar(theta = \"y\") +\n  theme_void()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#friends-dont-let-friends-make-pie-charts",
+    "href": "lectures/02-1dcat.html#friends-dont-let-friends-make-pie-charts",
+    "title": "1D Categorical Data",
+    "section": "Friends Don’t Let Friends Make Pie Charts",
+    "text": "Friends Don’t Let Friends Make Pie Charts"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#waffle-charts-are-cooler-anyway",
+    "href": "lectures/02-1dcat.html#waffle-charts-are-cooler-anyway",
+    "title": "1D Categorical Data",
+    "section": "Waffle charts are cooler anyway…",
+    "text": "Waffle charts are cooler anyway…\n\nlibrary(waffle)\npenguins |&gt;\n  group_by(species) |&gt; \n  summarize(count = n(), .groups = \"drop\") |&gt; \n  ggplot(aes(fill = species, values = count)) +\n  geom_waffle(n_rows = 20, color = \"white\", flip = TRUE) +\n  coord_equal() +\n  theme_void()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#florence-nightingales-rose-diagram",
+    "href": "lectures/02-1dcat.html#florence-nightingales-rose-diagram",
+    "title": "1D Categorical Data",
+    "section": "Florence Nightingale’s Rose Diagram",
+    "text": "Florence Nightingale’s Rose Diagram"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#rose-diagrams",
+    "href": "lectures/02-1dcat.html#rose-diagrams",
+    "title": "1D Categorical Data",
+    "section": "Rose diagrams",
+    "text": "Rose diagrams\n\npenguins |&gt; \n  ggplot(aes(x = species)) + \n  geom_bar(fill = \"darkblue\") +\n  coord_polar() +\n  scale_y_sqrt()"
+  },
+  {
+    "objectID": "lectures/02-1dcat.html#recap-and-next-steps",
+    "href": "lectures/02-1dcat.html#recap-and-next-steps",
+    "title": "1D Categorical Data",
     "section": "Recap and next steps",
-    "text": "Recap and next steps\n\n\nGraphs with the same trends can display very different statistical significance (largely due to sample size)\nCan visualize CIs for each \\(\\hat{p}_1\\), \\(\\dots\\), \\(\\hat{p}_K\\), but need to deal with multiple testing\n\n\n\n\n\nHW1 is due Wednesday and you have Lab 3 on Friday!\nNext time: Visualizations and inference for 2D categorical data\nRecommended reading: CW Chapter 11 Visualizing nested proportions"
+    "text": "Recap and next steps\n\n\n1D Categorical Data: look at counts, frequencies, percentages\nArea plots, where area \\(\\propto\\) counts/frequencies/percentages:\n\nBar charts (you should pretty much always just make a bar chart)\nSpine charts (will be more useful with more variables)\nPie charts (DON’T DO IT)\nRose diagrams (temporal or directional context can justify usage)\n\n\n\n\n\n\nComplete HW0 by TONIGHT! Confirms you have everything installed and can render .qmd files to PDF via tinytex\nHW1 is due in two weeks, no class on Monday\n\n\n\n\n\n\nNext time: quantify and display uncertainty for 1D categorical data\nRecommended reading:\n\nCW Chapter 10 Visualizing proportions, CW Chapter 16.2 Visualizing the uncertainty of point estimates, CW Chapter 11 Visualizing nested proportions"
+  },
+  {
+    "objectID": "demos.html",
+    "href": "demos.html",
+    "title": "Demos",
+    "section": "",
+    "text": "Demo\nDate\nTitle\nDemo file\n\n\n\n\n1\nJan 13\nInto the tidyverse\nHTML\n\n\n2\nFeb 17\nScatterplots and Linear Regression\nHTML\n\n\n3\nFeb 19\nMore Regression with Penguins\nHTML",
+    "crumbs": [
+      "Demos"
+    ]
+  },
+  {
+    "objectID": "lectures.html",
+    "href": "lectures.html",
+    "title": "Lectures",
+    "section": "",
+    "text": "Lecture\nDate\nTitle\nMaterials\n\n\n\n\n1\nJan 13\nIntroduction and Grammar of Graphics\nslides\n\n\n2\nJan 15\n1D Categorical Data\nslides\n\n\n3\nJan 22\nStatistical Inference for 1D Categorical Data\nslides\n\n\n4\nJan 27\nPower and Multiple Testing\nslides\n\n\n5\nJan 29\nVisualizations and Inference for 2D Categorical Data\nslides\n\n\n6\nFeb 3\nVisualizing 1D Quantitative Data\nslides\n\n\n7\nFeb 5\nDensity Estimation\nslides\n\n\n8\nFeb 10\nGraphical Inference for 1D Quantitative Data\nslides\n\n\n9\nFeb 12\nComparing Distributions and Statistical Power\nslides\n\n\n10\nFeb 17\nScatterplots and Linear Regression\nslides\n\n\n11\nFeb 19\nInference with Linear Regression\nslides\n\n\n12\nFeb 24\nMidsemester Review\nslides",
+    "crumbs": [
+      "Lectures"
+    ]
+  },
+  {
+    "objectID": "demos/03-regression.html",
+    "href": "demos/03-regression.html",
+    "title": "Demo 03: More Regression with Penguins",
+    "section": "",
+    "text": "The graphs below don’t have proper titles, axis labels, legends, etc. Please take care to do this on your own graphs. Throughout this demo we will use the palmerpenguins dataset. To access the data, you will need to install the palmerpenguins package:\n\ninstall.packages(\"palmerpenguins\")\n\nWe load the penguins data in the same way as before:\n\nlibrary(tidyverse)\nlibrary(palmerpenguins)\ndata(penguins)\nhead(penguins)\n\n# A tibble: 6 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n6 Adelie  Torgersen           39.3          20.6               190        3650\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;"
+  },
+  {
+    "objectID": "demos/03-regression.html#regression-with-penguins",
+    "href": "demos/03-regression.html#regression-with-penguins",
+    "title": "Demo 03: More Regression with Penguins",
+    "section": "",
+    "text": "The graphs below don’t have proper titles, axis labels, legends, etc. Please take care to do this on your own graphs. Throughout this demo we will use the palmerpenguins dataset. To access the data, you will need to install the palmerpenguins package:\n\ninstall.packages(\"palmerpenguins\")\n\nWe load the penguins data in the same way as before:\n\nlibrary(tidyverse)\nlibrary(palmerpenguins)\ndata(penguins)\nhead(penguins)\n\n# A tibble: 6 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n6 Adelie  Torgersen           39.3          20.6               190        3650\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;"
+  },
+  {
+    "objectID": "demos/03-regression.html#simple-linear-regression-based-only-on-bill-length",
+    "href": "demos/03-regression.html#simple-linear-regression-based-only-on-bill-length",
+    "title": "Demo 03: More Regression with Penguins",
+    "section": "Simple Linear Regression (based only on bill length)",
+    "text": "Simple Linear Regression (based only on bill length)\nFirst, we can run a simple linear regression (the first model) based only on bill length. We can display this line via geom_smooth():\n\npenguins |&gt;\n  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +\n  geom_point(alpha = 0.5) +\n  geom_smooth(method = \"lm\", se = TRUE)\n\n\n\n\n\n\n\n\nAnd display the regression model output using summary():\n\nsummary(lm(bill_depth_mm ~ bill_length_mm, data = penguins))\n\n\nCall:\nlm(formula = bill_depth_mm ~ bill_length_mm, data = penguins)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-4.1381 -1.4263  0.0164  1.3841  4.5255 \n\nCoefficients:\n               Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)    20.88547    0.84388  24.749  &lt; 2e-16 ***\nbill_length_mm -0.08502    0.01907  -4.459 1.12e-05 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 1.922 on 340 degrees of freedom\n  (2 observations deleted due to missingness)\nMultiple R-squared:  0.05525,   Adjusted R-squared:  0.05247 \nF-statistic: 19.88 on 1 and 340 DF,  p-value: 1.12e-05\n\n\nWe can write this regression model as:\n\\[\\text{depth} \\sim N(\\beta_0 + \\beta_L \\cdot \\text{length}, \\sigma^2)\\]\nNote that \\(\\beta_0\\) is the intercept and \\(\\beta_L\\) is the slope.\nThus, our estimates are:\n\n\\(\\hat{\\beta}_0 = 20.88547\\)\n\\(\\hat{\\beta}_L = 12.43\\)\n\\(\\hat{\\sigma}^2 = 1.922^2\\)"
+  },
+  {
+    "objectID": "demos/03-regression.html#multiple-linear-regression-additive",
+    "href": "demos/03-regression.html#multiple-linear-regression-additive",
+    "title": "Demo 03: More Regression with Penguins",
+    "section": "Multiple Linear Regression (Additive)",
+    "text": "Multiple Linear Regression (Additive)\nWe can also run the second model, which is based on length and species, but with only additive effects. First, we’ll check the counts of the species variable to ensure that the species with the highest number of observations if the reference level (i.e., the first level for a factor variable):\n\ntable(penguins$species)\n\n\n   Adelie Chinstrap    Gentoo \n      152        68       124 \n\n\nLooks like we’re lucky and that the Adelie species is the most popular and is already first due to alphabetical order. What function would we need to do to re-order the variable?\nNext, we’ll fit the regression that accounts for species without an interaction - so it’s just an additive effect:\n\ndepth_lm_species_add &lt;- lm(bill_depth_mm ~ bill_length_mm + species,\n                           data = penguins)\nsummary(depth_lm_species_add)\n\n\nCall:\nlm(formula = bill_depth_mm ~ bill_length_mm + species, data = penguins)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-2.4529 -0.6864 -0.0508  0.5519  3.5915 \n\nCoefficients:\n                 Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)      10.59218    0.68302  15.508  &lt; 2e-16 ***\nbill_length_mm    0.19989    0.01749  11.427  &lt; 2e-16 ***\nspeciesChinstrap -1.93319    0.22416  -8.624 2.55e-16 ***\nspeciesGentoo    -5.10602    0.19142 -26.674  &lt; 2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.9533 on 338 degrees of freedom\n  (2 observations deleted due to missingness)\nMultiple R-squared:  0.769, Adjusted R-squared:  0.7669 \nF-statistic: 375.1 on 3 and 338 DF,  p-value: &lt; 2.2e-16\n\n\nThis tells us that Chinstrap is different from Adelie and Gentoo is different from Adelie, but it does NOT tell us Chinstrap is different from Gentoo. That would require another model with a reordered species variable. Exercise: Reorder species so that Gentoo is the reference level and compare to the results above.\nWe can manually extract intercepts and coefficients to use for plotting (read the code comments!):\n\n# Calculate species-specific intercepts in order:\nintercepts &lt;- # First for `Adelie` it's just the initial intercept\n  c(coef(depth_lm_species_add)[\"(Intercept)\"],\n    # Next for `Chinstrap` it's the intercept plus the `Chinstrap` term:\n    coef(depth_lm_species_add)[\"(Intercept)\"] + \n      coef(depth_lm_species_add)[\"speciesChinstrap\"],\n    # And finally for `Gentoo` it's again the intercept plus the `Gentoo` term\n    coef(depth_lm_species_add)[\"(Intercept)\"] + \n      coef(depth_lm_species_add)[\"speciesGentoo\"])\n\n# Create a small table to store the intercept, slopes, and species:\nlines_tbl &lt;- tibble(\"intercepts\" = intercepts,\n                    # Slopes are the same for each, thus use rep()\n                    \"slopes\" = rep(coef(depth_lm_species_add)[\"bill_length_mm\"],\n                                   3),\n                    # And the levels of species:\n                    \"species\" = levels(penguins$species))\n\nWe can now plot this model by specifying the regression lines with geom_abline() using the newly constructed lines_tbl as the data for this layer:\n\npenguins |&gt;\n  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +\n  geom_point(alpha = 0.5) +\n  geom_abline(data = lines_tbl,\n              aes(intercept = intercepts, slope = slopes,\n                  color = species)) +\n  labs(x = \"Bill length (mm)\", y = \"Bill depth (mm)\", \n       title = \"Bill depth versus weight by species\")\n\n\n\n\n\n\n\n\nThis is a great example of Simpson’s Paradox! We originally observed a negative linear relationship between depth and length, but now observe a positive linear relationship within species!"
+  },
+  {
+    "objectID": "demos/03-regression.html#multiple-linear-regression-interactive",
+    "href": "demos/03-regression.html#multiple-linear-regression-interactive",
+    "title": "Demo 03: More Regression with Penguins",
+    "section": "Multiple Linear Regression (Interactive)",
+    "text": "Multiple Linear Regression (Interactive)\nNext, we can run the third model, which is based on length and species, including interaction effects. This is the default type of model displayed when we map species to the color aesthetic for the geom_smooth() layer. In the plot below, we display across both layers, geom_point() and geom_smooth() by mapping species to color in the initial ggplot canvas construction:\n\npenguins |&gt;\n  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +\n  geom_point(alpha = 0.5) +\n  geom_smooth(method = \"lm\", se = TRUE) +\n  labs(x = \"Bill length (mm)\", y = \"Bill depth (mm)\", \n       title = \"Bill depth versus weight by species\")\n\n\n\n\n\n\n\n\nWhat about the summary of this model? Is the inclusion of interaction terms relevant? Note that by default, multiplying two variables in the lm() formula below includes both the additive AND interaction terms.\n\ndepth_lm_species_int &lt;- lm(bill_depth_mm ~ bill_length_mm * species,\n                           data = penguins)\nsummary(depth_lm_species_int)\n\n\nCall:\nlm(formula = bill_depth_mm ~ bill_length_mm * species, data = penguins)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-2.6574 -0.6675 -0.0524  0.5383  3.5032 \n\nCoefficients:\n                                Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)                     11.40912    1.13812  10.025  &lt; 2e-16 ***\nbill_length_mm                   0.17883    0.02927   6.110 2.76e-09 ***\nspeciesChinstrap                -3.83998    2.05398  -1.870 0.062419 .  \nspeciesGentoo                   -6.15812    1.75451  -3.510 0.000509 ***\nbill_length_mm:speciesChinstrap  0.04338    0.04558   0.952 0.341895    \nbill_length_mm:speciesGentoo     0.02601    0.04054   0.642 0.521590    \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.9548 on 336 degrees of freedom\n  (2 observations deleted due to missingness)\nMultiple R-squared:  0.7697,    Adjusted R-squared:  0.7662 \nF-statistic: 224.5 on 5 and 336 DF,  p-value: &lt; 2.2e-16\n\n\nThe interaction terms do NOT appear to be necessary to include. This is justified by both the lack of significance and the slight drop in adjusted R-squared."
+  },
+  {
+    "objectID": "demos/03-regression.html#what-about-the-intercept",
+    "href": "demos/03-regression.html#what-about-the-intercept",
+    "title": "Demo 03: More Regression with Penguins",
+    "section": "What about the intercept?",
+    "text": "What about the intercept?\nRemember the meaning of the intercept term… that is not reasonable in this setting because penguins will never have bills with length of 0mm! We should update the additive model (since we found the interaction terms to not be meaningful) to remove the intercept. This can be done by adding a 0 term to the lm() formula:\n\ndepth_lm_remove_b0 &lt;- lm(bill_depth_mm ~ 0 + bill_length_mm + species,\n                         data = penguins)\nsummary(depth_lm_remove_b0)\n\n\nCall:\nlm(formula = bill_depth_mm ~ 0 + bill_length_mm + species, data = penguins)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-2.4529 -0.6864 -0.0508  0.5519  3.5915 \n\nCoefficients:\n                 Estimate Std. Error t value Pr(&gt;|t|)    \nbill_length_mm    0.19989    0.01749  11.427  &lt; 2e-16 ***\nspeciesAdelie    10.59218    0.68302  15.508  &lt; 2e-16 ***\nspeciesChinstrap  8.65899    0.86207  10.044  &lt; 2e-16 ***\nspeciesGentoo     5.48616    0.83547   6.567 1.94e-10 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.9533 on 338 degrees of freedom\n  (2 observations deleted due to missingness)\nMultiple R-squared:  0.997, Adjusted R-squared:  0.997 \nF-statistic: 2.795e+04 on 4 and 338 DF,  p-value: &lt; 2.2e-16\n\n\nWhat changed in the summary output? Why did that occur?\nWe can copy-and-paste our code from above to add these appropriate regression lines:\n\n# Calculate species-specific intercepts in order:\nnew_intercepts &lt;- # First for `Adelie` \n  c(coef(depth_lm_remove_b0)[\"speciesAdelie\"],\n    # Next for `Chinstrap` \n    coef(depth_lm_remove_b0)[\"speciesChinstrap\"],\n    # And finally for `Gentoo` \n    coef(depth_lm_remove_b0)[\"speciesGentoo\"])\n\n# Create a small table to store the intercept, slopes, and species:\nnew_lines_tbl &lt;- \n  tibble(\"intercepts\" = new_intercepts,\n         # Slopes are the same for each, thus use rep()\n         \"slopes\" = rep(coef(depth_lm_remove_b0)[\"bill_length_mm\"],\n                        3),\n         # And the levels of species:\n         \"species\" = levels(penguins$species))\n\nAgain, create the display:\n\npenguins |&gt;\n  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +\n  geom_point(alpha = 0.5) +\n  geom_abline(data = new_lines_tbl,\n              aes(intercept = intercepts, slope = slopes,\n                  color = species)) +\n  labs(x = \"Bill length (mm)\", y = \"Bill depth (mm)\", \n       title = \"Bill depth versus weight by species\")\n\n\n\n\n\n\n\n\nWhy is this the same display as before? Here’s a great description of why we observe a higher R-squared with the intercept-term excluded from the model."
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html",
+    "href": "demos/01-into-tidyverse.html",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "",
+    "text": "(Broadly speaking) EDA = questions about data + wrangling + visualization\nR for Data Science: “EDA is a state of mind”, an iterative cycle:\n\ngenerate questions\nanswer via transformations and visualizations\n\nExample of questions?\n\nWhat type of variation do the variables display?\nWhat type of relationships exist between variables?\n\nGoal: develop understanding and become familiar with your data\n\nEDA is NOT a replacement for statistical inference and learning\nEDA is an important and necessary step to build intuition\n\nWe tackle the challenges of EDA with a data science workflow. An example of this according to Hadley Wickham in R for Data Science:\n\n\n\n\n\nAspects of data wrangling:\n\nimport: reading in data (e.g., read_csv())\ntidy: rows = observations, columns = variables (i.e. tabular data)\ntransform: filter observations, create new variables, summarize, etc."
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#what-is-exploratory-data-analysis-eda",
+    "href": "demos/01-into-tidyverse.html#what-is-exploratory-data-analysis-eda",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "",
+    "text": "(Broadly speaking) EDA = questions about data + wrangling + visualization\nR for Data Science: “EDA is a state of mind”, an iterative cycle:\n\ngenerate questions\nanswer via transformations and visualizations\n\nExample of questions?\n\nWhat type of variation do the variables display?\nWhat type of relationships exist between variables?\n\nGoal: develop understanding and become familiar with your data\n\nEDA is NOT a replacement for statistical inference and learning\nEDA is an important and necessary step to build intuition\n\nWe tackle the challenges of EDA with a data science workflow. An example of this according to Hadley Wickham in R for Data Science:\n\n\n\n\n\nAspects of data wrangling:\n\nimport: reading in data (e.g., read_csv())\ntidy: rows = observations, columns = variables (i.e. tabular data)\ntransform: filter observations, create new variables, summarize, etc."
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#working-with-penguins",
+    "href": "demos/01-into-tidyverse.html#working-with-penguins",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Working with penguins",
+    "text": "Working with penguins\nIn R, there are many libraries or packages/groups of programs that are not permanently stored in R, so we have to load them when we want to use them. You can load an R package by typing library(package_name). (Sometimes we need to download/install the package first, as described in HW0.)\nThroughout this demo we will use the palmerpenguins dataset. To access the data, you will need to install the palmerpenguins package:\n\ninstall.packages(\"palmerpenguins\")\n\nImport the penguins dataset by loading the palmerpenguins package using the library function and then access the data with the data() function:\n\nlibrary(palmerpenguins) \ndata(penguins)\n\nView some basic info about the penguins dataset:\n\n# displays same info as c(nrow(penguins), ncol(penguins))\ndim(penguins) \n\n[1] 344   8\n\nclass(penguins)\n\n[1] \"tbl_df\"     \"tbl\"        \"data.frame\"\n\n\ntbl (pronounced tibble) is the tidyverse way of storing tabular data, like a spreadsheet or data.frame\nI assure you that you’ll run into errors as you code in R; in fact, my attitude as a coder is that something is wrong if I never get any errors while working on a project. When you run into an error, your first reaction may be to panic and post a question to Piazza. However, checking help documentation in R can be a great way to figure out what’s going wrong. (For good or bad, I end up having to read help documentation almost every day of my life - because, well, I regularly make mistakes in R.)\nLook at the help documentation for penguins by typing help(penguins) in the Console. What are the names of the variables in this dataset? How many observations are in this dataset?\n\nhelp(penguins)\n\nYou should always look at your data before doing anything: view the first 6 (by default) rows with head()\n\nhead(penguins) # Try just typing penguins into your console, what happens?\n\n# A tibble: 6 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n6 Adelie  Torgersen           39.3          20.6               190        3650\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;\n\n\nIs our penguins dataset tidy?\n\nEach row = a single penguin\nEach column = different measurement about the penguins (can print out column names directly with colnames(penguins) or names(penguins))\n\nWe’ll now explore differences among the penguins using the tidyverse."
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#let-the-data-wrangling-begin",
+    "href": "demos/01-into-tidyverse.html#let-the-data-wrangling-begin",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Let the data wrangling begin…",
+    "text": "Let the data wrangling begin…\nFirst, load the tidyverse for exploring the data - and do NOT worry about the warning messages that will pop-up! Warning messages will tell you when other packages that are loaded may have functions replaced with the most recent package you’ve loaded. In general though, you should just be concerned when an error message pops up (errors are different than warnings!).\n\nlibrary(tidyverse)\n\nWarning: package 'ggplot2' was built under R version 4.2.3\n\n\nWarning: package 'tidyr' was built under R version 4.2.3\n\n\nWarning: package 'readr' was built under R version 4.2.3\n\n\nWarning: package 'dplyr' was built under R version 4.2.3\n\n\nWarning: package 'stringr' was built under R version 4.2.3\n\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.0     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.1\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\n\nWe’ll start by summarizing continuous (e.g., bill_length_mm, flipper_length_mm) and categorical (e.g., species, island) variables in different ways.\nWe can compute summary statistics for continuous variables with the summary() function:\n\nsummary(penguins$bill_length_mm)\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's \n  32.10   39.23   44.45   43.92   48.50   59.60       2 \n\n\nCompute counts of categorical variables with table() function:\n\ntable(\"island\" = penguins$island) # be careful it ignores NA values!\n\nisland\n   Biscoe     Dream Torgersen \n      168       124        52 \n\n\nHow do we remove the penguins with missing bill_length_mm values? Within the tidyverse, dplyr is a package with functions for data wrangling (because it’s within the tidyverse that means you do NOT have to load it separately with library(dplyr) after using library(tidyverse)!). It’s considered a “grammar of data manipulation”: dplyr functions are verbs, datasets are nouns.\nWe can filter() our dataset to choose observations meeting conditions:\n\nclean_penguins &lt;- filter(penguins, !is.na(bill_length_mm))\n# Use help(is.na) to see what it returns. And then observe \n# that the ! operator means to negate what comes after it.\n# This means !TRUE == FALSE (i.e., opposite of TRUE is equal to FALSE).\nnrow(penguins) - nrow(clean_penguins) # Difference in rows\n\n[1] 2\n\n\nIf we want to only consider a subset of columns in our data, we can select() variables of interest:\n\nsel_penguins &lt;- select(clean_penguins, species, island, bill_length_mm, flipper_length_mm)\nhead(sel_penguins, n = 3)\n\n# A tibble: 3 × 4\n  species island    bill_length_mm flipper_length_mm\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;             &lt;int&gt;\n1 Adelie  Torgersen           39.1               181\n2 Adelie  Torgersen           39.5               186\n3 Adelie  Torgersen           40.3               195\n\n\nWe can arrange() our dataset to sort observations by variables:\n\nbill_penguins &lt;- arrange(sel_penguins, desc(bill_length_mm)) # use desc() for descending order\nhead(bill_penguins, n = 3)\n\n# A tibble: 3 × 4\n  species   island bill_length_mm flipper_length_mm\n  &lt;fct&gt;     &lt;fct&gt;           &lt;dbl&gt;             &lt;int&gt;\n1 Gentoo    Biscoe           59.6               230\n2 Chinstrap Dream            58                 181\n3 Gentoo    Biscoe           55.9               228\n\n\nWe can summarize() our dataset to one row based on functions of variables:\n\nsummarize(bill_penguins, max(bill_length_mm), median(flipper_length_mm))\n\n# A tibble: 1 × 2\n  `max(bill_length_mm)` `median(flipper_length_mm)`\n                  &lt;dbl&gt;                       &lt;dbl&gt;\n1                  59.6                         197\n\n\nWe can mutate() our dataset to create new variables:\n\nnew_penguins &lt;- mutate(bill_penguins, \n                       bill_flipper_ratio = bill_length_mm / flipper_length_mm,\n                       flipper_bill_ratio = flipper_length_mm / bill_length_mm)\nhead(new_penguins, n = 1)\n\n# A tibble: 1 × 6\n  species island bill_length_mm flipper_length_mm bill_flipper_ratio\n  &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;             &lt;int&gt;              &lt;dbl&gt;\n1 Gentoo  Biscoe           59.6               230              0.259\n# ℹ 1 more variable: flipper_bill_ratio &lt;dbl&gt;\n\n\nHow do we perform several of these actions?\n\nhead(arrange(select(mutate(filter(penguins, !is.na(flipper_length_mm)), bill_flipper_ratio = bill_length_mm / flipper_length_mm), species, island, bill_flipper_ratio), desc(bill_flipper_ratio)), n = 1)\n\n# A tibble: 1 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n\n\nThat’s awfully annoying to do, and also difficult to read…"
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#enter-the-pipeline",
+    "href": "demos/01-into-tidyverse.html#enter-the-pipeline",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Enter the pipeline",
+    "text": "Enter the pipeline\nThe |&gt; (pipe) operator is used in the to chain commands together. Note: you can also use the tidyverse pipe %&gt;% (from magrittr), but |&gt; is the built-in pipe that is native to new versions of R without loading the tidyverse.\n|&gt; directs the data analyis pipeline: output of one function pipes into input of the next function\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  mutate(bill_flipper_ratio = bill_length_mm / flipper_length_mm) |&gt;\n  select(species, island, bill_flipper_ratio) |&gt;\n  arrange(desc(bill_flipper_ratio)) |&gt;\n  head(n = 5)\n\n# A tibble: 5 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n2 Chinstrap Dream               0.275\n3 Chinstrap Dream               0.270\n4 Chinstrap Dream               0.270\n5 Chinstrap Dream               0.268"
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#more-pipeline-actions",
+    "href": "demos/01-into-tidyverse.html#more-pipeline-actions",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "More pipeline actions!",
+    "text": "More pipeline actions!\nInstead of head(), we can slice() our dataset to choose the observations based on the position\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  mutate(bill_flipper_ratio = bill_length_mm / flipper_length_mm) |&gt;\n  select(species, island, bill_flipper_ratio) |&gt;\n  arrange(desc(bill_flipper_ratio)) |&gt;\n  slice(c(1, 2, 10, 100))\n\n# A tibble: 4 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n2 Chinstrap Dream               0.275\n3 Chinstrap Dream               0.264\n4 Gentoo    Biscoe              0.227"
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#grouped-operations",
+    "href": "demos/01-into-tidyverse.html#grouped-operations",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Grouped operations",
+    "text": "Grouped operations\nWe group_by() to split our dataset into groups based on a variable’s values\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  group_by(island) |&gt;\n  summarize(n_penguins = n(), #counts number of rows in group\n            ave_flipper_length = mean(flipper_length_mm), \n            sum_bill_depth = sum(bill_depth_mm),\n            .groups = \"drop\") |&gt; # all levels of grouping dropping\n  arrange(desc(n_penguins)) |&gt;\n  slice(1:5)\n\n# A tibble: 3 × 4\n  island    n_penguins ave_flipper_length sum_bill_depth\n  &lt;fct&gt;          &lt;int&gt;              &lt;dbl&gt;          &lt;dbl&gt;\n1 Biscoe           167               210.          2651.\n2 Dream            124               193.          2275.\n3 Torgersen         51               191.           940.\n\n\n\ngroup_by() is only useful in a pipeline (e.g. with summarize()), and pay attention to its behavior\nspecify the .groups field to decide if observations remain grouped or not after summarizing (you can also use ungroup() for this as well)"
+  },
+  {
+    "objectID": "demos/01-into-tidyverse.html#putting-it-all-together",
+    "href": "demos/01-into-tidyverse.html#putting-it-all-together",
+    "title": "Demo 01: Into the tidyverse",
+    "section": "Putting it all together…",
+    "text": "Putting it all together…\nAs your own exercise, create a tidy dataset where each row == an island with the following variables:\n\nnumber of penguins,\nnumber of unique species on the island (see help(unique)),\naverage body_mass_g,\nvariance (see help(var)) of bill_depth_mm\n\nPrior to making those variables, make sure to filter missings and also only consider female penguins. Then arrange the islands in order of the average body_mass_g:\n\n# INSERT YOUR CODE HERE"
+  },
+  {
+    "objectID": "demos/02-plot-2dquant.html",
+    "href": "demos/02-plot-2dquant.html",
+    "title": "Demo 02: Scatterplots and Linear Regression",
+    "section": "",
+    "text": "The graphs below don’t have proper titles, axis labels, legends, etc. Please take care to do this on your own graphs. Throughout this demo we will use the palmerpenguins dataset. To access the data, you will need to install the palmerpenguins package:\n\ninstall.packages(\"palmerpenguins\")"
+  },
+  {
+    "objectID": "demos/02-plot-2dquant.html#colors",
+    "href": "demos/02-plot-2dquant.html#colors",
+    "title": "Demo 02: Scatterplots and Linear Regression",
+    "section": "Colors",
+    "text": "Colors\nWe can color by a third variable (e.g., different color for each category).\nNote that, just like the x and y aesthetics, you can put color = inside ggplot or geom_point - both display the same visualization:\n\npenguins |&gt;\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, color = species)) +\n  geom_point(alpha = 0.5)\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\n\npenguins |&gt;\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) +\n  geom_point(alpha = 0.5, aes(color = species))\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nYou can also color by a quantitative variable using a color scale/gradient:\n\npenguins |&gt;\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) +\n  geom_point(alpha = 0.5, aes(color = body_mass_g))\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nThe default color gradient is not the most appealing, while there are a number of possibilities - blue to orange is a good choice since these colors are opposites on the color spectrum:\n\npenguins |&gt;\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) +\n  geom_point(alpha = 0.5, aes(color = body_mass_g)) +\n  scale_color_gradient(low = \"darkblue\", high = \"darkorange\")\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`)."
+  },
+  {
+    "objectID": "demos/02-plot-2dquant.html#point-size-size",
+    "href": "demos/02-plot-2dquant.html#point-size-size",
+    "title": "Demo 02: Scatterplots and Linear Regression",
+    "section": "Point size (size)",
+    "text": "Point size (size)\nWe can also map variables to other aesthetics, e.g. size:\n\npenguins |&gt;\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) +\n  geom_point(alpha = 0.5, aes(size = body_mass_g))\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`)."
+  },
+  {
+    "objectID": "demos/02-plot-2dquant.html#point-type-shape",
+    "href": "demos/02-plot-2dquant.html#point-type-shape",
+    "title": "Demo 02: Scatterplots and Linear Regression",
+    "section": "Point type (shape)",
+    "text": "Point type (shape)\nOr the type (shape) of points:\n\npenguins |&gt;\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) +\n  geom_point(alpha = 0.5, aes(shape = species))\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`)."
+  },
+  {
+    "objectID": "demos/02-plot-2dquant.html#combining-aesthetics",
+    "href": "demos/02-plot-2dquant.html#combining-aesthetics",
+    "title": "Demo 02: Scatterplots and Linear Regression",
+    "section": "Combining aesthetics",
+    "text": "Combining aesthetics\nWe can even do several of these at once:\n\npenguins |&gt;\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm,\n             color = species, shape = island,\n             size = body_mass_g)) +\n  geom_point(alpha = 0.5)\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nThe above graph may be a bit difficult to read, but it contains a lot of information in the sense that it is a 5-dimensional graphic:\n\nx = bill depth (mm)\ny = bill length (mm)\ncolor = species\nsize = body mass (g)\nshape = island\n\n\nBut be careful!\nThe more complications you add, the more difficult your graph is to explain."
+  },
+  {
+    "objectID": "demos/02-plot-2dquant.html#linear-regression",
+    "href": "demos/02-plot-2dquant.html#linear-regression",
+    "title": "Demo 02: Scatterplots and Linear Regression",
+    "section": "Linear regression",
+    "text": "Linear regression\nTo do this, we can use + geom_smooth(method = lm):\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +\n  geom_point(alpha = 0.5) + \n  geom_smooth(method = \"lm\", se = FALSE)\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\n##Linear regression (with error bars)\nAbove, I added se = FALSE so that the standard error bars do not show up in the graph. Setting this parameter to TRUE produces (by default) 95% confidence intervals.\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +\n  geom_point(alpha = 0.5) + \n  geom_smooth(method = \"lm\", se = TRUE)\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nYou can change the level of the confidence intervals using the level argument:\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +\n  geom_point(alpha = 0.5) + \n  geom_smooth(method = \"lm\", se = TRUE, level = 0.99)\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nHowever, from these graphs, it’s not clear if the linear regression is a good fit. We can “eyeball” this by looking at the fitted versus residuals, or we can make a residual-versus-fit plot.\nWhat’s a residual-versus-fit plot? In short, the “fits” are the estimated y-values from the linear regression (i.e., the y-values along the linear regression line). Meanwhile, the “residuals” are the distance between the actual y-values and the fits. A residual-versus-fit plot is itself a scatterplot, with fits on the x-axis and residuals on the y-axis.\n\nlin_reg &lt;- lm(body_mass_g ~ flipper_length_mm, data = penguins)\nfitted_vals &lt;- fitted(lin_reg)\nres_vals &lt;- residuals(lin_reg)\ntibble(fits = fitted_vals, \n       residuals = res_vals) |&gt;\n  ggplot(aes(x = fits, y = residuals)) +\n  geom_point() +\n  geom_hline(yintercept = 0, linetype = \"dashed\", color = \"red\")\n\n\n\n\n\n\n\n\nWe look for two things when looking at residual-versus-fit plots:\n\nIs there any trend around the 0 horizontal line? If so, that might be a violation of the linearity assumption (more on this next class).\nDo the points have equal vertical spread from left to right? If not, that might be a violation of the equal variance assumption.\n\nWe’ll talk about these assumptions more next class."
+  },
+  {
+    "objectID": "demos/02-plot-2dquant.html#transformations-of-the-outcome",
+    "href": "demos/02-plot-2dquant.html#transformations-of-the-outcome",
+    "title": "Demo 02: Scatterplots and Linear Regression",
+    "section": "Transformations of the outcome",
+    "text": "Transformations of the outcome\nWe can transform variables as well – again, within the plot. First, we will focus on the outcome y; in particular, we will focus on log transformations. This can be done through the y argument…\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = log(body_mass_g))) +\n  geom_point(alpha = 0.5) + \n  geom_smooth(method = \"lm\", se = TRUE)\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`)."
+  },
+  {
+    "objectID": "demos/02-plot-2dquant.html#transformations-of-covariates",
+    "href": "demos/02-plot-2dquant.html#transformations-of-covariates",
+    "title": "Demo 02: Scatterplots and Linear Regression",
+    "section": "Transformations of Covariates",
+    "text": "Transformations of Covariates\nIt’s also possible to include transformations of the covariates instead of (or in addition to) transformations of the outcome. For example, the following plots a quadratic regression model (i.e., plots y ~ x + x^2).\nNote that the formula argument in geom_smooth requires you to write in terms of y and x, NOT the variable names!\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +\n  geom_point(alpha = 0.5) + \n  geom_smooth(method = \"lm\", \n              formula = y ~ x + I(x^2))\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nTo assess if this is a better fit, we can again make a fitted-versus-residual plot (this looks better!):\n\nquad_lin_reg &lt;- lm(body_mass_g ~ flipper_length_mm + I(flipper_length_mm^2), \n                   data = penguins)\nquad_fitted_vals &lt;- fitted(quad_lin_reg)\nquad_res_vals &lt;- residuals(quad_lin_reg)\ntibble(fits = quad_fitted_vals, \n       residuals = quad_res_vals) |&gt;\n  ggplot(aes(x = fits, y = residuals)) +\n  geom_point() +\n  geom_hline(yintercept = 0, linetype = \"dashed\", color = \"red\")"
+  },
+  {
+    "objectID": "demos/02-plot-2dquant.html#non-linear-trends",
+    "href": "demos/02-plot-2dquant.html#non-linear-trends",
+    "title": "Demo 02: Scatterplots and Linear Regression",
+    "section": "Non-Linear Trends",
+    "text": "Non-Linear Trends\nWe can also do other types of modeling, e.g. local regression / loess smoothing:\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +\n  geom_point(alpha = 0.5) + \n  geom_smooth(method = \"loess\")\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nCheck the help documentation for geom_smooth() and stat_smooth() to see what methods are available and how to use them. The most common choices are “lm”, “glm”, “gam”, and “loess”.\nNote that if you don’t put anything in geom_smooth, it will select “auto”, which typically uses loess for small datasets and gam for large datasets. However, it uses a particular form of smoothing splines, so in practice I recommend you specify a particular statistical method (e.g., “lm”, “loess”) so you actually know what you’re plotting."
+  },
+  {
+    "objectID": "demos/02-plot-2dquant.html#useful-for-residual-diagnostics",
+    "href": "demos/02-plot-2dquant.html#useful-for-residual-diagnostics",
+    "title": "Demo 02: Scatterplots and Linear Regression",
+    "section": "Useful for residual diagnostics",
+    "text": "Useful for residual diagnostics\nConvenient to add + geom_smooth() to residual plots to help display any trends:\n\ntibble(fits = fitted_vals, \n       residuals = res_vals) |&gt;\n  ggplot(aes(x = fits, y = residuals)) +\n  geom_point() +\n  geom_hline(yintercept = 0, linetype = \"dashed\", color = \"red\") +\n  geom_smooth(method = \"loess\")\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\n\n\n\n\n\n\n\nwhich appears to be alleviated with the quadratic transformation:\n\ntibble(fits = quad_fitted_vals, \n       residuals = quad_res_vals) |&gt;\n  ggplot(aes(x = fits, y = residuals)) +\n  geom_point() +\n  geom_hline(yintercept = 0, linetype = \"dashed\", color = \"red\") +\n  geom_smooth(method = \"loess\")\n\n`geom_smooth()` using formula = 'y ~ x'"
+  },
+  {
+    "objectID": "demos/02-plot-2dquant.html#leave-the-points-take-the-regression-model-this-is-a-bad-idea",
+    "href": "demos/02-plot-2dquant.html#leave-the-points-take-the-regression-model-this-is-a-bad-idea",
+    "title": "Demo 02: Scatterplots and Linear Regression",
+    "section": "Leave The Points, take The Regression Model? (This is a bad idea…)",
+    "text": "Leave The Points, take The Regression Model? (This is a bad idea…)\nWe don’t even need to plot the points to do this – you can plot the regression model by itself by simply omitting geom_point():\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +\n  geom_smooth(method = \"loess\")\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\n\n\n\n\n\n\n\nAs always, you can adjust some parameters (like color, alpha, etc.):\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +\n  geom_smooth(method = \"loess\", se = TRUE, fill = \"darkorange\", \n              color = \"darkblue\", size = 2, alpha = 0.2) +\n  theme_bw()\n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\n\n\n\n\n\n\n\nHowever, in general I don’t recommend doing this, because it hides the data entirely, making it unclear which data points are influencing the regression line."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Statistical Graphics and Visualization 36-315",
+    "section": "",
+    "text": "This is the companion website for Statistical Graphics and Visualization 36-315. While all of the assignments will be posted on Canvas, this website provides an alternative way to access lecture materials and additional demo files (see the see side-bar).\nLectures are on Mondays and Wednesdays from 12 - 12:50 PM, located in DH A302.\nOffice hours schedule:\n\n\n\n\n\n\n\n\nName\nOffice hours\nLocation\n\n\n\n\nProf Yurko\nWednesdays and Thursdays @ 2 PM\nBaker Hall 132D\n\n\nAnna Rosengart\nMondays @ 2 PM\nZoom (see Canvas)\n\n\nPerry Lin\nWednesdays @ 11 AM\nZoom (see Canvas)\n\n\n\nThere are no required textbooks for this course, but the following are useful free resources that I will sometimes refer to as recommended reading:\n\nR for Data Science\nData Visualization: A Practical Introduction\nFundamentals of Data Visualization\nggplot2: Elegant Graphics for Data Analysis\n\nAnd the following are interesting data visualization websites:\n\nFlowingData\nHistory of Data Visualization\nFriends Don’t Let Friends Make Bad Graphs",
+    "crumbs": [
+      "Home"
+    ]
   },
   {
     "objectID": "lectures/05-2dcat.html#announcements-previously-and-today",
@@ -812,321 +1143,102 @@
     "text": "Recap and next steps\n\n\nFor 2D categorical data we create visualizations for marginal, conditional, and joint distributions\nCan create stacked and side-by-side bar charts to visualize 2D categorical data\nPerform 2D Chi-squared test to test if two categorical variables are associated with each other\nCreate mosaic plots to visualize 2D categorical data\nShade mosaic plot tiles by Pearson residuals to see what drives association between two categorical variables (if any)\n\n\n\n\n\nHW1 is due TONIGHT and you have Lab 3 on Friday!\nNext time: Visualizing 1D quantitative data\nRecommended reading: CW Chapter 11 Visualizing nested proportions"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Statistical Graphics and Visualization 36-315",
-    "section": "",
-    "text": "This is the companion website for Statistical Graphics and Visualization 36-315. While all of the assignments will be posted on Canvas, this website provides an alternative way to access lecture materials and additional demo files (see the see side-bar).\nLectures are on Mondays and Wednesdays from 12 - 12:50 PM, located in DH A302.\nOffice hours schedule:\n\n\n\n\n\n\n\n\nName\nOffice hours\nLocation\n\n\n\n\nProf Yurko\nWednesdays and Thursdays @ 2 PM\nBaker Hall 132D\n\n\nAnna Rosengart\nMondays @ 2 PM\nZoom (see Canvas)\n\n\nPerry Lin\nWednesdays @ 11 AM\nZoom (see Canvas)\n\n\n\nThere are no required textbooks for this course, but the following are useful free resources that I will sometimes refer to as recommended reading:\n\nR for Data Science\nData Visualization: A Practical Introduction\nFundamentals of Data Visualization\nggplot2: Elegant Graphics for Data Analysis\n\nAnd the following are interesting data visualization websites:\n\nFlowingData\nHistory of Data Visualization\nFriends Don’t Let Friends Make Bad Graphs",
-    "crumbs": [
-      "Home"
-    ]
-  },
-  {
-    "objectID": "demos/02-plot-2dquant.html",
-    "href": "demos/02-plot-2dquant.html",
-    "title": "Demo 02: Scatterplots and Linear Regression",
-    "section": "",
-    "text": "The graphs below don’t have proper titles, axis labels, legends, etc. Please take care to do this on your own graphs. Throughout this demo we will use the palmerpenguins dataset. To access the data, you will need to install the palmerpenguins package:\n\ninstall.packages(\"palmerpenguins\")"
-  },
-  {
-    "objectID": "demos/02-plot-2dquant.html#colors",
-    "href": "demos/02-plot-2dquant.html#colors",
-    "title": "Demo 02: Scatterplots and Linear Regression",
-    "section": "Colors",
-    "text": "Colors\nWe can color by a third variable (e.g., different color for each category).\nNote that, just like the x and y aesthetics, you can put color = inside ggplot or geom_point - both display the same visualization:\n\npenguins |&gt;\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, color = species)) +\n  geom_point(alpha = 0.5)\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\n\npenguins |&gt;\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) +\n  geom_point(alpha = 0.5, aes(color = species))\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nYou can also color by a quantitative variable using a color scale/gradient:\n\npenguins |&gt;\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) +\n  geom_point(alpha = 0.5, aes(color = body_mass_g))\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nThe default color gradient is not the most appealing, while there are a number of possibilities - blue to orange is a good choice since these colors are opposites on the color spectrum:\n\npenguins |&gt;\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) +\n  geom_point(alpha = 0.5, aes(color = body_mass_g)) +\n  scale_color_gradient(low = \"darkblue\", high = \"darkorange\")\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`)."
-  },
-  {
-    "objectID": "demos/02-plot-2dquant.html#point-size-size",
-    "href": "demos/02-plot-2dquant.html#point-size-size",
-    "title": "Demo 02: Scatterplots and Linear Regression",
-    "section": "Point size (size)",
-    "text": "Point size (size)\nWe can also map variables to other aesthetics, e.g. size:\n\npenguins |&gt;\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) +\n  geom_point(alpha = 0.5, aes(size = body_mass_g))\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`)."
-  },
-  {
-    "objectID": "demos/02-plot-2dquant.html#point-type-shape",
-    "href": "demos/02-plot-2dquant.html#point-type-shape",
-    "title": "Demo 02: Scatterplots and Linear Regression",
-    "section": "Point type (shape)",
-    "text": "Point type (shape)\nOr the type (shape) of points:\n\npenguins |&gt;\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm)) +\n  geom_point(alpha = 0.5, aes(shape = species))\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`)."
-  },
-  {
-    "objectID": "demos/02-plot-2dquant.html#combining-aesthetics",
-    "href": "demos/02-plot-2dquant.html#combining-aesthetics",
-    "title": "Demo 02: Scatterplots and Linear Regression",
-    "section": "Combining aesthetics",
-    "text": "Combining aesthetics\nWe can even do several of these at once:\n\npenguins |&gt;\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm,\n             color = species, shape = island,\n             size = body_mass_g)) +\n  geom_point(alpha = 0.5)\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nThe above graph may be a bit difficult to read, but it contains a lot of information in the sense that it is a 5-dimensional graphic:\n\nx = bill depth (mm)\ny = bill length (mm)\ncolor = species\nsize = body mass (g)\nshape = island\n\n\nBut be careful!\nThe more complications you add, the more difficult your graph is to explain."
-  },
-  {
-    "objectID": "demos/02-plot-2dquant.html#linear-regression",
-    "href": "demos/02-plot-2dquant.html#linear-regression",
-    "title": "Demo 02: Scatterplots and Linear Regression",
-    "section": "Linear regression",
-    "text": "Linear regression\nTo do this, we can use + geom_smooth(method = lm):\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +\n  geom_point(alpha = 0.5) + \n  geom_smooth(method = \"lm\", se = FALSE)\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\n##Linear regression (with error bars)\nAbove, I added se = FALSE so that the standard error bars do not show up in the graph. Setting this parameter to TRUE produces (by default) 95% confidence intervals.\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +\n  geom_point(alpha = 0.5) + \n  geom_smooth(method = \"lm\", se = TRUE)\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nYou can change the level of the confidence intervals using the level argument:\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +\n  geom_point(alpha = 0.5) + \n  geom_smooth(method = \"lm\", se = TRUE, level = 0.99)\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nHowever, from these graphs, it’s not clear if the linear regression is a good fit. We can “eyeball” this by looking at the fitted versus residuals, or we can make a residual-versus-fit plot.\nWhat’s a residual-versus-fit plot? In short, the “fits” are the estimated y-values from the linear regression (i.e., the y-values along the linear regression line). Meanwhile, the “residuals” are the distance between the actual y-values and the fits. A residual-versus-fit plot is itself a scatterplot, with fits on the x-axis and residuals on the y-axis.\n\nlin_reg &lt;- lm(body_mass_g ~ flipper_length_mm, data = penguins)\nfitted_vals &lt;- fitted(lin_reg)\nres_vals &lt;- residuals(lin_reg)\ntibble(fits = fitted_vals, \n       residuals = res_vals) |&gt;\n  ggplot(aes(x = fits, y = residuals)) +\n  geom_point() +\n  geom_hline(yintercept = 0, linetype = \"dashed\", color = \"red\")\n\n\n\n\n\n\n\n\nWe look for two things when looking at residual-versus-fit plots:\n\nIs there any trend around the 0 horizontal line? If so, that might be a violation of the linearity assumption (more on this next class).\nDo the points have equal vertical spread from left to right? If not, that might be a violation of the equal variance assumption.\n\nWe’ll talk about these assumptions more next class."
-  },
-  {
-    "objectID": "demos/02-plot-2dquant.html#transformations-of-the-outcome",
-    "href": "demos/02-plot-2dquant.html#transformations-of-the-outcome",
-    "title": "Demo 02: Scatterplots and Linear Regression",
-    "section": "Transformations of the outcome",
-    "text": "Transformations of the outcome\nWe can transform variables as well – again, within the plot. First, we will focus on the outcome y; in particular, we will focus on log transformations. This can be done through the y argument…\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = log(body_mass_g))) +\n  geom_point(alpha = 0.5) + \n  geom_smooth(method = \"lm\", se = TRUE)\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`)."
-  },
-  {
-    "objectID": "demos/02-plot-2dquant.html#transformations-of-covariates",
-    "href": "demos/02-plot-2dquant.html#transformations-of-covariates",
-    "title": "Demo 02: Scatterplots and Linear Regression",
-    "section": "Transformations of Covariates",
-    "text": "Transformations of Covariates\nIt’s also possible to include transformations of the covariates instead of (or in addition to) transformations of the outcome. For example, the following plots a quadratic regression model (i.e., plots y ~ x + x^2).\nNote that the formula argument in geom_smooth requires you to write in terms of y and x, NOT the variable names!\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +\n  geom_point(alpha = 0.5) + \n  geom_smooth(method = \"lm\", \n              formula = y ~ x + I(x^2))\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nTo assess if this is a better fit, we can again make a fitted-versus-residual plot (this looks better!):\n\nquad_lin_reg &lt;- lm(body_mass_g ~ flipper_length_mm + I(flipper_length_mm^2), \n                   data = penguins)\nquad_fitted_vals &lt;- fitted(quad_lin_reg)\nquad_res_vals &lt;- residuals(quad_lin_reg)\ntibble(fits = quad_fitted_vals, \n       residuals = quad_res_vals) |&gt;\n  ggplot(aes(x = fits, y = residuals)) +\n  geom_point() +\n  geom_hline(yintercept = 0, linetype = \"dashed\", color = \"red\")"
-  },
-  {
-    "objectID": "demos/02-plot-2dquant.html#non-linear-trends",
-    "href": "demos/02-plot-2dquant.html#non-linear-trends",
-    "title": "Demo 02: Scatterplots and Linear Regression",
-    "section": "Non-Linear Trends",
-    "text": "Non-Linear Trends\nWe can also do other types of modeling, e.g. local regression / loess smoothing:\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +\n  geom_point(alpha = 0.5) + \n  geom_smooth(method = \"loess\")\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\nWarning: Removed 2 rows containing missing values or values outside the scale range\n(`geom_point()`).\n\n\n\n\n\n\n\n\n\nCheck the help documentation for geom_smooth() and stat_smooth() to see what methods are available and how to use them. The most common choices are “lm”, “glm”, “gam”, and “loess”.\nNote that if you don’t put anything in geom_smooth, it will select “auto”, which typically uses loess for small datasets and gam for large datasets. However, it uses a particular form of smoothing splines, so in practice I recommend you specify a particular statistical method (e.g., “lm”, “loess”) so you actually know what you’re plotting."
-  },
-  {
-    "objectID": "demos/02-plot-2dquant.html#useful-for-residual-diagnostics",
-    "href": "demos/02-plot-2dquant.html#useful-for-residual-diagnostics",
-    "title": "Demo 02: Scatterplots and Linear Regression",
-    "section": "Useful for residual diagnostics",
-    "text": "Useful for residual diagnostics\nConvenient to add + geom_smooth() to residual plots to help display any trends:\n\ntibble(fits = fitted_vals, \n       residuals = res_vals) |&gt;\n  ggplot(aes(x = fits, y = residuals)) +\n  geom_point() +\n  geom_hline(yintercept = 0, linetype = \"dashed\", color = \"red\") +\n  geom_smooth(method = \"loess\")\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\n\n\n\n\n\n\n\nwhich appears to be alleviated with the quadratic transformation:\n\ntibble(fits = quad_fitted_vals, \n       residuals = quad_res_vals) |&gt;\n  ggplot(aes(x = fits, y = residuals)) +\n  geom_point() +\n  geom_hline(yintercept = 0, linetype = \"dashed\", color = \"red\") +\n  geom_smooth(method = \"loess\")\n\n`geom_smooth()` using formula = 'y ~ x'"
-  },
-  {
-    "objectID": "demos/02-plot-2dquant.html#leave-the-points-take-the-regression-model-this-is-a-bad-idea",
-    "href": "demos/02-plot-2dquant.html#leave-the-points-take-the-regression-model-this-is-a-bad-idea",
-    "title": "Demo 02: Scatterplots and Linear Regression",
-    "section": "Leave The Points, take The Regression Model? (This is a bad idea…)",
-    "text": "Leave The Points, take The Regression Model? (This is a bad idea…)\nWe don’t even need to plot the points to do this – you can plot the regression model by itself by simply omitting geom_point():\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +\n  geom_smooth(method = \"loess\")\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\n\n\n\n\n\n\n\nAs always, you can adjust some parameters (like color, alpha, etc.):\n\npenguins |&gt;\n  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +\n  geom_smooth(method = \"loess\", se = TRUE, fill = \"darkorange\", \n              color = \"darkblue\", size = 2, alpha = 0.2) +\n  theme_bw()\n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: Removed 2 rows containing non-finite outside the scale range\n(`stat_smooth()`).\n\n\n\n\n\n\n\n\n\nHowever, in general I don’t recommend doing this, because it hides the data entirely, making it unclear which data points are influencing the regression line."
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html",
-    "href": "demos/01-into-tidyverse.html",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "",
-    "text": "(Broadly speaking) EDA = questions about data + wrangling + visualization\nR for Data Science: “EDA is a state of mind”, an iterative cycle:\n\ngenerate questions\nanswer via transformations and visualizations\n\nExample of questions?\n\nWhat type of variation do the variables display?\nWhat type of relationships exist between variables?\n\nGoal: develop understanding and become familiar with your data\n\nEDA is NOT a replacement for statistical inference and learning\nEDA is an important and necessary step to build intuition\n\nWe tackle the challenges of EDA with a data science workflow. An example of this according to Hadley Wickham in R for Data Science:\n\n\n\n\n\nAspects of data wrangling:\n\nimport: reading in data (e.g., read_csv())\ntidy: rows = observations, columns = variables (i.e. tabular data)\ntransform: filter observations, create new variables, summarize, etc."
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#what-is-exploratory-data-analysis-eda",
-    "href": "demos/01-into-tidyverse.html#what-is-exploratory-data-analysis-eda",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "",
-    "text": "(Broadly speaking) EDA = questions about data + wrangling + visualization\nR for Data Science: “EDA is a state of mind”, an iterative cycle:\n\ngenerate questions\nanswer via transformations and visualizations\n\nExample of questions?\n\nWhat type of variation do the variables display?\nWhat type of relationships exist between variables?\n\nGoal: develop understanding and become familiar with your data\n\nEDA is NOT a replacement for statistical inference and learning\nEDA is an important and necessary step to build intuition\n\nWe tackle the challenges of EDA with a data science workflow. An example of this according to Hadley Wickham in R for Data Science:\n\n\n\n\n\nAspects of data wrangling:\n\nimport: reading in data (e.g., read_csv())\ntidy: rows = observations, columns = variables (i.e. tabular data)\ntransform: filter observations, create new variables, summarize, etc."
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#working-with-penguins",
-    "href": "demos/01-into-tidyverse.html#working-with-penguins",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Working with penguins",
-    "text": "Working with penguins\nIn R, there are many libraries or packages/groups of programs that are not permanently stored in R, so we have to load them when we want to use them. You can load an R package by typing library(package_name). (Sometimes we need to download/install the package first, as described in HW0.)\nThroughout this demo we will use the palmerpenguins dataset. To access the data, you will need to install the palmerpenguins package:\n\ninstall.packages(\"palmerpenguins\")\n\nImport the penguins dataset by loading the palmerpenguins package using the library function and then access the data with the data() function:\n\nlibrary(palmerpenguins) \ndata(penguins)\n\nView some basic info about the penguins dataset:\n\n# displays same info as c(nrow(penguins), ncol(penguins))\ndim(penguins) \n\n[1] 344   8\n\nclass(penguins)\n\n[1] \"tbl_df\"     \"tbl\"        \"data.frame\"\n\n\ntbl (pronounced tibble) is the tidyverse way of storing tabular data, like a spreadsheet or data.frame\nI assure you that you’ll run into errors as you code in R; in fact, my attitude as a coder is that something is wrong if I never get any errors while working on a project. When you run into an error, your first reaction may be to panic and post a question to Piazza. However, checking help documentation in R can be a great way to figure out what’s going wrong. (For good or bad, I end up having to read help documentation almost every day of my life - because, well, I regularly make mistakes in R.)\nLook at the help documentation for penguins by typing help(penguins) in the Console. What are the names of the variables in this dataset? How many observations are in this dataset?\n\nhelp(penguins)\n\nYou should always look at your data before doing anything: view the first 6 (by default) rows with head()\n\nhead(penguins) # Try just typing penguins into your console, what happens?\n\n# A tibble: 6 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n6 Adelie  Torgersen           39.3          20.6               190        3650\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;\n\n\nIs our penguins dataset tidy?\n\nEach row = a single penguin\nEach column = different measurement about the penguins (can print out column names directly with colnames(penguins) or names(penguins))\n\nWe’ll now explore differences among the penguins using the tidyverse."
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#let-the-data-wrangling-begin",
-    "href": "demos/01-into-tidyverse.html#let-the-data-wrangling-begin",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Let the data wrangling begin…",
-    "text": "Let the data wrangling begin…\nFirst, load the tidyverse for exploring the data - and do NOT worry about the warning messages that will pop-up! Warning messages will tell you when other packages that are loaded may have functions replaced with the most recent package you’ve loaded. In general though, you should just be concerned when an error message pops up (errors are different than warnings!).\n\nlibrary(tidyverse)\n\nWarning: package 'ggplot2' was built under R version 4.2.3\n\n\nWarning: package 'tidyr' was built under R version 4.2.3\n\n\nWarning: package 'readr' was built under R version 4.2.3\n\n\nWarning: package 'dplyr' was built under R version 4.2.3\n\n\nWarning: package 'stringr' was built under R version 4.2.3\n\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.0     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.1\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\n\nWe’ll start by summarizing continuous (e.g., bill_length_mm, flipper_length_mm) and categorical (e.g., species, island) variables in different ways.\nWe can compute summary statistics for continuous variables with the summary() function:\n\nsummary(penguins$bill_length_mm)\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's \n  32.10   39.23   44.45   43.92   48.50   59.60       2 \n\n\nCompute counts of categorical variables with table() function:\n\ntable(\"island\" = penguins$island) # be careful it ignores NA values!\n\nisland\n   Biscoe     Dream Torgersen \n      168       124        52 \n\n\nHow do we remove the penguins with missing bill_length_mm values? Within the tidyverse, dplyr is a package with functions for data wrangling (because it’s within the tidyverse that means you do NOT have to load it separately with library(dplyr) after using library(tidyverse)!). It’s considered a “grammar of data manipulation”: dplyr functions are verbs, datasets are nouns.\nWe can filter() our dataset to choose observations meeting conditions:\n\nclean_penguins &lt;- filter(penguins, !is.na(bill_length_mm))\n# Use help(is.na) to see what it returns. And then observe \n# that the ! operator means to negate what comes after it.\n# This means !TRUE == FALSE (i.e., opposite of TRUE is equal to FALSE).\nnrow(penguins) - nrow(clean_penguins) # Difference in rows\n\n[1] 2\n\n\nIf we want to only consider a subset of columns in our data, we can select() variables of interest:\n\nsel_penguins &lt;- select(clean_penguins, species, island, bill_length_mm, flipper_length_mm)\nhead(sel_penguins, n = 3)\n\n# A tibble: 3 × 4\n  species island    bill_length_mm flipper_length_mm\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;             &lt;int&gt;\n1 Adelie  Torgersen           39.1               181\n2 Adelie  Torgersen           39.5               186\n3 Adelie  Torgersen           40.3               195\n\n\nWe can arrange() our dataset to sort observations by variables:\n\nbill_penguins &lt;- arrange(sel_penguins, desc(bill_length_mm)) # use desc() for descending order\nhead(bill_penguins, n = 3)\n\n# A tibble: 3 × 4\n  species   island bill_length_mm flipper_length_mm\n  &lt;fct&gt;     &lt;fct&gt;           &lt;dbl&gt;             &lt;int&gt;\n1 Gentoo    Biscoe           59.6               230\n2 Chinstrap Dream            58                 181\n3 Gentoo    Biscoe           55.9               228\n\n\nWe can summarize() our dataset to one row based on functions of variables:\n\nsummarize(bill_penguins, max(bill_length_mm), median(flipper_length_mm))\n\n# A tibble: 1 × 2\n  `max(bill_length_mm)` `median(flipper_length_mm)`\n                  &lt;dbl&gt;                       &lt;dbl&gt;\n1                  59.6                         197\n\n\nWe can mutate() our dataset to create new variables:\n\nnew_penguins &lt;- mutate(bill_penguins, \n                       bill_flipper_ratio = bill_length_mm / flipper_length_mm,\n                       flipper_bill_ratio = flipper_length_mm / bill_length_mm)\nhead(new_penguins, n = 1)\n\n# A tibble: 1 × 6\n  species island bill_length_mm flipper_length_mm bill_flipper_ratio\n  &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;             &lt;int&gt;              &lt;dbl&gt;\n1 Gentoo  Biscoe           59.6               230              0.259\n# ℹ 1 more variable: flipper_bill_ratio &lt;dbl&gt;\n\n\nHow do we perform several of these actions?\n\nhead(arrange(select(mutate(filter(penguins, !is.na(flipper_length_mm)), bill_flipper_ratio = bill_length_mm / flipper_length_mm), species, island, bill_flipper_ratio), desc(bill_flipper_ratio)), n = 1)\n\n# A tibble: 1 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n\n\nThat’s awfully annoying to do, and also difficult to read…"
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#enter-the-pipeline",
-    "href": "demos/01-into-tidyverse.html#enter-the-pipeline",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Enter the pipeline",
-    "text": "Enter the pipeline\nThe |&gt; (pipe) operator is used in the to chain commands together. Note: you can also use the tidyverse pipe %&gt;% (from magrittr), but |&gt; is the built-in pipe that is native to new versions of R without loading the tidyverse.\n|&gt; directs the data analyis pipeline: output of one function pipes into input of the next function\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  mutate(bill_flipper_ratio = bill_length_mm / flipper_length_mm) |&gt;\n  select(species, island, bill_flipper_ratio) |&gt;\n  arrange(desc(bill_flipper_ratio)) |&gt;\n  head(n = 5)\n\n# A tibble: 5 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n2 Chinstrap Dream               0.275\n3 Chinstrap Dream               0.270\n4 Chinstrap Dream               0.270\n5 Chinstrap Dream               0.268"
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#more-pipeline-actions",
-    "href": "demos/01-into-tidyverse.html#more-pipeline-actions",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "More pipeline actions!",
-    "text": "More pipeline actions!\nInstead of head(), we can slice() our dataset to choose the observations based on the position\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  mutate(bill_flipper_ratio = bill_length_mm / flipper_length_mm) |&gt;\n  select(species, island, bill_flipper_ratio) |&gt;\n  arrange(desc(bill_flipper_ratio)) |&gt;\n  slice(c(1, 2, 10, 100))\n\n# A tibble: 4 × 3\n  species   island bill_flipper_ratio\n  &lt;fct&gt;     &lt;fct&gt;               &lt;dbl&gt;\n1 Chinstrap Dream               0.320\n2 Chinstrap Dream               0.275\n3 Chinstrap Dream               0.264\n4 Gentoo    Biscoe              0.227"
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#grouped-operations",
-    "href": "demos/01-into-tidyverse.html#grouped-operations",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Grouped operations",
-    "text": "Grouped operations\nWe group_by() to split our dataset into groups based on a variable’s values\n\npenguins |&gt;\n  filter(!is.na(flipper_length_mm)) |&gt;\n  group_by(island) |&gt;\n  summarize(n_penguins = n(), #counts number of rows in group\n            ave_flipper_length = mean(flipper_length_mm), \n            sum_bill_depth = sum(bill_depth_mm),\n            .groups = \"drop\") |&gt; # all levels of grouping dropping\n  arrange(desc(n_penguins)) |&gt;\n  slice(1:5)\n\n# A tibble: 3 × 4\n  island    n_penguins ave_flipper_length sum_bill_depth\n  &lt;fct&gt;          &lt;int&gt;              &lt;dbl&gt;          &lt;dbl&gt;\n1 Biscoe           167               210.          2651.\n2 Dream            124               193.          2275.\n3 Torgersen         51               191.           940.\n\n\n\ngroup_by() is only useful in a pipeline (e.g. with summarize()), and pay attention to its behavior\nspecify the .groups field to decide if observations remain grouped or not after summarizing (you can also use ungroup() for this as well)"
-  },
-  {
-    "objectID": "demos/01-into-tidyverse.html#putting-it-all-together",
-    "href": "demos/01-into-tidyverse.html#putting-it-all-together",
-    "title": "Demo 01: Into the tidyverse",
-    "section": "Putting it all together…",
-    "text": "Putting it all together…\nAs your own exercise, create a tidy dataset where each row == an island with the following variables:\n\nnumber of penguins,\nnumber of unique species on the island (see help(unique)),\naverage body_mass_g,\nvariance (see help(var)) of bill_depth_mm\n\nPrior to making those variables, make sure to filter missings and also only consider female penguins. Then arrange the islands in order of the average body_mass_g:\n\n# INSERT YOUR CODE HERE"
-  },
-  {
-    "objectID": "demos/03-regression.html",
-    "href": "demos/03-regression.html",
-    "title": "Demo 03: More Regression with Penguins",
-    "section": "",
-    "text": "The graphs below don’t have proper titles, axis labels, legends, etc. Please take care to do this on your own graphs. Throughout this demo we will use the palmerpenguins dataset. To access the data, you will need to install the palmerpenguins package:\n\ninstall.packages(\"palmerpenguins\")\n\nWe load the penguins data in the same way as before:\n\nlibrary(tidyverse)\nlibrary(palmerpenguins)\ndata(penguins)\nhead(penguins)\n\n# A tibble: 6 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n6 Adelie  Torgersen           39.3          20.6               190        3650\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;"
-  },
-  {
-    "objectID": "demos/03-regression.html#regression-with-penguins",
-    "href": "demos/03-regression.html#regression-with-penguins",
-    "title": "Demo 03: More Regression with Penguins",
-    "section": "",
-    "text": "The graphs below don’t have proper titles, axis labels, legends, etc. Please take care to do this on your own graphs. Throughout this demo we will use the palmerpenguins dataset. To access the data, you will need to install the palmerpenguins package:\n\ninstall.packages(\"palmerpenguins\")\n\nWe load the penguins data in the same way as before:\n\nlibrary(tidyverse)\nlibrary(palmerpenguins)\ndata(penguins)\nhead(penguins)\n\n# A tibble: 6 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n6 Adelie  Torgersen           39.3          20.6               190        3650\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;"
-  },
-  {
-    "objectID": "demos/03-regression.html#simple-linear-regression-based-only-on-bill-length",
-    "href": "demos/03-regression.html#simple-linear-regression-based-only-on-bill-length",
-    "title": "Demo 03: More Regression with Penguins",
-    "section": "Simple Linear Regression (based only on bill length)",
-    "text": "Simple Linear Regression (based only on bill length)\nFirst, we can run a simple linear regression (the first model) based only on bill length. We can display this line via geom_smooth():\n\npenguins |&gt;\n  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +\n  geom_point(alpha = 0.5) +\n  geom_smooth(method = \"lm\", se = TRUE)\n\n\n\n\n\n\n\n\nAnd display the regression model output using summary():\n\nsummary(lm(bill_depth_mm ~ bill_length_mm, data = penguins))\n\n\nCall:\nlm(formula = bill_depth_mm ~ bill_length_mm, data = penguins)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-4.1381 -1.4263  0.0164  1.3841  4.5255 \n\nCoefficients:\n               Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)    20.88547    0.84388  24.749  &lt; 2e-16 ***\nbill_length_mm -0.08502    0.01907  -4.459 1.12e-05 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 1.922 on 340 degrees of freedom\n  (2 observations deleted due to missingness)\nMultiple R-squared:  0.05525,   Adjusted R-squared:  0.05247 \nF-statistic: 19.88 on 1 and 340 DF,  p-value: 1.12e-05\n\n\nWe can write this regression model as:\n\\[\\text{depth} \\sim N(\\beta_0 + \\beta_L \\cdot \\text{length}, \\sigma^2)\\]\nNote that \\(\\beta_0\\) is the intercept and \\(\\beta_L\\) is the slope.\nThus, our estimates are:\n\n\\(\\hat{\\beta}_0 = 20.88547\\)\n\\(\\hat{\\beta}_L = 12.43\\)\n\\(\\hat{\\sigma}^2 = 1.922^2\\)"
-  },
-  {
-    "objectID": "demos/03-regression.html#multiple-linear-regression-additive",
-    "href": "demos/03-regression.html#multiple-linear-regression-additive",
-    "title": "Demo 03: More Regression with Penguins",
-    "section": "Multiple Linear Regression (Additive)",
-    "text": "Multiple Linear Regression (Additive)\nWe can also run the second model, which is based on length and species, but with only additive effects. First, we’ll check the counts of the species variable to ensure that the species with the highest number of observations if the reference level (i.e., the first level for a factor variable):\n\ntable(penguins$species)\n\n\n   Adelie Chinstrap    Gentoo \n      152        68       124 \n\n\nLooks like we’re lucky and that the Adelie species is the most popular and is already first due to alphabetical order. What function would we need to do to re-order the variable?\nNext, we’ll fit the regression that accounts for species without an interaction - so it’s just an additive effect:\n\ndepth_lm_species_add &lt;- lm(bill_depth_mm ~ bill_length_mm + species,\n                           data = penguins)\nsummary(depth_lm_species_add)\n\n\nCall:\nlm(formula = bill_depth_mm ~ bill_length_mm + species, data = penguins)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-2.4529 -0.6864 -0.0508  0.5519  3.5915 \n\nCoefficients:\n                 Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)      10.59218    0.68302  15.508  &lt; 2e-16 ***\nbill_length_mm    0.19989    0.01749  11.427  &lt; 2e-16 ***\nspeciesChinstrap -1.93319    0.22416  -8.624 2.55e-16 ***\nspeciesGentoo    -5.10602    0.19142 -26.674  &lt; 2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.9533 on 338 degrees of freedom\n  (2 observations deleted due to missingness)\nMultiple R-squared:  0.769, Adjusted R-squared:  0.7669 \nF-statistic: 375.1 on 3 and 338 DF,  p-value: &lt; 2.2e-16\n\n\nThis tells us that Chinstrap is different from Adelie and Gentoo is different from Adelie, but it does NOT tell us Chinstrap is different from Gentoo. That would require another model with a reordered species variable. Exercise: Reorder species so that Gentoo is the reference level and compare to the results above.\nWe can manually extract intercepts and coefficients to use for plotting (read the code comments!):\n\n# Calculate species-specific intercepts in order:\nintercepts &lt;- # First for `Adelie` it's just the initial intercept\n  c(coef(depth_lm_species_add)[\"(Intercept)\"],\n    # Next for `Chinstrap` it's the intercept plus the `Chinstrap` term:\n    coef(depth_lm_species_add)[\"(Intercept)\"] + \n      coef(depth_lm_species_add)[\"speciesChinstrap\"],\n    # And finally for `Gentoo` it's again the intercept plus the `Gentoo` term\n    coef(depth_lm_species_add)[\"(Intercept)\"] + \n      coef(depth_lm_species_add)[\"speciesGentoo\"])\n\n# Create a small table to store the intercept, slopes, and species:\nlines_tbl &lt;- tibble(\"intercepts\" = intercepts,\n                    # Slopes are the same for each, thus use rep()\n                    \"slopes\" = rep(coef(depth_lm_species_add)[\"bill_length_mm\"],\n                                   3),\n                    # And the levels of species:\n                    \"species\" = levels(penguins$species))\n\nWe can now plot this model by specifying the regression lines with geom_abline() using the newly constructed lines_tbl as the data for this layer:\n\npenguins |&gt;\n  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +\n  geom_point(alpha = 0.5) +\n  geom_abline(data = lines_tbl,\n              aes(intercept = intercepts, slope = slopes,\n                  color = species)) +\n  labs(x = \"Bill length (mm)\", y = \"Bill depth (mm)\", \n       title = \"Bill depth versus weight by species\")\n\n\n\n\n\n\n\n\nThis is a great example of Simpson’s Paradox! We originally observed a negative linear relationship between depth and length, but now observe a positive linear relationship within species!"
-  },
-  {
-    "objectID": "demos/03-regression.html#multiple-linear-regression-interactive",
-    "href": "demos/03-regression.html#multiple-linear-regression-interactive",
-    "title": "Demo 03: More Regression with Penguins",
-    "section": "Multiple Linear Regression (Interactive)",
-    "text": "Multiple Linear Regression (Interactive)\nNext, we can run the third model, which is based on length and species, including interaction effects. This is the default type of model displayed when we map species to the color aesthetic for the geom_smooth() layer. In the plot below, we display across both layers, geom_point() and geom_smooth() by mapping species to color in the initial ggplot canvas construction:\n\npenguins |&gt;\n  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +\n  geom_point(alpha = 0.5) +\n  geom_smooth(method = \"lm\", se = TRUE) +\n  labs(x = \"Bill length (mm)\", y = \"Bill depth (mm)\", \n       title = \"Bill depth versus weight by species\")\n\n\n\n\n\n\n\n\nWhat about the summary of this model? Is the inclusion of interaction terms relevant? Note that by default, multiplying two variables in the lm() formula below includes both the additive AND interaction terms.\n\ndepth_lm_species_int &lt;- lm(bill_depth_mm ~ bill_length_mm * species,\n                           data = penguins)\nsummary(depth_lm_species_int)\n\n\nCall:\nlm(formula = bill_depth_mm ~ bill_length_mm * species, data = penguins)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-2.6574 -0.6675 -0.0524  0.5383  3.5032 \n\nCoefficients:\n                                Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)                     11.40912    1.13812  10.025  &lt; 2e-16 ***\nbill_length_mm                   0.17883    0.02927   6.110 2.76e-09 ***\nspeciesChinstrap                -3.83998    2.05398  -1.870 0.062419 .  \nspeciesGentoo                   -6.15812    1.75451  -3.510 0.000509 ***\nbill_length_mm:speciesChinstrap  0.04338    0.04558   0.952 0.341895    \nbill_length_mm:speciesGentoo     0.02601    0.04054   0.642 0.521590    \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.9548 on 336 degrees of freedom\n  (2 observations deleted due to missingness)\nMultiple R-squared:  0.7697,    Adjusted R-squared:  0.7662 \nF-statistic: 224.5 on 5 and 336 DF,  p-value: &lt; 2.2e-16\n\n\nThe interaction terms do NOT appear to be necessary to include. This is justified by both the lack of significance and the slight drop in adjusted R-squared."
-  },
-  {
-    "objectID": "demos/03-regression.html#what-about-the-intercept",
-    "href": "demos/03-regression.html#what-about-the-intercept",
-    "title": "Demo 03: More Regression with Penguins",
-    "section": "What about the intercept?",
-    "text": "What about the intercept?\nRemember the meaning of the intercept term… that is not reasonable in this setting because penguins will never have bills with length of 0mm! We should update the additive model (since we found the interaction terms to not be meaningful) to remove the intercept. This can be done by adding a 0 term to the lm() formula:\n\ndepth_lm_remove_b0 &lt;- lm(bill_depth_mm ~ 0 + bill_length_mm + species,\n                         data = penguins)\nsummary(depth_lm_remove_b0)\n\n\nCall:\nlm(formula = bill_depth_mm ~ 0 + bill_length_mm + species, data = penguins)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-2.4529 -0.6864 -0.0508  0.5519  3.5915 \n\nCoefficients:\n                 Estimate Std. Error t value Pr(&gt;|t|)    \nbill_length_mm    0.19989    0.01749  11.427  &lt; 2e-16 ***\nspeciesAdelie    10.59218    0.68302  15.508  &lt; 2e-16 ***\nspeciesChinstrap  8.65899    0.86207  10.044  &lt; 2e-16 ***\nspeciesGentoo     5.48616    0.83547   6.567 1.94e-10 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.9533 on 338 degrees of freedom\n  (2 observations deleted due to missingness)\nMultiple R-squared:  0.997, Adjusted R-squared:  0.997 \nF-statistic: 2.795e+04 on 4 and 338 DF,  p-value: &lt; 2.2e-16\n\n\nWhat changed in the summary output? Why did that occur?\nWe can copy-and-paste our code from above to add these appropriate regression lines:\n\n# Calculate species-specific intercepts in order:\nnew_intercepts &lt;- # First for `Adelie` \n  c(coef(depth_lm_remove_b0)[\"speciesAdelie\"],\n    # Next for `Chinstrap` \n    coef(depth_lm_remove_b0)[\"speciesChinstrap\"],\n    # And finally for `Gentoo` \n    coef(depth_lm_remove_b0)[\"speciesGentoo\"])\n\n# Create a small table to store the intercept, slopes, and species:\nnew_lines_tbl &lt;- \n  tibble(\"intercepts\" = new_intercepts,\n         # Slopes are the same for each, thus use rep()\n         \"slopes\" = rep(coef(depth_lm_remove_b0)[\"bill_length_mm\"],\n                        3),\n         # And the levels of species:\n         \"species\" = levels(penguins$species))\n\nAgain, create the display:\n\npenguins |&gt;\n  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +\n  geom_point(alpha = 0.5) +\n  geom_abline(data = new_lines_tbl,\n              aes(intercept = intercepts, slope = slopes,\n                  color = species)) +\n  labs(x = \"Bill length (mm)\", y = \"Bill depth (mm)\", \n       title = \"Bill depth versus weight by species\")\n\n\n\n\n\n\n\n\nWhy is this the same display as before? Here’s a great description of why we observe a higher R-squared with the intercept-term excluded from the model."
-  },
-  {
-    "objectID": "lectures.html",
-    "href": "lectures.html",
-    "title": "Lectures",
-    "section": "",
-    "text": "Lecture\nDate\nTitle\nMaterials\n\n\n\n\n1\nJan 13\nIntroduction and Grammar of Graphics\nslides\n\n\n2\nJan 15\n1D Categorical Data\nslides\n\n\n3\nJan 22\nStatistical Inference for 1D Categorical Data\nslides\n\n\n4\nJan 27\nPower and Multiple Testing\nslides\n\n\n5\nJan 29\nVisualizations and Inference for 2D Categorical Data\nslides\n\n\n6\nFeb 3\nVisualizing 1D Quantitative Data\nslides\n\n\n7\nFeb 5\nDensity Estimation\nslides\n\n\n8\nFeb 10\nGraphical Inference for 1D Quantitative Data\nslides\n\n\n9\nFeb 12\nComparing Distributions and Statistical Power\nslides\n\n\n10\nFeb 17\nScatterplots and Linear Regression\nslides\n\n\n11\nFeb 19\nInference with Linear Regression\nslides",
-    "crumbs": [
-      "Lectures"
-    ]
-  },
-  {
-    "objectID": "demos.html",
-    "href": "demos.html",
-    "title": "Demos",
-    "section": "",
-    "text": "Demo\nDate\nTitle\nDemo file\n\n\n\n\n1\nJan 13\nInto the tidyverse\nHTML\n\n\n2\nFeb 17\nScatterplots and Linear Regression\nHTML\n\n\n3\nFeb 19\nMore Regression with Penguins\nHTML",
-    "crumbs": [
-      "Demos"
-    ]
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#announcements-previously-and-today",
-    "href": "lectures/02-1dcat.html#announcements-previously-and-today",
-    "title": "1D Categorical Data",
+    "objectID": "lectures/04-power-multiple-testing.html#announcements-previously-and-today",
+    "href": "lectures/04-power-multiple-testing.html#announcements-previously-and-today",
+    "title": "Power and multiple testing",
     "section": "Announcements, previously, and today…",
-    "text": "Announcements, previously, and today…\n\nComplete HW0 by tonight! Confirms you have everything installed and can render .qmd files to PDF via tinytex\nOffice hours will be announced soon… (I’ll be in my office BH 132D today at 2:30 PM)\n\n\n\nDiscussed the importance of data visualization in your role as a statistician / data scientist\nIntroduced the Grammar of Graphics as a framework for building visualizations\nDiscussed historical examples and principles of visualization to keep in mind\n\n\n\nTODAY: 1D Categorical Data\n\nBriefly talk about variable types\nWalk through different graphs for visualizing 1D categorical data"
+    "text": "Announcements, previously, and today…\n\n\nHW1 is due this Wednesday Jan 29 by 11:59 PM\nYou have Lab 3 again on Friday\n\nOffice hours schedule:\n\nMy office hours (BH 132D): Wednesdays and Thursdays @ 2 PM\nAnna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM\n\n\n\n\n\nMain estimators: \\(\\underbrace{\\hat{p}_1,\\dots,\\hat{p}_K}_{\\text{proportions}}\\) for \\(K\\)-many categories\nChi-square test is the main statistical test for 1D categorical data, tests \\(H_0: p_1 = \\cdots = p_K\\)\nCan also make confidence intervals for \\(\\hat{p}_1,\\dots,\\hat{p}_K\\) (just multiply CIs by \\(n\\))\n\n\n\n\n\nTODAY:\n\nInterpreting CIs on graphs is tricky and have to be careful with multiple testing"
   },
   {
-    "objectID": "lectures/02-1dcat.html#reminder-tidy-data-structure",
-    "href": "lectures/02-1dcat.html#reminder-tidy-data-structure",
-    "title": "1D Categorical Data",
-    "section": "Reminder: tidy data structure",
-    "text": "Reminder: tidy data structure\nData are often stored in tabular (or matrix) form:\n\n\n# A tibble: 5 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;\n\n\n\nEach row == unit of observation, e.g., penguins\nEach column == variable/measurement about each observation, e.g., flipper_length_mm\nKnown as a data.frame in base R and tibble in the tidyverse\nTwo main variable types: quantitative and categorical"
+    "objectID": "lectures/04-power-multiple-testing.html#graphics-versus-statistical-inference",
+    "href": "lectures/04-power-multiple-testing.html#graphics-versus-statistical-inference",
+    "title": "Power and multiple testing",
+    "section": "Graphics versus Statistical Inference",
+    "text": "Graphics versus Statistical Inference\n\nReminder Anscombe’s Quartet: where statistical inference was the same but the graphics were very different\n\n\n\nThe opposite can be true! Graphics are the same, but statistical inference is very different…"
   },
   {
-    "objectID": "lectures/02-1dcat.html#variable-types",
-    "href": "lectures/02-1dcat.html#variable-types",
-    "title": "1D Categorical Data",
-    "section": "Variable Types",
-    "text": "Variable Types\n\nMost visualizations are about understanding the distribution of different variables (which are stored in columns of tabular/matrix data)\nThe variable type often dictates the type of graphs you should make\nThere are two main types of variables:"
+    "objectID": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14",
+    "href": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14",
+    "title": "Power and multiple testing",
+    "section": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)",
+    "text": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)"
   },
   {
-    "objectID": "lectures/02-1dcat.html#d-categorical-data",
-    "href": "lectures/02-1dcat.html#d-categorical-data",
-    "title": "1D Categorical Data",
-    "section": "1D Categorical Data",
-    "text": "1D Categorical Data\nTwo different versions of categorical:\n\nNominal: coded with arbitrary numbers, i.e., no real order\n\n\nExamples: race, gender, species, text\n\n\n\nOrdinal: levels with a meaningful order\n\n\nExamples: education level, grades, ranks\n\n\n\nNOTE: R and ggplot considers a categorical variable to be factor\n\nR will always treat categorical variables as ordinal! Defaults to alphabetical…\nWe will need to manually define the factor levels"
+    "objectID": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14-1",
+    "href": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14-1",
+    "title": "Power and multiple testing",
+    "section": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)",
+    "text": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)"
   },
   {
-    "objectID": "lectures/02-1dcat.html#d-categorical-data-structure",
-    "href": "lectures/02-1dcat.html#d-categorical-data-structure",
-    "title": "1D Categorical Data",
-    "section": "1D categorical data structure",
-    "text": "1D categorical data structure\n\nObservations are collected into a vector \\((x_1, \\dots, x_n)\\), where \\(n\\) is number of observations\nEach observed value \\(x_i\\) can only belong to one category level \\(\\{ C_1, C_2, \\dots \\}\\)\n\n\nLook at penguins data from the palmerpenguins package, focusing on species:\n\nlibrary(palmerpenguins)\nhead(penguins$species)\n\n[1] Adelie Adelie Adelie Adelie Adelie Adelie\nLevels: Adelie Chinstrap Gentoo\n\n\nHow could we summarize these data? What information would you report?\n\n\n\ntable(penguins$species)\n\n\n   Adelie Chinstrap    Gentoo \n      152        68       124"
+    "objectID": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14-2",
+    "href": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14-2",
+    "title": "Power and multiple testing",
+    "section": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)",
+    "text": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)"
   },
   {
-    "objectID": "lectures/02-1dcat.html#area-plots",
-    "href": "lectures/02-1dcat.html#area-plots",
-    "title": "1D Categorical Data",
-    "section": "Area plots",
-    "text": "Area plots\n\n\nEach area corresponds to one categorical level\nArea is proportional to counts/frequencies/percentages\nDifferences between areas correspond to differences between counts/frequencies/percentages"
+    "objectID": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14-3",
+    "href": "lectures/04-power-multiple-testing.html#example-3-categories-p_a-12-p_b-p_c-14-3",
+    "title": "Power and multiple testing",
+    "section": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)",
+    "text": "Example: 3 categories, \\(p_A = 1/2,\\ p_B = p_C = 1/4\\)"
   },
   {
-    "objectID": "lectures/02-1dcat.html#bar-charts",
-    "href": "lectures/02-1dcat.html#bar-charts",
-    "title": "1D Categorical Data",
-    "section": "Bar charts",
-    "text": "Bar charts\n\nlibrary(tidyverse)\npenguins |&gt;\n  ggplot(aes(x = species)) +\n  geom_bar()"
+    "objectID": "lectures/04-power-multiple-testing.html#power-under-this-scenario-2n4-n4-n4",
+    "href": "lectures/04-power-multiple-testing.html#power-under-this-scenario-2n4-n4-n4",
+    "title": "Power and multiple testing",
+    "section": "Power under this scenario: (2n/4, n/4, n/4)",
+    "text": "Power under this scenario: (2n/4, n/4, n/4)"
   },
   {
-    "objectID": "lectures/02-1dcat.html#behind-the-scenes-statistical-summaries",
-    "href": "lectures/02-1dcat.html#behind-the-scenes-statistical-summaries",
-    "title": "1D Categorical Data",
-    "section": "Behind the scenes: statistical summaries",
-    "text": "Behind the scenes: statistical summaries\n\nFrom Chapter 3 of R for Data Science"
+    "objectID": "lectures/04-power-multiple-testing.html#how-do-we-combine-graphs-with-inference",
+    "href": "lectures/04-power-multiple-testing.html#how-do-we-combine-graphs-with-inference",
+    "title": "Power and multiple testing",
+    "section": "How do we combine graphs with inference?",
+    "text": "How do we combine graphs with inference?\n\nSimply add \\(p\\)-values (or other info) to graph via text\nAdd confidence intervals to the graph\n\n\nNeed to remember what each CI is for!\nOur CIs on previous slides are for each \\(\\hat{p}_j\\) marginally, NOT jointly\nHave to be careful with multiple testing…"
   },
   {
-    "objectID": "lectures/02-1dcat.html#spine-charts---height-version",
-    "href": "lectures/02-1dcat.html#spine-charts---height-version",
-    "title": "1D Categorical Data",
-    "section": "Spine charts - height version",
-    "text": "Spine charts - height version\n\npenguins |&gt;\n  ggplot(aes(fill = species, x = \"\")) +\n  geom_bar()"
+    "objectID": "lectures/04-power-multiple-testing.html#cis-will-visually-capture-uncertainty-in-estimates",
+    "href": "lectures/04-power-multiple-testing.html#cis-will-visually-capture-uncertainty-in-estimates",
+    "title": "Power and multiple testing",
+    "section": "CIs will visually capture uncertainty in estimates",
+    "text": "CIs will visually capture uncertainty in estimates"
   },
   {
-    "objectID": "lectures/02-1dcat.html#spine-charts---width-version",
-    "href": "lectures/02-1dcat.html#spine-charts---width-version",
-    "title": "1D Categorical Data",
-    "section": "Spine charts - width version",
-    "text": "Spine charts - width version\n\npenguins |&gt;\n  ggplot(aes(fill = species, x = \"\")) +\n  geom_bar() +\n  coord_flip()"
+    "objectID": "lectures/04-power-multiple-testing.html#rough-rules-for-comparing-cis-on-bar-charts",
+    "href": "lectures/04-power-multiple-testing.html#rough-rules-for-comparing-cis-on-bar-charts",
+    "title": "Power and multiple testing",
+    "section": "Rough rules for comparing CIs on bar charts",
+    "text": "Rough rules for comparing CIs on bar charts\n\n\nComparing overlap of two CIs is NOT exactly the same as directly testing for a significant difference…\n\nReally you want CI( \\(\\hat{p}_1 - \\hat{p}_2\\) ), not CI( \\(\\hat{p_1}\\) ) and CI( \\(\\hat{p_2}\\) )\nCI( \\(\\hat{p_1}\\) ) and CI( \\(\\hat{p_2}\\) ) not overlapping implies \\(0 \\notin\\) CI( \\(\\hat{p}_1 - \\hat{p}_2\\) )\nHowever CI( \\(\\hat{p_1}\\) ) and CI( \\(\\hat{p_2}\\) ) overlapping DOES NOT imply \\(0 \\in\\) CI( \\(\\hat{p}_1 - \\hat{p}_2\\) )\n\n\nRoughly speaking:\n\nIf CIs don’t overlap \\(\\rightarrow\\) significant difference\nIf CIs overlap a little \\(\\rightarrow\\) ambiguous\nIf CIs overlap a lot \\(\\rightarrow\\) no significant difference\n\n\n\n\nBut if we’re comparing more than two CIs simultaneously, we need to account for multiple testing!\n\nWhen you look for all non-overlapping CIs: making \\(\\binom{K}{2} = \\frac{K!}{2!(K-2)!}\\) pairwise tests in your head!"
   },
   {
-    "objectID": "lectures/02-1dcat.html#so-you-want-to-make-pie-charts",
-    "href": "lectures/02-1dcat.html#so-you-want-to-make-pie-charts",
-    "title": "1D Categorical Data",
-    "section": "So you want to make pie charts…",
-    "text": "So you want to make pie charts…\n\npenguins |&gt; \n  ggplot(aes(fill = species, x = \"\")) + \n  geom_bar(aes(y = after_stat(count))) +\n  coord_polar(theta = \"y\") +\n  theme_void()"
+    "objectID": "lectures/04-power-multiple-testing.html#corrections-for-multiple-testing",
+    "href": "lectures/04-power-multiple-testing.html#corrections-for-multiple-testing",
+    "title": "Power and multiple testing",
+    "section": "Corrections for multiple testing",
+    "text": "Corrections for multiple testing\n\n\nIn those bar plots, when we determine whether CIs overlap we make 3 comparisons:\n\nA vs B\nA vs C\nB vs C\n\n\nThis is a multiple testing issue\n\n\n\n\nIn short: we will make Type 1 errors (chance of false rejecting) more than 5% of the time!\nReminder: Type 1 error = Rejecting \\(H_0\\) when \\(H_0\\) is true\ne.g., CIs don’t overlap but actually \\(H_0: p_A = p_B\\) is true\nIf only interested in A vs B and nothing else, then just construct 95% CI for A vs B and control error rate at 5%\nHowever, if we construct several CIs, where A vs B is just one comparison we make, our Type 1 error rate &gt; 5%!"
   },
   {
-    "objectID": "lectures/02-1dcat.html#friends-dont-let-friends-make-pie-charts",
-    "href": "lectures/02-1dcat.html#friends-dont-let-friends-make-pie-charts",
-    "title": "1D Categorical Data",
-    "section": "Friends Don’t Let Friends Make Pie Charts",
-    "text": "Friends Don’t Let Friends Make Pie Charts"
+    "objectID": "lectures/04-power-multiple-testing.html#corrections-for-multiple-testing-1",
+    "href": "lectures/04-power-multiple-testing.html#corrections-for-multiple-testing-1",
+    "title": "Power and multiple testing",
+    "section": "Corrections for multiple testing",
+    "text": "Corrections for multiple testing\n\nVast literature on corrections for multiple testing (beyond the scope of this class… but in my thesis!)\nBut you should understand the following:\n\nCorrections for multiple testing inflate \\(p\\)-values (i.e., make them bigger)\nEquivalently, they inflate CIs (i.e., make them wider)\nPurpose of these corrections is to control Type 1 error rate \\(\\leq 5\\%\\)\n\n\n\n\nWe’ll focus on the Bonferroni correction, which inflates \\(p\\)-values the most but is easy to implement and very popular:\n\nWe usually reject null hypothesis when \\(p\\)-value \\(\\leq .05\\)\nBonferroni: if making \\(K\\) comparisons, reject only if \\(p\\)-value \\(\\leq .05/K\\)\nFor CIs: instead of plotting 95% CIs, we plot (1 - \\(0.05/K\\))% CIs\n\ne.g., for \\(K = 3\\) then plot 98.3% CIs"
   },
   {
-    "objectID": "lectures/02-1dcat.html#waffle-charts-are-cooler-anyway",
-    "href": "lectures/02-1dcat.html#waffle-charts-are-cooler-anyway",
-    "title": "1D Categorical Data",
-    "section": "Waffle charts are cooler anyway…",
-    "text": "Waffle charts are cooler anyway…\n\nlibrary(waffle)\npenguins |&gt;\n  group_by(species) |&gt; \n  summarize(count = n(), .groups = \"drop\") |&gt; \n  ggplot(aes(fill = species, values = count)) +\n  geom_waffle(n_rows = 20, color = \"white\", flip = TRUE) +\n  coord_equal() +\n  theme_void()"
+    "objectID": "lectures/04-power-multiple-testing.html#impact-of-bonferroni-correction-on-cis",
+    "href": "lectures/04-power-multiple-testing.html#impact-of-bonferroni-correction-on-cis",
+    "title": "Power and multiple testing",
+    "section": "Impact of Bonferroni correction on CIs…",
+    "text": "Impact of Bonferroni correction on CIs…"
   },
   {
-    "objectID": "lectures/02-1dcat.html#florence-nightingales-rose-diagram",
-    "href": "lectures/02-1dcat.html#florence-nightingales-rose-diagram",
-    "title": "1D Categorical Data",
-    "section": "Florence Nightingale’s Rose Diagram",
-    "text": "Florence Nightingale’s Rose Diagram"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#rose-diagrams",
-    "href": "lectures/02-1dcat.html#rose-diagrams",
-    "title": "1D Categorical Data",
-    "section": "Rose diagrams",
-    "text": "Rose diagrams\n\npenguins |&gt; \n  ggplot(aes(x = species)) + \n  geom_bar(fill = \"darkblue\") +\n  coord_polar() +\n  scale_y_sqrt()"
-  },
-  {
-    "objectID": "lectures/02-1dcat.html#recap-and-next-steps",
-    "href": "lectures/02-1dcat.html#recap-and-next-steps",
-    "title": "1D Categorical Data",
+    "objectID": "lectures/04-power-multiple-testing.html#recap-and-next-steps",
+    "href": "lectures/04-power-multiple-testing.html#recap-and-next-steps",
+    "title": "Power and multiple testing",
     "section": "Recap and next steps",
-    "text": "Recap and next steps\n\n\n1D Categorical Data: look at counts, frequencies, percentages\nArea plots, where area \\(\\propto\\) counts/frequencies/percentages:\n\nBar charts (you should pretty much always just make a bar chart)\nSpine charts (will be more useful with more variables)\nPie charts (DON’T DO IT)\nRose diagrams (temporal or directional context can justify usage)\n\n\n\n\n\n\nComplete HW0 by TONIGHT! Confirms you have everything installed and can render .qmd files to PDF via tinytex\nHW1 is due in two weeks, no class on Monday\n\n\n\n\n\n\nNext time: quantify and display uncertainty for 1D categorical data\nRecommended reading:\n\nCW Chapter 10 Visualizing proportions, CW Chapter 16.2 Visualizing the uncertainty of point estimates, CW Chapter 11 Visualizing nested proportions"
+    "text": "Recap and next steps\n\n\nGraphs with the same trends can display very different statistical significance (largely due to sample size)\nCan visualize CIs for each \\(\\hat{p}_1\\), \\(\\dots\\), \\(\\hat{p}_K\\), but need to deal with multiple testing\n\n\n\n\n\nHW1 is due Wednesday and you have Lab 3 on Friday!\nNext time: Visualizations and inference for 2D categorical data\nRecommended reading: CW Chapter 11 Visualizing nested proportions"
   },
   {
     "objectID": "lectures/03-1dcat-infer.html#announcements-previously-and-today",
