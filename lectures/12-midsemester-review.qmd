@@ -1,0 +1,462 @@
+---
+title: "Midsemester Review"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-02-24
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 70%;"}
+
+**Take-home exam is Wednesday Feb 26th!**
+
+Here's how the exam will work:
+
++ I'll post the exam tonight, and it's due Wednesday by 11:59 PM EDT (Feb 26th)
+  
++ Exam will cover material from HW 1-4 and Labs 1-6
+  
++ Questions will be similar to homeworks but more open-ended, e.g, instead of "make a side-by-side violin plot..." I'll ask "Make a plot that compares the conditional distributions..."
+  
++ __We do NOT have class on Wednesday Feb 26th__ 
+  
+:::
+
+. . .
+
+::: {style="font-size: 70%;"}
+
+
+Use graphs to assess linear regression assumptions, i.e., residual diagnostic plots
+
+Discussed interpretation of coefficients, the role of categorical variables, and interactions
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+**TODAY:** Wrapping up regression and midsemester review!
+
+:::
+
+
+---
+
+## Understanding Interactions (Categorical Example)
+
+::: {style="font-size: 80%;"}
+
+Say we also have a quantitative variable $X$ (bill length). Consider two statistical models:
+
+1. $Y_i \stackrel{iid}{\sim} N(\beta_0 + \beta_X X + \beta_C I_C + \beta_G I_G, \sigma^2)$
+
+2. $Y_i \stackrel{iid}{\sim} N(\beta_0 + \beta_X X + \beta_C I_C + \beta_G I_G + \beta_{CX} I_C X + \beta_{GX} I_G X, \sigma^2)$
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+For Model 1...
+
+- The intercept for Adelie is $\beta_0$; for Chinstrap it is $\beta_0 + \beta_C$; for Gentoo it is $\beta_0 + \beta_G$
+
+- The slope for all species is $\beta_X$.
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+For Model 2...
+
+- The intercept for Adelie is $\beta_0$; for Chinstrap it is $\beta_0 + \beta_C$; for Gentoo it is $\beta_0 + \beta_G$.
+
+- The slope for Adelie is $\beta_X$; for Chinstrap it is $\beta_X + \beta_{CX}$; for Gentoo it is $\beta_X + \beta_{GX}$
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+Significant coefficient for categorical variables by themselves? Significantly different intercepts
+
+Significant coefficient for interactions with categorical variables? Significantly different slopes
+
+:::
+
+---
+
+## Model 2: `bill_depth_mm` ~ `bill_length_mm` + `species`
+
+```{r}
+#| echo: false
+#| fig-align: center
+depth_lm_species_add <- lm(bill_depth_mm ~ bill_length_mm + species,
+                           data = penguins)
+
+# Calculate species-specific intercepts in order:
+intercepts <- # First for `Adelie` it's just the initial intercept
+  c(coef(depth_lm_species_add)["(Intercept)"],
+    # Next for `Chinstrap` it's the intercept plus the `Chinstrap` term:
+    coef(depth_lm_species_add)["(Intercept)"] + 
+      coef(depth_lm_species_add)["speciesChinstrap"],
+    # And finally for `Gentoo` it's again the intercept plus the `Gentoo` term
+    coef(depth_lm_species_add)["(Intercept)"] + 
+      coef(depth_lm_species_add)["speciesGentoo"])
+
+# Create a small table to store the intercept, slopes, and species:
+lines_tbl <- tibble("intercepts" = intercepts,
+                    # Slopes are the same for each, thus use rep()
+                    "slopes" = rep(coef(depth_lm_species_add)["bill_length_mm"],
+                                   3),
+                    # And the levels of species:
+                    "species" = levels(penguins$species))
+penguins |>
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(data = lines_tbl,
+              aes(intercept = intercepts, slope = slopes,
+                  color = species)) +
+  labs(x = "Bill length (mm)", y = "Bill depth (mm)", 
+       title = "Bill depth versus weight by species")
+```
+
+---
+
+```{r}
+#| attr-output: "style='font-size: 0.6em;'"
+summary(lm(bill_depth_mm ~ bill_length_mm + species, data = penguins))
+```
+
+---
+
+## Model 3: `bill_depth_mm` ~ `bill_length_mm` + `species` + `bill_length_mm` $\times$ `species`
+
+```{r}
+#| echo: false
+#| fig-align: center
+penguins |>
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(x = "Bill length (mm)", y = "Bill depth (mm)", 
+       title = "Bill depth versus weight by species")
+```
+
+---
+
+```{r}
+#| attr-output: "style='font-size: 0.5em;'"
+summary(lm(bill_depth_mm ~ bill_length_mm * species, data = penguins))
+```
+
+---
+
+## A Few Linear Regression Warnings
+
+::: {style="font-size: 90%;"}
+
+**Simpson's Paradox**
+
++ There is a negative linear relationship between two variables but a positive linear relationship within every subpopulation
+
++ In these cases, subgroup analysis is especially important
+
+:::
+
+. . .
+
+::: {style="font-size: 90%;"}
+
+**Is the intercept meaningful?**
+
++ Think about whether $X = 0$ makes scientific sense for a particular variable before you interpret the intercept
+
+:::
+
+. . .
+
+::: {style="font-size: 90%;"}
+
+**Interpolation versus Extrapolation**
+
++ Interpolation is defined as prediction within the range of a variable
+
++ Extrapolation is defined as prediction outside the range of a variable
+
++ Generally speaking, interpolation is more reliable than extrapolation (less sensitive to model misspecification)
+
+:::
+
+---
+
+## Extrapolation Example
+
+```{r}
+#| echo: false
+#| fig-align: center
+set.seed(1389)
+fake_data <- tibble(x = runif(100, min = -10, max = -3)) |>
+  mutate(y = rnorm(n = 100, mean = 3 * x^2, sd = 3))
+fake_data |>
+  ggplot(aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_bw()
+```
+
+---
+
+## Extrapolation Example
+
+```{r}
+#| echo: false
+#| fig-align: center
+fake_data |>
+  ggplot(aes(x, y)) +
+  geom_point() +
+  scale_x_continuous(limits = c(-11, 11)) +
+  geom_smooth(method = "lm") +
+  theme_bw()
+```
+
+
+---
+
+## Extrapolation Example
+
+```{r}
+#| echo: false
+#| fig-align: center
+fake_data |>
+  ggplot(aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  scale_x_continuous(limits = c(-11, 11)) +
+  stat_function(
+    fun = function (x) 3 * x^2,
+    linetype = "dashed", color = "red") +
+  theme_bw()
+```
+
+---
+
+## Take-home exam logistics
+
+**I will post it today, due Wednesday Feb 26th by 11:59 PM ET on Gradescope**
+
+While the exam is in progress...
+
++ You can **NOT** talk to anyone else about 36-315
+
++ You can **NOT** post on Piazza
+
++ You **can** use any materials that are available to you from class (lectures, labs, homeworks, R demos)
+
+Best way to prepare:
+
++ Look over lecture notes, R demos, homework/lab solutions
+
+---
+
+## Main skill I've wanted you to learn...
+
+::: {style="font-size: 80%;"}
+
+**Pick graph types that are most appropriate for a particular dataset**
+
++ Requires a working knowledge of different graph types and need to appropriately distinguish categorical vs quantitative variables
+
++ For any graph, need to know what information is visible vs hidden
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+**Characterizing distributions (visually and quantitatively)**
+
++ Need a "distributional vocabulary" (center/mode, spread, skewness) and need to choose graphs that showcase distributional quantities
+
++ Need to choose graph specifications that showcase distribution quantities (e.g., binwidth/bandwidth)
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+**Conduct statistical inference to complement graphs**
+
++ For most differences you spot in a graph, should be able to follow-up with an analysis to determine if that difference is significant
+
++ Requires a working knowledge of different statistical tests
+
++ Need to know how to interpret the output from statistical tests (knowing the null/alternative hypotheses is key!)
+
+:::
+
+---
+
+## Variable Types
+
+::: {style="font-size: 80%;"}
+
+First thing to do when looking at a dataset is determine what the variable types are.
+
+__Categorical__: May have order (ordinal) or no order (nominal).
+
++ Often represented as a `factor` in `R`
+
++ May be coded with numbers!
+
++ If only 3-5 values, probably appropriate to treat as categorical.
+
+__Quantitative__: Represented numerically. Always has order.
+
++ Represented as `numeric` or `integer` in `R`.
+
+
+How to determine if a variable is quantitative or categorical?
+
++ Often obvious, but not always.
+
++ _Subtraction test_: Does $X_1 - X_2$ lead to a sensible value? If so, it's quantitative.
+
++ If a variable is used in scatterplots/regression, it shouldn't have a super strict range. 1-to-5 Likert scale variables fail this.
+
+:::
+
+---
+
+## Variable Type Situations
+
+
+---
+
+## Variable Type Situations
+
+
+
+---
+
+## Statistical Tests/Analyses
+
+::: {style="font-size: 80%;"}
+
+__Chi-square test for equal proportions__: $H_0: p_1 = \cdots = p_K$.
+
+__Chi-square test for independence__: $H_0:$ Variables are independent.
+
++ Dependence: $P(A | B) \neq P(A)$
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+__One-sample KS test__: $H_0$: Variable follows a distribution.
+
+__t-test/ANOVA__: $H_0$: Group means equal.
+
+__Bartlett's test__: $H_0$: Group variances equal.
+
+__Two-Sample KS Test__: $H_0$: Variables follow the same distribution.
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+__Linear Regression__: $H_0: \beta = 0$
+
++ Need to distinguish between intercepts and slopes!
+
+
+**Remember: Different tests have different _power_ (chance of rejecting $H_0$ when you should)**
+
+:::
+
+---
+
+## Distribution Terminology
+
+::: {style="font-size: 80%;"}
+
+__Marginal Distributions__: $P(A)$ - plot a graph of a single variable $A$.
+
++ Perhaps compare confidence intervals for different categories of $A$.
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+__Conditional Distributions__: $P(A | B)$ - in English: Distribution of $A$ given a particular value of $B$.
+
++ Goal: Compare $P(A | B = b)$ for different $b$ when $A$ is quantitative and $B$ categorical
+
++ A univariate graph (histograms, densities, violins) for each category.
+
++ When $A$ and $B$ are categorical, can visualize with stacked bar plots or mosaic plots.
+
++ Note: Linear regression estimates $\mathbb{E}[Y | X]$
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+__Joint Distribution__: $P(A, B)$
+
++ Use mosaic plots when $A$ and $B$ are categorical.
+
++ $P(A | B) P(B) = P(A, B)$
+
++ Scatterplots display joint distribution for continuous.
+
+:::
+
+---
+
+## Good luck!
+
+![](https://media.tenor.com/jLWC97XT1ZIAAAAC/star-wars-han-solo.gif)

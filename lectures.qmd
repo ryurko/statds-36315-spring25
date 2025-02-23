@@ -15,5 +15,6 @@ title: "Lectures"
 | 9         | Feb 12  | Comparing Distributions and Statistical Power  | [slides](lectures/09-compare-distr-power.qmd)        |
 | 10        | Feb 17  | Scatterplots and Linear Regression  | [slides](lectures/10-2dquant.qmd)        |
 | 11        | Feb 19  | Inference with Linear Regression  | [slides](lectures/11-regression-inference.qmd)        |
+| 12        | Feb 24  | Midsemester Review | [slides](lectures/12-midsemester-review.qmd)        |
 
 
