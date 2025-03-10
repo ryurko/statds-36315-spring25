@@ -10,8 +10,8 @@
   <meta name="generator" content="quarto-1.6.42">
 
   <meta name="author" content="Prof Ron Yurko">
-  <meta name="dcterms.date" content="2025-02-17">
-  <title>Statistical Graphics and Visualization 36-315 Spring 25 – 2D Quantitative Data: Scatterplots and Linear Regression</title>
+  <meta name="dcterms.date" content="2025-03-10">
+  <title>Statistical Graphics and Visualization 36-315 Spring 25 – Nonlinear Regression and Pairs Plots</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -195,7 +195,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">2D Quantitative Data: Scatterplots and Linear Regression</h1>
+  <h1 class="title">Nonlinear Regression and Pairs Plots</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -205,269 +205,182 @@ Prof Ron Yurko
 </div>
 </div>
 
-  <p class="date">2025-02-17</p>
+  <p class="date">2025-03-10</p>
 </section>
 <section id="announcements-previously-and-today" class="slide level2">
 <h2>Announcements, previously, and today…</h2>
-<div style="font-size: 60%;">
-<p><strong>HW4 is due Wednesday by 11:59 PM and you have Lab 6 again on Friday!</strong></p>
-<p><strong>Take-home exam is next week Wednesday Feb 26th</strong></p>
-<p>Here’s how the exam will work:</p>
+<div style="font-size: 90%;">
+<p><strong>HW5 is due next Wednesday March 19th by 11:59 PM ET</strong></p>
+<p>As part of Homework 5, you’ll form groups for final projects</p>
 <ul>
-<li><p>I’ll post the exam Monday evening, and it’s due Wednesday by 11:59 PM EDT (Feb 26th)</p></li>
-<li><p>Exam will cover material from HW 1-4 and Labs 1-6</p></li>
-<li><p>Questions will be similar to homeworks but more open-ended, e.g, instead of “make a side-by-side violin plot…” I’ll ask “Make a plot that compares the conditional distributions…”</p></li>
-<li><p><strong>There will NOT be class on Wednesday Feb 26th</strong></p></li>
-<li><p>Conflict Feb 26th? <strong>Let me know ASAP!</strong> Day-of accommodations will NOT be made, late submissions will NOT be accepted</p></li>
+<li><p>Teams should be 3-4 students, <strong>you can pick your teammates or be randomized to a team</strong></p></li>
+<li><p>Goal of the project: create and interpet hiqh-quality visualizations for a dataset of your choice</p></li>
+<li><p>Project requirements and rubrics are available on Canvas</p></li>
+<li><p>EDA reports are graded as as group, while presentations are graded individually</p></li>
+<li><p>HW5 is short so you have time to form teams and explore datasets</p></li>
 </ul>
-</div>
-<div class="fragment">
-<div style="font-size: 60%;">
-<p>Discussed power in the context of visualizations and statistical tests</p>
-<p>Even if there is a true effect, you may have limited power to detect it</p>
-<p>Several ways to formally compare distributions:</p>
-<ul>
-<li><p><span class="math inline">\(t\)</span>-test: Compare means</p></li>
-<li><p>Bartlett’s test: Compare variances</p></li>
-<li><p>KS test: Compare distributions</p></li>
-</ul>
-</div>
-</div>
-<div class="fragment">
-<div style="font-size: 80%;">
-<p><strong>TODAY:</strong> 2D quantitative data, scatterplots, and linear regression</p>
-</div>
+<p><strong>You do NOT have lab this week</strong></p>
+<p><strong>TODAY:</strong> How does LOESS (nonlinear regression) work? And maybe pairs plots</p>
 </div>
 </section>
-<section id="d-quantitative-data" class="slide level2">
-<h2>2D quantitative data</h2>
+<section id="beyond-linear-regression" class="slide level2">
+<h2>Beyond Linear Regression</h2>
+<p>Many kinds of regression methods - we’ll focus on <em>local linear regression</em> for now.</p>
+<p>Let’s say: Still willing to assume Normality, but not linearity where <span class="math inline">\(f(x)\)</span> is some unknown function</p>
+<p><span class="math display">\[Y_i \stackrel{iid}{\sim} N(\underbrace{f(X_i)}, \sigma^2)\]</span></p>
+<p><strong>Intuition: Any nonlinear function is locally linear</strong></p>
+<p>We saw this in the extrapolation example</p>
 <ul>
-<li>We’re working with two variables: <span class="math inline">\((X, Y) \in \mathbb{R}^2\)</span>, i.e., dataset with <span class="math inline">\(n\)</span> rows and 2 columns</li>
+<li><p>Local linear regressions fits a bunch of, well, local linear regressions, and then glues them together</p></li>
+<li><p>Local linear regression is basically <em>weighted linear regression</em>, where only “local units” get weight</p></li>
 </ul>
+</section>
+<section id="weighted-linear-regression" class="slide level2">
+<h2>Weighted Linear Regression</h2>
+<p>Remember that in typical linear regression, we solve the following:</p>
+<p><span class="math display">\[\arg \min_{\beta_0,\beta_1} \sum_{i=1}^n (Y_i - \beta_0 - \beta_1 X_i)^2\]</span></p>
+<p>In weighted linear regression, we solve the following:</p>
+<p><span class="math display">\[\arg \min_{\beta_0,\beta_1} \sum_{i=1}^n w_i \cdot (Y_i - \beta_0 - \beta_1 X_i)^2\]</span></p>
+<p>Local linear regression is exactly the same, except the weights depend on which <span class="math inline">\(x\)</span> we want to estimate <span class="math inline">\(f(x)\)</span>.</p>
+</section>
+<section id="local-linear-regression-via-loess" class="slide level2">
+<h2>Local linear regression via LOESS</h2>
+<p><span class="math inline">\(Y_i \overset{iid}{\sim} N(f(x), \sigma^2)\)</span>, where <span class="math inline">\(f(x)\)</span> is some unknown function</p>
 <div class="fragment">
-<ul>
-<li><p>Goals:</p>
-<ul>
-<li><p>describing the relationships between two variables</p></li>
-<li><p>describing the conditional distribution <span class="math inline">\(Y | X\)</span> via regression analysis</p></li>
-<li><p>describing the joint distribution <span class="math inline">\(X,Y\)</span> via contours, heatmaps, etc.</p></li>
-</ul></li>
-</ul>
+<p>In <strong>local linear regression</strong>, we estimate <span class="math inline">\(f(X_i)\)</span>:</p>
+<p><span class="math display">\[\text{arg }\underset{\beta_0, \beta_1}{\text{min}} \sum_i^n w_i(x) \cdot \big(Y_i - \beta_0 - \beta_1 X_i \big)^2\]</span></p>
 </div>
 <div class="fragment">
+<p><code>geom_smooth()</code> uses tri-cubic weighting:</p>
+<p><span class="math display">\[w_i(d_i) = \begin{cases} (1 - |d_i|^3)^3, \text{ if } i \in \text{neighborhood of  } x, \\
+0 \text{ if } i \notin \text{neighborhood of  } x \end{cases}\]</span></p>
 <ul>
-<li><p>Few big picture ideas to keep in mind:</p>
-<ul>
-<li><p>scatterplots are by far the most common visual</p></li>
-<li><p>regression analysis is by far the most popular analysis (you have a whole class on this…)</p></li>
-<li><p>relationships may vary across other variables, e.g., categorical variables</p></li>
-</ul></li>
+<li><p><span class="math inline">\(d_i\)</span> is the distance between <span class="math inline">\(x\)</span> and <span class="math inline">\(X_i\)</span> scaled to be between 0 and 1</p></li>
+<li><p><code>span</code>: decides proportion of observations in neighborhood (default is 0.75)</p></li>
 </ul>
 </div>
 </section>
-<section id="making-scatterplots-with-geom_point" class="slide level2">
-<h2>Making scatterplots with <code>geom_point()</code></h2>
+<section id="animation-example" class="slide level2">
+<h2><a href="http://rafalab.dfci.harvard.edu/dsbook/smoothing.html">Animation example</a></h2>
+
+<img data-src="http://rafalab.dfci.harvard.edu/dsbook/ml/img/loess-animation.gif" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
+<section id="animation-example---changing-the-span" class="slide level2">
+<h2><a href="http://rafalab.dfci.harvard.edu/dsbook/smoothing.html">Animation example</a> - changing the span</h2>
+
+<img data-src="http://rafalab.dfci.harvard.edu/dsbook/ml/img/loess-multi-span-animation.gif" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
+<section id="displaying-trend-lines-loess" class="slide level2">
+<h2>Displaying trend lines: LOESS</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1" data-code-line-numbers="2-3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>penguins <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb1" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>penguins <span class="sc">|&gt;</span></span>
 <span id="cb1-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g)) <span class="sc">+</span></span>
-<span id="cb1-3"><a></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb1-4"><a></a>  <span class="fu">geom_smooth</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="always-adjust-the-alpha" class="slide level2">
-<h2>ALWAYS adjust the <code>alpha</code></h2>
+<img data-src="13-nonlinear-pairs_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><p><em>For <span class="math inline">\(n &gt; 1000\)</span>, <code>mgcv::gam()</code> is used with <code>formula = y ~ s(x, bs = "cs")</code> and <code>method = "REML"</code></em></p>
+</section>
+<section id="displaying-trend-lines-loess-1" class="slide level2">
+<h2>Displaying trend lines: LOESS</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb2" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>penguins <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb2" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>penguins <span class="sc">|&gt;</span></span>
 <span id="cb2-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g)) <span class="sc">+</span></span>
-<span id="cb2-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb2-4"><a></a>  <span class="fu">geom_smooth</span>(<span class="at">span =</span> .<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="map-categorical-variable-to-color" class="slide level2">
-<h2>Map categorical variable to <code>color</code></h2>
+<img data-src="13-nonlinear-pairs_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="displaying-trend-lines-loess-2" class="slide level2">
+<h2>Displaying trend lines: LOESS</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g,</span>
-<span id="cb3-3"><a></a>             <span class="at">color =</span> species)) <span class="sc">+</span></span>
-<span id="cb3-4"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g)) <span class="sc">+</span></span>
+<span id="cb3-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb3-4"><a></a>  <span class="fu">geom_smooth</span>(<span class="at">span =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="map-continuous-variable-to-color" class="slide level2">
-<h2>Map continuous variable to <code>color</code></h2>
+<img data-src="13-nonlinear-pairs_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="back-to-the-penguins" class="slide level2">
+<h2>Back to the penguins…</h2>
+<p>Pretend I give you this <code>penguins</code> dataset and I ask you to make a plot <strong>for every pairwise comparison</strong>…</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g,</span>
-<span id="cb4-3"><a></a>             <span class="at">color =</span> body_mass_g)) <span class="sc">+</span></span>
-<span id="cb4-4"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>penguins <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 8
+  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
+1 Adelie  Torgersen           39.1          18.7               181        3750
+2 Adelie  Torgersen           39.5          17.4               186        3800
+3 Adelie  Torgersen           40.3          18                 195        3250
+# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
 </div>
-<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="map-continuous-variable-to-color-1" class="slide level2">
-<h2>Map continuous variable to <code>color</code></h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g,</span>
-<span id="cb5-3"><a></a>             <span class="at">color =</span> body_mass_g)) <span class="sc">+</span></span>
-<span id="cb5-4"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb5-5"><a></a>  <span class="fu">scale_color_gradient</span>(<span class="at">low =</span> <span class="st">"darkblue"</span>, <span class="at">high =</span> <span class="st">"darkorange"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="map-continuous-variable-to-size" class="slide level2">
-<h2>Map continuous variable to <code>size</code></h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g,</span>
-<span id="cb6-3"><a></a>             <span class="at">size =</span> body_mass_g)) <span class="sc">+</span></span>
-<span id="cb6-4"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="map-categorical-variable-to-shape" class="slide level2">
-<h2>Map categorical variable to <code>shape</code></h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g,</span>
-<span id="cb7-3"><a></a>             <span class="at">shape =</span> species)) <span class="sc">+</span></span>
-<span id="cb7-4"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="all-at-once" class="slide level2">
-<h2>ALL AT ONCE!</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb8-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> bill_depth_mm, <span class="at">y =</span> bill_length_mm,</span>
-<span id="cb8-3"><a></a>             <span class="at">color =</span> species, <span class="at">shape =</span> island, <span class="at">size =</span> body_mass_g)) <span class="sc">+</span></span>
-<span id="cb8-4"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section class="slide level2">
-
-
-<img data-src="https://images.squarespace-cdn.com/content/v1/5ce45e9df03bfe000172d138/1597870238202-3OWP5306LOI8P2HP02EN/Jeff+Goldblum+Your+Scientists+Were+so+preoccupied+with+whether+or+not+they+could+they+didn%27t+stop+to+think+if+they+should.jpg" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="displaying-trend-lines-linear-regression" class="slide level2">
-<h2>Displaying trend lines: linear regression</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g)) <span class="sc">+</span></span>
-<span id="cb9-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb9-4"><a></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="setup-and-motivation-for-linear-regression" class="slide level2">
-<h2>Setup and motivation for linear regression</h2>
-<div style="font-size: 85%;">
-<p>Consider an outcome <span class="math inline">\(Y \in \mathbb{R}\)</span> and covariate <span class="math inline">\(X \in \mathbb{R}\)</span></p>
-<ul>
-<li>We have <span class="math inline">\(n\)</span> observations: <span class="math inline">\((X_1, Y_1), \dots, (X_n, Y_n)\)</span></li>
-</ul>
-<p>Purpose of regression is to model <span class="math inline">\(\mathbb{E}[Y | X]\)</span></p>
-<p>Consider the case where <span class="math inline">\(X\)</span> takes on discrete values <span class="math inline">\(c_1, \dots, c_k\)</span></p>
-<p>Then most straightforward way to estimate <span class="math inline">\(\mathbb{E}[Y | X = c_j]\)</span> is to use the sample mean for subgroup <span class="math inline">\(X_i = c_j\)</span>:</p>
-<p><span class="math display">\[\hat{\mathbb{E}}[Y|X = c_j] = \frac{1}{N_j} \sum_{i: X_i = c_j} Y_i\]</span></p>
-<ul>
-<li>Graphs like side-by-side violin plots, facetted histograms, and overlaid density plots essentially compare <span class="math inline">\(\hat{\mathbb{E}}[Y|X = c_j]\)</span> for different categories</li>
-</ul>
-<p>But when <span class="math inline">\(X\)</span> is quantitative, what do we do?</p>
-<ul>
-<li>Use statistical model to “guess” <span class="math inline">\(\mathbb{E}[Y|X = x]\)</span>, even when we don’t observe <span class="math inline">\(X = x\)</span></li>
-</ul>
-</div>
-</section>
-<section id="statistical-model-for-linear-regression" class="slide level2">
-<h2>Statistical Model for Linear Regression</h2>
-<p>Linear regression assumes <span class="math inline">\(Y_i \overset{iid}{\sim} N(\beta_0 + \beta_1 X_i, \sigma^2)\)</span></p>
-<ul>
-<li><p><span class="math inline">\(\beta_0\)</span>: <em>intercept</em> - population mean outcome when <span class="math inline">\(X = 0\)</span>; i.e., <span class="math inline">\(\mathbb{E}[Y | X = 0]\)</span></p></li>
-<li><p><span class="math inline">\(\beta_1\)</span>: <em>slope</em> - population mean <em>change</em> in <span class="math inline">\(Y\)</span> when <span class="math inline">\(X\)</span> increases by 1</p></li>
-<li><p><span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are parameters that must be estimated</p></li>
-</ul>
-<!--
-
-The assumptions baked into this model are:
-
-1. Normality
-
-2. Equal variance
-
-3. Independent errors
-
-4. Linearity
-
-5. Fixed $X$
-
--->
-</section>
-<section id="assessing-assumptions-of-linear-regression" class="slide level2">
-<h2>Assessing assumptions of linear regression</h2>
-<p>Linear regression assumes <span class="math inline">\(Y_i \overset{iid}{\sim} N(\beta_0 + \beta_1 X_i, \sigma^2)\)</span></p>
-<ul>
-<li>If this is true, then <span class="math inline">\(Y_i - \hat{Y}_i \overset{iid}{\sim} N(0, \sigma^2)\)</span></li>
-</ul>
-<div class="fragment">
-<p>Plot residuals against <span class="math inline">\(\hat{Y}_i\)</span>, <strong>residuals vs fit</strong> plot</p>
-<ul>
-<li><p>Used to assess linearity, any divergence from mean 0</p></li>
-<li><p>Used to assess equal variance, i.e., if <span class="math inline">\(\sigma^2\)</span> is homogenous across predictions/fits <span class="math inline">\(\hat{Y}_i\)</span></p></li>
-</ul>
 </div>
 <div class="fragment">
-<p>More difficult to assess the independence and fixed <span class="math inline">\(X\)</span> assumptions</p>
+<p>We can create a <strong>pairs plot</strong> to see <strong>all</strong> pairwise relationships <strong>in one plot</strong></p>
+<p>Pairs plot can include the various kinds of pairwise plots we’ve seen:</p>
 <ul>
-<li>Make these assumptions based on subject-matter knowledge</li>
+<li><p>Two quantitative variables: scatterplot</p></li>
+<li><p>One categorical, one quantitative: side-by-side violins, stacked histograms, overlaid densities</p></li>
+<li><p>Two categorical: stacked bars, side-by-side bars, mosaic plots</p></li>
 </ul>
 </div>
 </section>
-<section id="residual-vs-fit-plots" class="slide level2">
-<h2>Residual vs fit plots</h2>
+<section id="create-pairs-plots-with-ggally" class="slide level2">
+<h2>Create pairs plots with <a href="https://ggobi.github.io/ggally/index.html"><code>GGally</code></a></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>lin_reg <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> flipper_length_mm, <span class="at">data =</span> penguins)</span>
-<span id="cb10-2"><a></a></span>
-<span id="cb10-3"><a></a><span class="fu">tibble</span>(<span class="at">fits =</span> <span class="fu">fitted</span>(lin_reg), <span class="at">residuals =</span> <span class="fu">residuals</span>(lin_reg)) <span class="sc">|&gt;</span></span>
-<span id="cb10-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> fits, <span class="at">y =</span> residuals)) <span class="sc">+</span></span>
-<span id="cb10-5"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb10-6"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">library</span>(GGally)</span>
+<span id="cb6-2"><a></a>penguins <span class="sc">|&gt;</span> <span class="fu">ggpairs</span>(<span class="at">columns =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="residual-vs-fit-plots-1" class="slide level2">
-<h2>Residual vs fit plots</h2>
+<img data-src="13-nonlinear-pairs_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="create-pairs-plots-with-ggally-1" class="slide level2">
+<h2>Create pairs plots with <a href="https://ggobi.github.io/ggally/index.html"><code>GGally</code></a></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb11" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">tibble</span>(<span class="at">fits =</span> <span class="fu">fitted</span>(lin_reg), <span class="at">residuals =</span> <span class="fu">residuals</span>(lin_reg)) <span class="sc">|&gt;</span></span>
-<span id="cb11-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> fits, <span class="at">y =</span> residuals)) <span class="sc">+</span></span>
-<span id="cb11-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb11-4"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb11-5"><a></a>  <span class="fu">geom_smooth</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>penguins <span class="sc">|&gt;</span> <span class="fu">ggpairs</span>(<span class="at">columns =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>,</span>
+<span id="cb7-2"><a></a>                    <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="10-2dquant_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="examples-of-residual-vs-fit-plots" class="slide level2">
-<h2>Examples of Residual-vs-Fit Plots</h2>
+<img data-src="13-nonlinear-pairs_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="flexibility-in-customization" class="slide level2">
+<h2>Flexibility in customization</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a></a>  <span class="fu">ggpairs</span>(<span class="at">columns =</span> <span class="fu">c</span>(<span class="st">"bill_length_mm"</span>, <span class="st">"body_mass_g"</span>, <span class="st">"island"</span>),</span>
+<span id="cb8-3"><a></a>          <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">color =</span> species), </span>
+<span id="cb8-4"><a></a>          <span class="at">lower =</span> <span class="fu">list</span>(</span>
+<span id="cb8-5"><a></a>            <span class="at">continuous =</span> <span class="st">"smooth_lm"</span>, </span>
+<span id="cb8-6"><a></a>            <span class="at">combo =</span> <span class="st">"facetdensitystrip"</span></span>
+<span id="cb8-7"><a></a>          ),</span>
+<span id="cb8-8"><a></a>          <span class="at">upper =</span> <span class="fu">list</span>(</span>
+<span id="cb8-9"><a></a>            <span class="at">continuous =</span> <span class="st">"cor"</span>,</span>
+<span id="cb8-10"><a></a>            <span class="at">combo =</span> <span class="st">"facethist"</span></span>
+<span id="cb8-11"><a></a>          )</span>
+<span id="cb8-12"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
 </section>
+<section id="flexibility-in-customization-output" class="slide level2 output-location-slide"><h2>Flexibility in customization</h2><div class="cell output-location-slide" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="13-nonlinear-pairs_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div></section><section id="see-demo-for-more" class="slide level2">
+<h2>See demo for more!</h2>
+
+<img data-src="13-nonlinear-pairs_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="recap-and-next-steps" class="slide level2">
 <h2>Recap and next steps</h2>
-<div style="font-size: 80%;">
-<p>Scatterplots are the most common visual for 2D quantitative variables</p>
-<ul>
-<li>Many ways to incorporate additional dimensions in scatterplots, e.g., color and shape</li>
-</ul>
-<p>Linear regression is by far the most common model for describing the relationship between 2+ quantitative variables</p>
-<ul>
-<li>Can also: transform the outcome, transform the covariates, do nonparametric “smoothing”</li>
-</ul>
-<p>Use graphs to assess linear regression assumptions, i.e., residual diagnostic plots</p>
+<div style="font-size: 90%;">
+<p>LOESS may seem like magic, but it’s just a bunch of little linear regressions glued together</p>
+<p>Pairs plots: Nice way to see all pairwise relationships in a dataset</p>
 </div>
 <div class="fragment">
-<div style="font-size: 80%;">
+<div style="font-size: 90%;">
 <ul>
-<li><p><strong>HW4 due Wednesday and you have Lab 6 on Friday</strong></p></li>
-<li><p><strong>Graphics critique due Feb 28th!</strong></p></li>
-<li><p><strong>Next time</strong>: Inference with Linear Regression</p></li>
-<li><p>Recommended reading: <a href="https://clauswilke.com/dataviz/visualizing-associations.html">CW Chapter 12 Visualizing associations among two or more quantitative variables</a></p></li>
+<li><p><strong>HW5 is due Wednesday March 19th and you do NOT have lab this Friday!</strong></p></li>
+<li><p><strong>Next time</strong>: Contour Plots and Heat Maps</p></li>
 </ul>
 </div>
 
