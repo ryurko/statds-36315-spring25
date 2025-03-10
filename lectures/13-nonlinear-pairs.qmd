@@ -1,0 +1,269 @@
+---
+title: "Nonlinear Regression and Pairs Plots"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-03-10
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 90%;"}
+
+**HW5 is due next Wednesday March 19th by 11:59 PM ET**
+
+As part of Homework 5, you'll form groups for final projects
+
++ Teams should be 3-4 students, __you can pick your teammates or be randomized to a team__
+
++ Goal of the project: create and interpet hiqh-quality visualizations for a dataset of your choice
+
++ Project requirements and rubrics are available on Canvas
+
++ EDA reports are graded as as group, while presentations are graded individually
+
++ HW5 is short so you have time to form teams and explore datasets
+
+**You do NOT have lab this week**
+
+**TODAY:** How does LOESS (nonlinear regression) work? And maybe pairs plots
+
+:::
+
+---
+
+
+## Beyond Linear Regression
+
+Many kinds of regression methods - we'll focus on _local linear regression_ for now.
+
+Let's say: Still willing to assume Normality, but not linearity where $f(x)$ is some unknown function
+
+$$Y_i \stackrel{iid}{\sim} N(\underbrace{f(X_i)}, \sigma^2)$$
+
+**Intuition: Any nonlinear function is locally linear**
+
+We saw this in the extrapolation example
+
++ Local linear regressions fits a bunch of, well, local linear regressions, and then glues them together
+
++ Local linear regression is basically _weighted linear regression_, where only "local units" get weight
+
+---
+
+## Weighted Linear Regression
+
+Remember that in typical linear regression, we solve the following:
+
+$$\arg \min_{\beta_0,\beta_1} \sum_{i=1}^n (Y_i - \beta_0 - \beta_1 X_i)^2$$
+
+In weighted linear regression, we solve the following:
+
+$$\arg \min_{\beta_0,\beta_1} \sum_{i=1}^n w_i \cdot (Y_i - \beta_0 - \beta_1 X_i)^2$$
+
+
+Local linear regression is exactly the same, except the weights depend on which $x$ we want to estimate $f(x)$.
+
+---
+
+## Local linear regression via LOESS
+
+$Y_i \overset{iid}{\sim} N(f(x), \sigma^2)$, where $f(x)$ is some unknown function
+
+. . .
+
+In __local linear regression__, we estimate $f(X_i)$:
+
+$$\text{arg }\underset{\beta_0, \beta_1}{\text{min}} \sum_i^n w_i(x) \cdot \big(Y_i - \beta_0 - \beta_1 X_i \big)^2$$ 
+
+. . .
+
+`geom_smooth()` uses tri-cubic weighting:
+
+$$w_i(d_i) = \begin{cases} (1 - |d_i|^3)^3, \text{ if } i \in \text{neighborhood of  } x, \\
+0 \text{ if } i \notin \text{neighborhood of  } x \end{cases}$$
+
+  - $d_i$ is the distance between $x$ and $X_i$ scaled to be between 0 and 1
+  
+  - `span`: decides proportion of observations in neighborhood (default is 0.75)
+  
+
+---
+
+## [Animation example](http://rafalab.dfci.harvard.edu/dsbook/smoothing.html)
+
+![](http://rafalab.dfci.harvard.edu/dsbook/ml/img/loess-animation.gif){fig-align="center" width=50%}
+
+---
+
+## [Animation example](http://rafalab.dfci.harvard.edu/dsbook/smoothing.html) - changing the span
+
+![](http://rafalab.dfci.harvard.edu/dsbook/ml/img/loess-multi-span-animation.gif){fig-align="center" width=50%}
+
+---
+
+## Displaying trend lines: LOESS
+
+```{r}
+#| code-line-numbers: "4"
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(alpha = 0.5) + 
+  geom_smooth()
+```
+
+
+*For $n > 1000$, `mgcv::gam()` is used with `formula = y ~ s(x, bs = "cs")` and `method = "REML"`*
+
+---
+
+## Displaying trend lines: LOESS
+
+```{r}
+#| code-line-numbers: "4"
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(alpha = 0.5) + 
+  geom_smooth(span = .1)
+```
+
+---
+
+## Displaying trend lines: LOESS
+
+```{r}
+#| code-line-numbers: "4"
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(alpha = 0.5) + 
+  geom_smooth(span = 1)
+```
+
+---
+
+## Back to the penguins...
+
+Pretend I give you this `penguins` dataset and I ask you to make a plot __for every pairwise comparison__...
+
+```{r}
+penguins |> slice(1:3)
+```
+
+. . .
+
+We can create a __pairs plot__ to see __all__ pairwise relationships __in one plot__
+
+Pairs plot can include the various kinds of pairwise plots we've seen:
+
+- Two quantitative variables: scatterplot
+
+- One categorical, one quantitative: side-by-side violins, stacked
+histograms, overlaid densities
+
+- Two categorical: stacked bars, side-by-side bars, mosaic plots
+
+---
+
+## Create pairs plots with [`GGally`](https://ggobi.github.io/ggally/index.html)
+
+```{r}
+library(GGally)
+penguins |> ggpairs(columns = 3:6)
+```
+
+
+---
+
+## Create pairs plots with [`GGally`](https://ggobi.github.io/ggally/index.html)
+
+```{r}
+#| code-line-numbers: "2"
+penguins |> ggpairs(columns = 3:6,
+                    mapping = aes(alpha = 0.5))
+```
+
+---
+
+## Flexibility in customization
+
+```{r}
+#| output-location: slide
+penguins |> 
+  ggpairs(columns = c("bill_length_mm", "body_mass_g", "island"),
+          mapping = aes(alpha = 0.5, color = species), 
+          lower = list(
+            continuous = "smooth_lm", 
+            combo = "facetdensitystrip"
+          ),
+          upper = list(
+            continuous = "cor",
+            combo = "facethist"
+          )
+  )
+```
+
+---
+
+## See demo for more!
+
+```{r}
+#| echo: false
+penguins |>
+  dplyr::select(species, body_mass_g, ends_with("_mm")) |>
+  ggpairs(mapping = aes(color = species, alpha = 0.5),
+          columns = c("flipper_length_mm", "body_mass_g",
+                      "bill_length_mm", "bill_depth_mm")) +
+  scale_colour_manual(values = c("darkorange","purple","cyan4")) +
+  scale_fill_manual(values = c("darkorange","purple","cyan4")) +
+  theme_bw() +
+  theme(strip.text = element_text(size = 7))
+```
+
+---
+
+## Recap and next steps
+
+::: {style="font-size: 90%;"}
+
+LOESS may seem like magic, but it's just a bunch of little linear regressions glued together
+
+Pairs plots: Nice way to see all pairwise relationships in a dataset
+
+:::
+
+. . .
+
+::: {style="font-size: 90%;"}
+
++ **HW5 is due Wednesday March 19th and you do NOT have lab this Friday!**
+
++ **Next time**: Contour Plots and Heat Maps
+
+:::
+
+
