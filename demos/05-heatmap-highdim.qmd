@@ -1,0 +1,245 @@
+---
+title: "Demo 05: Contour Plots, Heat Maps, and Into High-Dimensional Data"
+format: html
+---
+
+# Contour Plots and Heat Maps
+
+**The graphs below don't have proper titles, axis labels, legends, etc.  Please take care to do this on your own graphs.**
+
+For the first part of this demo we'll use a dataset of shots by [LeBron James](https://en.wikipedia.org/wiki/LeBron_James). _For people that are interested, this was constructed using the [`hoopR` package](https://hoopr.sportsdataverse.org/)_.
+
+You can read in the dataset with the following code:
+
+```{r}
+#| warning: false
+#| message: false
+library(tidyverse)
+lebron_shots <- read_csv("https://raw.githubusercontent.com/ryurko/DataViz-Class-Data/main/lebron_shots.csv")
+```
+
+## 2D Density Estimates
+
+We're all experts in 1D kernel density estimation by now. Let's move on to 2D kernel density estimation.
+
+### Contour Plots -- Geometry:  `geom_density2d`
+
+Here let's focus on plotting the joint distribution of `coordinate_x` and `coordinate_y`, which are both quantitative (i.e., observing the joint distribution of shots). We're already very familiar with how to make scatterplots:
+
+```{r}
+lebron_shots |>
+  ggplot(aes(x = coordinate_x, y = coordinate_y)) +
+  geom_point(alpha = .5)
+```
+
+It's really easy to add a two-dimensional density (via contour lines) to the plot: we just use `geom_density2d()`:
+
+```{r}
+lebron_shots |>
+  ggplot(aes(x = coordinate_x, y = coordinate_y)) +
+  geom_point(alpha = .5) +
+  geom_density2d()
+```
+
+Similar to the contour lines on a topological map, the inner lines denote the "peaks" of the density. Note that the contour lines won't necessarily encapsulate every data point.
+
+We can also plot the contour lines without the points if you'd like (see below), but this is a bit misleading, because it automatically throws out areas of the plot where there were points but the density was low. To see this, compare the plot below to the plot above.
+
+```{r}
+lebron_shots |>
+  ggplot(aes(x = coordinate_x, y = coordinate_y)) +
+  geom_density2d()
+```
+
+### Can Use `stat_density2d` to specify additional parameters
+
+For example, we can change the fill type, which gives two benefits: (1) It looks cooler, and (2) Now we can see what the actual density values are.
+
+```{r}
+lebron_shots |>
+  ggplot(aes(x = coordinate_x, y = coordinate_y)) +
+  stat_density2d(aes(fill = after_stat(level)), geom = "polygon") + 
+  geom_point(alpha = .5) #+
+  #scale_fill_gradient(low = "darkblue", high = "darkorange")
+```
+
+Note: To change the color, you can uncomment the code above. This uses the `scale_fill_gradient()` function, which we've seen before in previous homeworks.
+
+We might also want to change the bandwidth. In 2D kernel density estimation, we must specify two bandwidths -- one for the x-direction, one for the y-direction. We'll see how to do this in homework.
+
+### Similarly, we can make heat maps!
+
+Heat maps: Divide the space into a grid and color the grid according to high/low values.
+
+To do this with densities, include `fill = after_stat(density), geom = "tile", contour = FALSE` in your call to `stat_density2d`, as below:
+
+```{r}
+lebron_shots |>
+  ggplot(aes(x = coordinate_x, y = coordinate_y)) +
+  stat_density2d(aes(fill = after_stat(density)), geom = "tile",
+                 contour = FALSE) + 
+  geom_point(alpha = .5)
+```
+
+Again, I recommend changing the default color scheme (it's pretty awful...), as below:
+
+```{r}
+lebron_shots |>
+  ggplot(aes(x = coordinate_x, y = coordinate_y)) +
+  stat_density2d(aes(fill = after_stat(density)), geom = "tile",
+                 contour = FALSE) + 
+  geom_point(alpha = .5) + 
+  scale_fill_gradient(low = "white", high = "red")
+```
+
+### Hexagonal binning!
+
+We make hexagonal heatmap plots using `geom_hex()`, can specify `binwidth` in both directions. This avoids limitations and issues with smoothing and challenges with multivariate density estimation. _Note: You need to have the hexbin package installed prior to creating these visuals._
+
+```{r}
+lebron_shots |>
+  ggplot(aes(x = coordinate_x, y = coordinate_y)) +
+  geom_hex() +
+  scale_fill_gradient(low = "darkblue", high = "darkorange") + 
+  theme_bw()
+```
+
+## BONUS: Statistical summaries within hexagonal bins
+
+Unrelated to 2D density estimation and viewing the joint frequency of points, we can alternatively view some statistical summary within various hexagonal bins displayed on two axes of interest. For example, the following graph displays the percentage of shots made within each hexagonal bin. We do this by mapping `as.numeric(scoring_play)` to the `z` aesthetic (since `scoring_play` is a boolean `TRUE/FALSE` and `as.numeric()` converts it to 1/0) and using the `stat_summary_hex()` layer with a specified function via `fun = mean`.
+
+```{r}
+lebron_shots |>
+  ggplot(aes(x = coordinate_x, y = coordinate_y, 
+             z = as.numeric(scoring_play))) +
+  stat_summary_hex(fun = mean) +
+  scale_fill_gradient(low = "darkblue", high = "darkorange") + 
+  theme_bw()
+```
+
+
+# Into High-Dimensional Data
+
+For the first part of this demo we'll use the [`palmerpenguins` dataset](https://allisonhorst.github.io/palmerpenguins/articles/intro.html). To access the data, you will need to install the `palmerpenguins` package:
+
+```{r}
+#| eval: false
+install.packages("palmerpenguins")
+```
+
+We load the `penguins` data in the same way as the previous demos:
+
+```{r}
+library(palmerpenguins)
+data(penguins)
+head(penguins)
+```
+
+## Correlograms with [`ggcorrplot`](https://rpkgs.datanovia.com/ggcorrplot/) 
+
+We can visualize the correlation matrix for the variables in a dataset using the [`ggcorrplot`](https://rpkgs.datanovia.com/ggcorrplot/) package. You need to install the package:
+
+```{r}
+#| eval: false
+install.packages("ggcorrplot")
+```
+
+Next, we'll load the package and create a __correlogram__ using only the continuous variables. To do this, we first need to compute the __correlation matrix__ for these variables:
+
+```{r}
+penguins_cor_matrix <- penguins |>
+  dplyr::select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) |>
+  cor(use = "complete.obs")
+penguins_cor_matrix
+```
+
+__NOTE__: Since there are missing values in the `penguins` data we need to indicate in the `cor()` function how to handle missing values using the `use` argument. By default, the correlations are returned as `NA`, which is not what we want. Instead, we can change this to only use observations without `NA` values for the considered columns (see `help(cor)` for more options).
+
+Now, we can create the correlogram using `ggcorrplot()` using this correlation matrix:
+
+```{r}
+library(ggcorrplot)
+ggcorrplot(penguins_cor_matrix)
+```
+
+There are several ways we can improve this correlogram:
+
+- we can avoid redundancy by only using one half of matrix by changing the `type` input: the default is `full`, we can make it `lower` or `upper` instead:
+
+```{r}
+ggcorrplot(penguins_cor_matrix, type = "lower")
+```
+
+- we can rearrange the variables using hierarchical clustering so that variables displaying stronger levels of correlation are closer together along the diagonal by setting `hc.order = TRUE`:
+
+```{r}
+ggcorrplot(penguins_cor_matrix, type = "lower", hc.order = TRUE)
+```
+
+- if we want to add the correlation values directly to the plot, we can include those labels setting `lab = TRUE` - but we should round the correlation values first using the `round()` function:
+
+```{r}
+ggcorrplot(round(penguins_cor_matrix, digits = 4), 
+           type = "lower", hc.order = TRUE, lab = TRUE)
+```
+
+- if we want to place more stress on the correlation magnitude, we can change the `method` input to `circle` so that the size of the displayed circles is mapped to the absolute value of the correlation value:
+
+```{r}
+#| warning: false
+ggcorrplot(penguins_cor_matrix, type = "lower", hc.order = TRUE,
+           method = "circle")
+```
+
+You can ignore the `Warning` message that is displayed - just from the differences in `ggplot` implementation.
+
+## Parallel coordinates plot with [`GGally`](https://ggobi.github.io/ggally/index.html)
+
+In a __parallel coordinates__ plot, we create an axis for each varaible and align these axes side-by-side, drawing lines between observations from one axis to the next. This can be useful for visualizing structure among __both__ the variables and observations in our dataset. These are useful when working with a moderate number of observations and variables - but can be overwhelming with too many.
+
+We use the `ggparcoord()` function from the [`GGally`](https://ggobi.github.io/ggally/index.html) package to make parallel coordinates plots:
+
+```{r}
+library(GGally)
+penguins |>
+  ggparcoord(columns = 3:6)
+```
+
+There are several ways we can modify this parallel coordinates plot:
+
+- we should __always__ adjust the transparency of the lines using the `alphaLines` input to help handle overlap:
+
+```{r}
+penguins |>
+  ggparcoord(columns = 3:6, alphaLines = .2)
+```
+
+- we can color each observation's lines by a categorical variable, which can be useful for revealing group structure:
+
+```{r}
+penguins |>
+  ggparcoord(columns = 3:6, alphaLines = .2, groupColumn = "species")
+```
+
+- we can change how the y-axis is constructed by modifying the `scale` input, which by default is `std` that is simply subtracting the mean and dividing by the standard deviation. We could instead use `uniminmax` so that minimum of the variable is zero and the maximum is one:
+
+```{r}
+penguins |>
+  ggparcoord(columns = 3:6, alphaLines = .2, groupColumn = "species",
+             scale = "uniminmax")
+```
+
+- we can also reorder the variables a number of different ways with the `order` input (see `help(ggparcoord)` for details). There appears to be some weird errors however with the different options, but you can still manually provide the order of indices as follows:
+
+```{r}
+penguins |>
+  ggparcoord(columns = 3:6, alphaLines = .2, groupColumn = "species",
+             order = c(6, 5, 3, 4))
+```
+
+
+
+
+
+
+

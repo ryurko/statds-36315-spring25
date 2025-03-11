@@ -8,4 +8,5 @@ title: "Demos"
 | 2      | Feb 17  | Scatterplots and Linear Regression | [HTML](demos/02-plot-2dquant.qmd)  |
 | 3      | Feb 19  | More Regression with Penguins | [HTML](demos/03-regression.qmd)  |
 | 4      | Mar 10  | Nonlinear Regression and Pairs Plots | [HTML](demos/04-nonlinear-pairs.qmd)  |
+| 5      | Mar 12  | Contour Plots, Heat Maps, and Into High-Dimensional Data | [HTML](demos/05-heatmap-highdim.qmd)  |
 

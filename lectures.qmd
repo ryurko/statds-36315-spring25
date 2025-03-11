@@ -17,5 +17,6 @@ title: "Lectures"
 | 11        | Feb 19  | Inference with Linear Regression  | [slides](lectures/11-regression-inference.qmd)        |
 | 12        | Feb 24  | Midsemester Review | [slides](lectures/12-midsemester-review.qmd)        |
 | 13        | Mar 10  | Nonlinear Regression and Pairs Plots | [slides](lectures/13-nonlinear-pairs.qmd)        |
+| 14        | Mar 12  | Contour Plots, Heat Maps, and Into High-Dimensional Data | [slides](lectures/14-contours-heatmaps.qmd)        |
 
 
