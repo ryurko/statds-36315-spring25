@@ -1,0 +1,337 @@
+---
+title: "Visualizing Distances for High-Dimensional Data"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-03-17
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 75%;"}
+
+**HW5 is due Wednesday March 19th by 11:59 PM ET**
+
+As part of Homework 5, you'll form groups for final projects
+
++ Teams should be 3-4 students, __you can pick your teammates or be randomized to a team__
+
++ Goal of the project: create and interpet hiqh-quality visualizations for a dataset of your choice
+
++ Project requirements and rubrics are available on Canvas
+
++ EDA reports are graded as as group, while presentations are graded individually
+
++ HW5 is short so you have time to form teams and explore datasets
+
+**You have Lab 7 this Friday**
+
+:::
+
+. . .
+
+::: {style="font-size: 75%;"}
+
+**Last time:** Contour plots, heat maps, and diving into high-dimensional data
+
+**TODAY:**  How do we visualize structure of high-dimensional data?
+
+- Example: What if I give you a dataset with 50 variables, and ask you to make __one visualization__ that best represents the data? _What do you do?_
+
+- Do NOT panic and make $\binom{50}{2} = 1225$ pairs of plots!
+
+- __Intuition__: Take high-dimensional data and __represent it in 2-3 dimensions__, then visualize those dimensions
+
+:::
+
+---
+
+## What about high-dimensional data?
+
+Consider this [dataset](https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-12-21/readme.md) about Starbucks drinks:
+
+```{r}
+#| warning: false
+#| message: false
+starbucks <- 
+  read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-12-21/starbucks.csv") |>
+  # Convert columns to numeric that were saved as character
+  mutate(trans_fat_g = as.numeric(trans_fat_g), fiber_g = as.numeric(fiber_g))
+starbucks |> slice(1)
+```
+
+
+Today: **Visualize structure among observations using distances matrices**
+
+---
+
+## Thinking about distance...
+
+::: {style="font-size: 75%;"}
+
+When describing visuals, we've implicitly "clustered" observations together
+
+- e.g., where are the mode(s) in the data?
+
+These types of task require characterizing the __distance__ between observations
+
+- Clusters: groups of observations that are "close" together
+
+:::
+
+. . .
+
+::: {style="font-size: 75%;"}
+
+This is easy to do for 2 quantitative variables: just make a scatterplot (possibly with contours or heatmap)
+
+**But how do we define "distance" for high-dimensional data?**
+
+Let $\boldsymbol{x}_i = (x_{i1}, \dots, x_{ip})$ be a vector of $p$ features for observation $i$
+
+Question of interest: How "far away" is $\boldsymbol{x}_i$ from $\boldsymbol{x}_j$?
+
+:::
+
+. . .
+
+::: {style="font-size: 75%;"}
+
+When looking at a scatterplot, you're using __Euclidean distance__ (length of the line in $p$-dimensional space):
+
+$$d(\boldsymbol{x}_i, \boldsymbol{x}_j) = \sqrt{(x_{i1} - x_{j1})^2 + \dots + (x_{ip} - x_{jp})^2}$$
+
+:::
+
+---
+
+## Distances in general
+
+There's a variety of different types of distance metrics: [Manhattan](https://en.wikipedia.org/wiki/Taxicab_geometry), [Mahalanobis](https://en.wikipedia.org/wiki/Mahalanobis_distance), [Cosine](https://en.wikipedia.org/wiki/Cosine_similarity), [Kullback-Leiber Divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence), [Wasserstein](https://en.wikipedia.org/wiki/Wasserstein_metric), but we're just going to focus on [Euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance)
+
+$d(\boldsymbol{x}_i, \boldsymbol{x}_j)$ measures pairwise distance between two observations $i,j$ and has the following properties:
+
+1. __Identity__: $\boldsymbol{x}_i = \boldsymbol{x}_j \iff d(\boldsymbol{x}_i, \boldsymbol{x}_j) = 0$
+
+2. __Non-Negativity__: $d(\boldsymbol{x}_i, \boldsymbol{x}_j) \geq 0$
+
+3. __Symmetry__: $d(\boldsymbol{x}_i, \boldsymbol{x}_j) = d(\boldsymbol{x}_j, \boldsymbol{x}_i)$
+
+4. __Triangle Inequality__: $d(\boldsymbol{x}_i, \boldsymbol{x}_j) \leq d(\boldsymbol{x}_i, \boldsymbol{x}_k) + d(\boldsymbol{x}_k, \boldsymbol{x}_j)$
+
+. . .
+
+__Distance Matrix__: matrix $D$ of all pairwise distances
+
+- $D_{ij} = d(\boldsymbol{x}_i, \boldsymbol{x}_j)$
+
+- where $D_{ii} = 0$ and $D_{ij} = D_{ji}$
+
+
+---
+
+## What could go wrong with Euclidean distance?
+
+---
+
+## Multi-dimensional scaling (MDS)
+
+::: {style="font-size: 75%;"}
+
+**General approach for visualizing distance matrices**
+
+Puts $n$ observations in a $k$-dimensional space such that the distances are preserved as much as possible
+
+ - where $k << p$ typically choose $k = 2$
+ 
+:::
+  
+. . .
+
+::: {style="font-size: 75%;"}
+
+MDS attempts to create new point $\boldsymbol{y}_i = (y_{i1}, y_{i2})$ for each unit such that:
+
+$$\sqrt{(y_{i1} - y_{j1})^2 + (y_{i2} - y_{j2})^2} \approx D_{ij}$$
+
+- i.e., distance in 2D MDS world is approximately equal to the actual distance
+
+:::
+
+. . .
+
+::: {style="font-size: 75%;"}
+
+**Then plot the new $\boldsymbol{y}$s on a scatterplot**
+
+- Use the `scale()` function to ensure variables are comparable
+
+- Make a distance matrix for this dataset
+
+- Visualize it with MDS
+
+:::
+
+---
+
+## MDS workflow example with Starbucks drinks
+
+```{r}
+#| output-location: slide
+starbucks_quant_data <- starbucks |> 
+  dplyr::select(serv_size_m_l:caffeine_mg)
+
+starbucks_scaled_quant_data <- 
+  scale(starbucks_quant_data, center = FALSE, 
+        scale = apply(starbucks_quant_data, 2, sd, na.rm = TRUE))
+
+dist_euc <- dist(starbucks_scaled_quant_data)
+starbucks_mds <- cmdscale(d = dist_euc, k = 2)
+
+starbucks <- starbucks |> 
+  mutate(mds1 = starbucks_mds[,1], mds2 = starbucks_mds[,2])
+
+starbucks |>
+  ggplot(aes(x = mds1, y = mds2)) + 
+  geom_point(alpha = 0.5) +
+  labs(x = "Coordinate 1", y = "Coordinate 2") +
+  coord_fixed()
+```
+
+
+---
+
+## What does `dist()` return?
+
+```{r}
+dist(starbucks_scaled_quant_data[1:8,])
+```
+
+**Default distance calculation is Euclidean**
+
+---
+
+## What does `cmdscale` do?
+
+```{r}
+#| eval: false
+starbucks_mds <- cmdscale(d = dist_euc, k = 2)
+```
+
+`cmdscale()` is the function we use to run MDS and it has two inputs: 
+
+1. `d`: distance matrix, e.g., `dist_euc`
+
+2. `k`: number of dimensions we want, e.g., usually 2 for visualization purposes
+
+Input is $N \times N$ matrix, and the output is $N \times 2$
+
+To grab the output, we just grab the two columns of `starbucks_mds` and then can
+make a scatterplot of these two new dimensions
+
+```{r}
+#| eval: false
+starbucks <- starbucks |> 
+  mutate(mds1 = starbucks_mds[,1],  mds2 = starbucks_mds[,2])
+```
+
+
+---
+
+## Interpreting the 2D projection
+
+```{r}
+starbucks |>
+  ggplot(aes(x = mds1, y = mds2)) +
+  geom_point(alpha = 0.5) +
+  labs(x = "Coordinate 1", y = "Coordinate 2") +
+  coord_fixed() 
+```
+
+
+---
+
+## View structure with additional variables - `size`
+
+```{r}
+#| code-line-numbers: "2"
+starbucks |>
+  ggplot(aes(x = mds1, y = mds2, color = size)) +
+  geom_point(alpha = 0.5) +
+  labs(x = "Coordinate 1", y = "Coordinate 2") +
+  coord_fixed() 
+```
+
+
+---
+
+## View structure with additional variables - `sugar_g`
+
+
+```{r}
+#| code-line-numbers: "2,5"
+starbucks |>
+  ggplot(aes(x = mds1, y = mds2, color = sugar_g)) +
+  geom_point(alpha = 0.5) +
+  labs(x = "Coordinate 1", y = "Coordinate 2") +
+  scale_color_gradient(low = "darkblue", high = "darkorange") +
+  coord_fixed() 
+```
+
+---
+
+## Recap and next steps
+
+::: {style="font-size: 80%;"}
+
+When data is high dimensional, it's impossible to visualize _every_ dimension in the data, so instead:
+
+**We reduce the data to a small number of dimensions, and then plot those dimensions**
+
+1. __Compute a distance matrix__: reduces the data to a single distance between points
+
+2. __Run Multi-Dimensional Scaling (MDS)__: summarizes the distance matrix in 2 or 3 dimensions
+
+3. __Plot the dimensions provided by MDS__
+
+Adding other dimensions (e.g., via color) when plotting MDS can be a great way to see structure (such as clusters) in the data
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
++ **HW5 is due Wednesday March 19th and you have lab this Friday!**
+
++ **Next time**: Dendrograms to visualize distances and clusters
+
++ **Review more code in lecture demos!**
+
+:::
+
+

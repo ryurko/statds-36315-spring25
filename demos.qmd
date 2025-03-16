@@ -9,4 +9,5 @@ title: "Demos"
 | 3      | Feb 19  | More Regression with Penguins | [HTML](demos/03-regression.qmd)  |
 | 4      | Mar 10  | Nonlinear Regression and Pairs Plots | [HTML](demos/04-nonlinear-pairs.qmd)  |
 | 5      | Mar 12  | Contour Plots, Heat Maps, and Into High-Dimensional Data | [HTML](demos/05-heatmap-highdim.qmd)  |
+| 6      | Mar 17  | Visualizing Distances for High-Dimensional Data | [HTML](demos/06-mds.qmd)  |
 
