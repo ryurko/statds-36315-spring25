@@ -10,8 +10,8 @@
   <meta name="generator" content="quarto-1.6.42">
 
   <meta name="author" content="Prof Ron Yurko">
-  <meta name="dcterms.date" content="2025-01-29">
-  <title>Statistical Graphics and Visualization 36-315 Spring 25 – Visualizations and Inference for 2D Categorical Data</title>
+  <meta name="dcterms.date" content="2025-03-17">
+  <title>Statistical Graphics and Visualization 36-315 Spring 25 – Visualizing Distances for High-Dimensional Data</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -195,7 +195,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Visualizations and Inference for 2D Categorical Data</h1>
+  <h1 class="title">Visualizing Distances for High-Dimensional Data</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -205,350 +205,250 @@ Prof Ron Yurko
 </div>
 </div>
 
-  <p class="date">2025-01-29</p>
+  <p class="date">2025-03-17</p>
 </section>
 <section id="announcements-previously-and-today" class="slide level2">
 <h2>Announcements, previously, and today…</h2>
-<div style="font-size: 80%;">
+<div style="font-size: 75%;">
+<p><strong>HW5 is due Wednesday March 19th by 11:59 PM ET</strong></p>
+<p>As part of Homework 5, you’ll form groups for final projects</p>
 <ul>
-<li><p><strong>HW1 is due TONIGHT by 11:59 PM</strong></p></li>
-<li><p><strong>You have Lab 3 again on Friday</strong></p></li>
+<li><p>Teams should be 3-4 students, <strong>you can pick your teammates or be randomized to a team</strong></p></li>
+<li><p>Goal of the project: create and interpet hiqh-quality visualizations for a dataset of your choice</p></li>
+<li><p>Project requirements and rubrics are available on Canvas</p></li>
+<li><p>EDA reports are graded as as group, while presentations are graded individually</p></li>
+<li><p>HW5 is short so you have time to form teams and explore datasets</p></li>
 </ul>
-<p>Office hours schedule:</p>
-<ul>
-<li><p>My office hours (BH 132D): Wednesdays and Thursdays @ 2 PM</p></li>
-<li><p>Anna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM</p></li>
-</ul>
+<p><strong>You have Lab 7 this Friday</strong></p>
 </div>
 <div class="fragment">
-<div style="font-size: 80%;">
+<div style="font-size: 75%;">
+<p><strong>Last time:</strong> Contour plots, heat maps, and diving into high-dimensional data</p>
+<p><strong>TODAY:</strong> How do we visualize structure of high-dimensional data?</p>
 <ul>
-<li><p>Discussed how similar looking graphics can have very different statistical results (thinking about power)</p></li>
-<li><p>Discussed the challenges of multiple testing</p></li>
-</ul>
-</div>
-</div>
-<div class="fragment">
-<div style="font-size: 80%;">
-<p><strong>TODAY:</strong></p>
-<ul>
-<li><p>Visuals for 2D categorical data</p></li>
-<li><p>How do we visualize inference for 2D categorical data?</p></li>
+<li><p>Example: What if I give you a dataset with 50 variables, and ask you to make <strong>one visualization</strong> that best represents the data? <em>What do you do?</em></p></li>
+<li><p>Do NOT panic and make <span class="math inline">\(\binom{50}{2} = 1225\)</span> pairs of plots!</p></li>
+<li><p><strong>Intuition</strong>: Take high-dimensional data and <strong>represent it in 2-3 dimensions</strong>, then visualize those dimensions</p></li>
 </ul>
 </div>
 </div>
 </section>
-<section id="d-categorical-basics" class="slide level2">
-<h2>2D categorical basics</h2>
-</section>
-<section id="d-categorical-basics-1" class="slide level2">
-<h2>2D categorical basics</h2>
+<section id="what-about-high-dimensional-data" class="slide level2">
+<h2>What about high-dimensional data?</h2>
+<p>Consider this <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-12-21/readme.md">dataset</a> about Starbucks drinks:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">addmargins</span>(<span class="fu">table</span>(<span class="st">"Species"</span> <span class="ot">=</span> penguins<span class="sc">$</span>species, <span class="st">"Island"</span> <span class="ot">=</span> penguins<span class="sc">$</span>island))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>starbucks <span class="ot">&lt;-</span> </span>
+<span id="cb1-2"><a></a>  <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-12-21/starbucks.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a></a>  <span class="co"># Convert columns to numeric that were saved as character</span></span>
+<span id="cb1-4"><a></a>  <span class="fu">mutate</span>(<span class="at">trans_fat_g =</span> <span class="fu">as.numeric</span>(trans_fat_g), <span class="at">fiber_g =</span> <span class="fu">as.numeric</span>(fiber_g))</span>
+<span id="cb1-5"><a></a>starbucks <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>           Island
-Species     Biscoe Dream Torgersen Sum
-  Adelie        44    56        52 152
-  Chinstrap      0    68         0  68
-  Gentoo       124     0         0 124
-  Sum          168   124        52 344</code></pre>
+<pre><code># A tibble: 1 × 15
+  product_name              size   milk  whip serv_size_m_l calories total_fat_g
+  &lt;chr&gt;                     &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;
+1 brewed coffee - dark roa… short     0     0           236        3         0.1
+# ℹ 8 more variables: saturated_fat_g &lt;dbl&gt;, trans_fat_g &lt;dbl&gt;,
+#   cholesterol_mg &lt;dbl&gt;, sodium_mg &lt;dbl&gt;, total_carbs_g &lt;dbl&gt;, fiber_g &lt;dbl&gt;,
+#   sugar_g &lt;dbl&gt;, caffeine_mg &lt;dbl&gt;</code></pre>
 </div>
 </div>
-<ul>
-<li><p>Column and row sums: marginal distributions</p></li>
-<li><p>Values within rows: conditional distribution for <code>Island</code> given <code>Species</code></p></li>
-<li><p>Values within columns: conditional distribution for <code>Species</code> given <code>Island</code></p></li>
-<li><p>Bottom right: total number of observations</p></li>
-</ul>
+<p>Today: <strong>Visualize structure among observations using distances matrices</strong></p>
 </section>
-<section id="connecting-distributions-to-visualizations" class="slide level2">
-<h2>Connecting distributions to visualizations</h2>
-<p>Five distributions for two categorical variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>:</p>
+<section id="thinking-about-distance" class="slide level2">
+<h2>Thinking about distance…</h2>
+<div style="font-size: 75%;">
+<p>When describing visuals, we’ve implicitly “clustered” observations together</p>
 <ul>
-<li><p><strong>Marginals</strong>: <span class="math inline">\(P(A)\)</span> and <span class="math inline">\(P(B)\)</span></p></li>
-<li><p><strong>Conditionals</strong>: <span class="math inline">\(P(A | B)\)</span> and <span class="math inline">\(P(B|A)\)</span></p></li>
-<li><p><strong>Joint</strong>: <span class="math inline">\(P(A, B)\)</span></p></li>
+<li>e.g., where are the mode(s) in the data?</li>
 </ul>
-<p>We use bar charts to visualize marginal distributions for categorical variables…</p>
+<p>These types of task require characterizing the <strong>distance</strong> between observations</p>
+<ul>
+<li>Clusters: groups of observations that are “close” together</li>
+</ul>
+</div>
 <div class="fragment">
-<p><strong>And we’ll use more bar charts to visualize conditional and joint distributions!</strong></p>
+<div style="font-size: 75%;">
+<p>This is easy to do for 2 quantitative variables: just make a scatterplot (possibly with contours or heatmap)</p>
+<p><strong>But how do we define “distance” for high-dimensional data?</strong></p>
+<p>Let <span class="math inline">\(\boldsymbol{x}_i = (x_{i1}, \dots, x_{ip})\)</span> be a vector of <span class="math inline">\(p\)</span> features for observation <span class="math inline">\(i\)</span></p>
+<p>Question of interest: How “far away” is <span class="math inline">\(\boldsymbol{x}_i\)</span> from <span class="math inline">\(\boldsymbol{x}_j\)</span>?</p>
+</div>
+</div>
+<div class="fragment">
+<div style="font-size: 75%;">
+<p>When looking at a scatterplot, you’re using <strong>Euclidean distance</strong> (length of the line in <span class="math inline">\(p\)</span>-dimensional space):</p>
+<p><span class="math display">\[d(\boldsymbol{x}_i, \boldsymbol{x}_j) = \sqrt{(x_{i1} - x_{j1})^2 + \dots + (x_{ip} - x_{jp})^2}\]</span></p>
+</div>
 </div>
 </section>
-<section id="stacked-bar-charts---a-bar-chart-of-spine-charts" class="slide level2">
-<h2>Stacked bar charts - a bar chart of spine charts</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span></span>
-<span id="cb3-3"><a></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span> </span>
-<span id="cb3-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
+<section id="distances-in-general" class="slide level2">
+<h2>Distances in general</h2>
+<p>There’s a variety of different types of distance metrics: <a href="https://en.wikipedia.org/wiki/Taxicab_geometry">Manhattan</a>, <a href="https://en.wikipedia.org/wiki/Mahalanobis_distance">Mahalanobis</a>, <a href="https://en.wikipedia.org/wiki/Cosine_similarity">Cosine</a>, <a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Kullback-Leiber Divergence</a>, <a href="https://en.wikipedia.org/wiki/Wasserstein_metric">Wasserstein</a>, but we’re just going to focus on <a href="https://en.wikipedia.org/wiki/Euclidean_distance">Euclidean distance</a></p>
+<p><span class="math inline">\(d(\boldsymbol{x}_i, \boldsymbol{x}_j)\)</span> measures pairwise distance between two observations <span class="math inline">\(i,j\)</span> and has the following properties:</p>
+<ol type="1">
+<li><p><strong>Identity</strong>: <span class="math inline">\(\boldsymbol{x}_i = \boldsymbol{x}_j \iff d(\boldsymbol{x}_i, \boldsymbol{x}_j) = 0\)</span></p></li>
+<li><p><strong>Non-Negativity</strong>: <span class="math inline">\(d(\boldsymbol{x}_i, \boldsymbol{x}_j) \geq 0\)</span></p></li>
+<li><p><strong>Symmetry</strong>: <span class="math inline">\(d(\boldsymbol{x}_i, \boldsymbol{x}_j) = d(\boldsymbol{x}_j, \boldsymbol{x}_i)\)</span></p></li>
+<li><p><strong>Triangle Inequality</strong>: <span class="math inline">\(d(\boldsymbol{x}_i, \boldsymbol{x}_j) \leq d(\boldsymbol{x}_i, \boldsymbol{x}_k) + d(\boldsymbol{x}_k, \boldsymbol{x}_j)\)</span></p></li>
+</ol>
+<div class="fragment">
+<p><strong>Distance Matrix</strong>: matrix <span class="math inline">\(D\)</span> of all pairwise distances</p>
 <ul>
-<li><p>Easy to see marginal of <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Harder to see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
+<li><p><span class="math inline">\(D_{ij} = d(\boldsymbol{x}_i, \boldsymbol{x}_j)\)</span></p></li>
+<li><p>where <span class="math inline">\(D_{ii} = 0\)</span> and <span class="math inline">\(D_{ij} = D_{ji}\)</span></p></li>
 </ul>
 </div>
 </section>
-<section id="side-by-side-bar-charts" class="slide level2">
-<h2>Side-by-side bar charts</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb4-3"><a></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb4-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
+<section id="what-could-go-wrong-with-euclidean-distance" class="slide level2">
+<h2>What could go wrong with Euclidean distance?</h2>
+</section>
+<section id="multi-dimensional-scaling-mds" class="slide level2">
+<h2>Multi-dimensional scaling (MDS)</h2>
+<div style="font-size: 75%;">
+<p><strong>General approach for visualizing distance matrices</strong></p>
+<p>Puts <span class="math inline">\(n\)</span> observations in a <span class="math inline">\(k\)</span>-dimensional space such that the distances are preserved as much as possible</p>
 <ul>
-<li><p>Easy to see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
+<li>where <span class="math inline">\(k &lt;&lt; p\)</span> typically choose <span class="math inline">\(k = 2\)</span></li>
 </ul>
 </div>
-</section>
-<section id="side-by-side-bar-charts-1" class="slide level2">
-<h2>Side-by-side bar charts</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb5-3"><a></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">preserve =</span> <span class="st">"single"</span>)) <span class="sc">+</span></span>
-<span id="cb5-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
+<div class="fragment">
+<div style="font-size: 75%;">
+<p>MDS attempts to create new point <span class="math inline">\(\boldsymbol{y}_i = (y_{i1}, y_{i2})\)</span> for each unit such that:</p>
+<p><span class="math display">\[\sqrt{(y_{i1} - y_{j1})^2 + (y_{i2} - y_{j2})^2} \approx D_{ij}\]</span></p>
 <ul>
-<li><p>Easy to see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
+<li>i.e., distance in 2D MDS world is approximately equal to the actual distance</li>
 </ul>
 </div>
+</div>
+<div class="fragment">
+<div style="font-size: 75%;">
+<p><strong>Then plot the new <span class="math inline">\(\boldsymbol{y}\)</span>s on a scatterplot</strong></p>
+<ul>
+<li><p>Use the <code>scale()</code> function to ensure variables are comparable</p></li>
+<li><p>Make a distance matrix for this dataset</p></li>
+<li><p>Visualize it with MDS</p></li>
+</ul>
+</div>
+</div>
 </section>
-<section id="complete-missing-values-to-preserve-location" class="slide level2">
-<h2><a href="https://tidyr.tidyverse.org/reference/complete.html">Complete</a> missing values to preserve location</h2>
+<section id="mds-workflow-example-with-starbucks-drinks" class="slide level2">
+<h2>MDS workflow example with Starbucks drinks</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6" data-code-line-numbers="2-6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a></a>  <span class="fu">count</span>(species, island) <span class="sc">|&gt;</span></span>
-<span id="cb6-3"><a></a>  <span class="fu">complete</span>(<span class="at">species =</span> <span class="fu">unique</span>(species), <span class="at">island =</span> <span class="fu">unique</span>(island), </span>
-<span id="cb6-4"><a></a>           <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">n =</span> <span class="dv">0</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">y =</span> n, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb6-6"><a></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb6-7"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>starbucks_quant_data <span class="ot">&lt;-</span> starbucks <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(serv_size_m_l<span class="sc">:</span>caffeine_mg)</span>
+<span id="cb3-3"><a></a></span>
+<span id="cb3-4"><a></a>starbucks_scaled_quant_data <span class="ot">&lt;-</span> </span>
+<span id="cb3-5"><a></a>  <span class="fu">scale</span>(starbucks_quant_data, <span class="at">center =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb3-6"><a></a>        <span class="at">scale =</span> <span class="fu">apply</span>(starbucks_quant_data, <span class="dv">2</span>, sd, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb3-7"><a></a></span>
+<span id="cb3-8"><a></a>dist_euc <span class="ot">&lt;-</span> <span class="fu">dist</span>(starbucks_scaled_quant_data)</span>
+<span id="cb3-9"><a></a>starbucks_mds <span class="ot">&lt;-</span> <span class="fu">cmdscale</span>(<span class="at">d =</span> dist_euc, <span class="at">k =</span> <span class="dv">2</span>)</span>
+<span id="cb3-10"><a></a></span>
+<span id="cb3-11"><a></a>starbucks <span class="ot">&lt;-</span> starbucks <span class="sc">|&gt;</span> </span>
+<span id="cb3-12"><a></a>  <span class="fu">mutate</span>(<span class="at">mds1 =</span> starbucks_mds[,<span class="dv">1</span>], <span class="at">mds2 =</span> starbucks_mds[,<span class="dv">2</span>])</span>
+<span id="cb3-13"><a></a></span>
+<span id="cb3-14"><a></a>starbucks <span class="sc">|&gt;</span></span>
+<span id="cb3-15"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mds1, <span class="at">y =</span> mds2)) <span class="sc">+</span> </span>
+<span id="cb3-16"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb3-17"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Coordinate 1"</span>, <span class="at">y =</span> <span class="st">"Coordinate 2"</span>) <span class="sc">+</span></span>
+<span id="cb3-18"><a></a>  <span class="fu">coord_fixed</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="what-do-you-prefer" class="slide level2">
-<h2>What do you prefer?</h2>
-<div>
 
-</div>
-<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+</section>
+<section id="mds-workflow-example-with-starbucks-drinks-output" class="slide level2 output-location-slide"><h2>MDS workflow example with Starbucks drinks</h2><div class="cell output-location-slide" data-layout-align="center">
+<div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+<p><img data-src="15-distance-mds_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-7-2.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="chi-squared-test-for-1d-categorical-data" class="slide level2">
-<h2>Chi-squared test for 1D categorical data:</h2>
-<div style="font-size: 75%;">
-<ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: <span class="math inline">\(p_1 = p_2 = \dots = p_K\)</span>, compute the test statistic:</li>
-</ul>
-<p><span class="math display">\[
-\chi^2 = \sum_{j=1}^K \frac{(O_j - E_j)^2}{E_j}
-\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_j\)</span>: observed counts in category <span class="math inline">\(j\)</span></p></li>
-<li><p><span class="math inline">\(E_j\)</span>: expected counts under <span class="math inline">\(H_0\)</span>, i.e., each category is equally to occur <span class="math inline">\(n / K = p_1 = p_2 = \dots = p_K\)</span></p></li>
-</ul>
-</div>
-<div class="fragment">
+</div></section><section id="what-does-dist-return" class="slide level2">
+<h2>What does <code>dist()</code> return?</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">dist</span>(starbucks_scaled_quant_data[<span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>,])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-    Chi-squared test for given probabilities
-
-data:  table(penguins$species)
-X-squared = 31.907, df = 2, p-value = 1.179e-07</code></pre>
+<pre><code>          1         2         3         4         5         6         7
+2 1.0597905                                                            
+3 2.1605009 1.1015883                                                  
+4 3.3885615 2.3316426 1.2323454                                        
+5 1.4722992 2.3802999 3.4258192 4.6439965                              
+6 1.5671249 2.2148502 3.1494033 4.3218904 0.6904406                    
+7 1.9247890 2.2591636 3.0086115 4.0906365 1.3835219 0.6941308          
+8 2.4275777 2.4999068 3.0232984 3.9688066 2.0714599 1.3824217 0.6883099</code></pre>
 </div>
 </div>
+<p><strong>Default distance calculation is Euclidean</strong></p>
+</section>
+<section id="what-does-cmdscale-do" class="slide level2">
+<h2>What does <code>cmdscale</code> do?</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>starbucks_mds <span class="ot">&lt;-</span> <span class="fu">cmdscale</span>(<span class="at">d =</span> dist_euc, <span class="at">k =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>cmdscale()</code> is the function we use to run MDS and it has two inputs:</p>
+<ol type="1">
+<li><p><code>d</code>: distance matrix, e.g., <code>dist_euc</code></p></li>
+<li><p><code>k</code>: number of dimensions we want, e.g., usually 2 for visualization purposes</p></li>
+</ol>
+<p>Input is <span class="math inline">\(N \times N\)</span> matrix, and the output is <span class="math inline">\(N \times 2\)</span></p>
+<p>To grab the output, we just grab the two columns of <code>starbucks_mds</code> and then can make a scatterplot of these two new dimensions</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>starbucks <span class="ot">&lt;-</span> starbucks <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a></a>  <span class="fu">mutate</span>(<span class="at">mds1 =</span> starbucks_mds[,<span class="dv">1</span>],  <span class="at">mds2 =</span> starbucks_mds[,<span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="inference-for-2d-categorical-data" class="slide level2">
-<h2>Inference for 2D categorical data</h2>
-<div style="font-size: 75%;">
-<p>Again we use the <strong>chi-squared test</strong>:</p>
-<ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent, compute the test statistic:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_{ij}\)</span>: observed counts in contingency table</p></li>
-<li><p><span class="math inline">\(E_{ij}\)</span>: expected counts under <span class="math inline">\(H_0\)</span></p></li>
-</ul>
-<p><span class="math display">\[
-\begin{aligned}
-E_{ij} &amp;= n \cdot P(A = a_i, B = b_j) \\
-&amp;= n \cdot P(A = a_i) P(B = b_j) \\
-&amp;= n \cdot \left( \frac{n_{i \cdot}}{n} \right) \left( \frac{ n_{\cdot j}}{n} \right)
-\end{aligned}
-\]</span></p>
-</div>
-</section>
-<section id="inference-for-2d-categorical-data-1" class="slide level2">
-<h2>Inference for 2D categorical data</h2>
-<div style="font-size: 75%;">
-<p>Again we use the <strong>chi-squared test</strong>:</p>
-<ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent, compute the test statistic:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_{ij}\)</span>: observed counts in contingency table</p></li>
-<li><p><span class="math inline">\(E_{ij}\)</span>: expected counts under <span class="math inline">\(H_0\)</span></p></li>
-</ul>
-</div>
+<section id="interpreting-the-2d-projection" class="slide level2">
+<h2>Interpreting the 2D projection</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Pearson's Chi-squared test
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>starbucks <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mds1, <span class="at">y =</span> mds2)) <span class="sc">+</span></span>
+<span id="cb8-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb8-4"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Coordinate 1"</span>, <span class="at">y =</span> <span class="st">"Coordinate 2"</span>) <span class="sc">+</span></span>
+<span id="cb8-5"><a></a>  <span class="fu">coord_fixed</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-data:  table(penguins$species, penguins$island)
-X-squared = 299.55, df = 4, p-value &lt; 2.2e-16</code></pre>
 </div>
-</div>
-</section>
-<section id="visualize-independence-test-with-mosaic-plots" class="slide level2">
-<h2>Visualize independence test with mosaic plots</h2>
-<div style="font-size: 75%;">
-<p>Two variables are <strong>independent</strong> if knowing the level of one tells us nothing about the other</p>
-<ul>
-<li>i.e.&nbsp;<span class="math inline">\(P(A | B) = P(A)\)</span>, and that <span class="math inline">\(P(A, B) = P(A) \times P(B)\)</span></li>
-</ul>
-<p>Create a <strong>mosaic</strong> plot using <strong>base <code>R</code></strong></p>
-</div>
+<img data-src="15-distance-mds_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="view-structure-with-additional-variables---size" class="slide level2">
+<h2>View structure with additional variables - <code>size</code></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>starbucks <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mds1, <span class="at">y =</span> mds2, <span class="at">color =</span> size)) <span class="sc">+</span></span>
+<span id="cb9-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb9-4"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Coordinate 1"</span>, <span class="at">y =</span> <span class="st">"Coordinate 2"</span>) <span class="sc">+</span></span>
+<span id="cb9-5"><a></a>  <span class="fu">coord_fixed</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="shade-by-pearson-residuals" class="slide level2">
-<h2>Shade by <em>Pearson residuals</em></h2>
-<div style="font-size: 75%;">
-<ul>
-<li>The <strong>test statistic</strong> is:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li>Define the <em>Pearson residuals</em> as:</li>
-</ul>
-<p><span class="math display">\[r_{ij} = \frac{O_{ij} - E_{ij}}{\sqrt{E_{ij}}}\]</span></p>
-<ul>
-<li>Side-note: In general, Pearson residuals are <span class="math inline">\(\frac{\text{residuals}}{\sqrt{\text{variance}}}\)</span></li>
-</ul>
-</div>
-<div class="fragment">
-<div style="font-size: 75%;">
-<ul>
-<li><p><span class="math inline">\(r_{ij} \approx 0 \rightarrow\)</span> observed counts are close to expected counts</p></li>
-<li><p><span class="math inline">\(|r_{ij}| &gt; 2 \rightarrow\)</span> “significant” at level <span class="math inline">\(\alpha = 0.05\)</span>.</p></li>
-<li><p>Very positive <span class="math inline">\(r_{ij} \rightarrow\)</span> more than expected, while very negative <span class="math inline">\(r_{ij} \rightarrow\)</span> fewer than expected</p></li>
-<li><p><strong>Color by Pearson residuals</strong> to tell us which combos are much bigger/smaller than expected.</p></li>
-</ul>
-</div>
-</div>
-</section>
-<section class="slide level2">
-
+<img data-src="15-distance-mds_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="view-structure-with-additional-variables---sugar_g" class="slide level2">
+<h2>View structure with additional variables - <code>sugar_g</code></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island), <span class="at">shade =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10" data-code-line-numbers="2,5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>starbucks <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mds1, <span class="at">y =</span> mds2, <span class="at">color =</span> sugar_g)) <span class="sc">+</span></span>
+<span id="cb10-3"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb10-4"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Coordinate 1"</span>, <span class="at">y =</span> <span class="st">"Coordinate 2"</span>) <span class="sc">+</span></span>
+<span id="cb10-5"><a></a>  <span class="fu">scale_color_gradient</span>(<span class="at">low =</span> <span class="st">"darkblue"</span>, <span class="at">high =</span> <span class="st">"darkorange"</span>) <span class="sc">+</span></span>
+<span id="cb10-6"><a></a>  <span class="fu">coord_fixed</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section class="slide level2">
-
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>island, penguins<span class="sc">$</span>sex), <span class="at">shade =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb13-2"><a></a>           <span class="at">main =</span> <span class="st">"Distribution of penguins' sex does not vary across islands"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="titanic-dataset-example" class="slide level2">
-<h2>Titanic Dataset Example</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>titanic <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/ryurko/DataViz-Class-Data/main/titanic.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><strong>Question</strong>: Does survival (yes/no) depend on cabin (1st/2nd/3rd)?</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">table</span>(<span class="st">"Survived?"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Survived, <span class="st">"Class"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Pclass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>         Class
-Survived?   1   2   3
-        0  64  90 270
-        1 120  83  85</code></pre>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(<span class="st">"Survived?"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Survived, <span class="st">"Class"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Pclass))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Pearson's Chi-squared test
-
-data:  table(`Survived?` = titanic$Survived, Class = titanic$Pclass)
-X-squared = 91.081, df = 2, p-value &lt; 2.2e-16</code></pre>
-</div>
-</div>
-<p><strong>Conclusion</strong>: Class and survival are dependent - but how?</p>
-</div>
-</section>
-<section class="slide level2">
-
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(titanic<span class="sc">$</span>Pclass, titanic<span class="sc">$</span>Survived), <span class="at">shade =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb19-2"><a></a>           <span class="at">xlab =</span> <span class="st">"Passenger Class"</span>, <span class="at">ylab =</span> <span class="st">"Survived?"</span>, <span class="at">main =</span> <span class="st">"How are they related?"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="guardian-1000-songs-to-hear-before-you-die" class="slide level2">
-<h2><a href="https://www.theguardian.com/news/datablog/2009/mar/20/1">Guardian</a>: 1000 songs to hear before you die</h2>
-
-<img data-src="https://upload.wikimedia.org/wikipedia/commons/8/84/Mosaic-big.png?20090726044211" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
-<section class="slide level2">
-
-
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<img data-src="15-distance-mds_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="recap-and-next-steps" class="slide level2">
 <h2>Recap and next steps</h2>
-<div style="font-size: 75%;">
-<ul>
-<li><p>For 2D categorical data we create visualizations for marginal, conditional, and joint distributions</p></li>
-<li><p>Can create stacked and side-by-side bar charts to visualize 2D categorical data</p></li>
-<li><p>Perform 2D Chi-squared test to test if two categorical variables are associated with each other</p></li>
-<li><p>Create mosaic plots to visualize 2D categorical data</p></li>
-<li><p>Shade mosaic plot tiles by Pearson residuals to see what drives association between two categorical variables (if any)</p></li>
-</ul>
+<div style="font-size: 80%;">
+<p>When data is high dimensional, it’s impossible to visualize <em>every</em> dimension in the data, so instead:</p>
+<p><strong>We reduce the data to a small number of dimensions, and then plot those dimensions</strong></p>
+<ol type="1">
+<li><p><strong>Compute a distance matrix</strong>: reduces the data to a single distance between points</p></li>
+<li><p><strong>Run Multi-Dimensional Scaling (MDS)</strong>: summarizes the distance matrix in 2 or 3 dimensions</p></li>
+<li><p><strong>Plot the dimensions provided by MDS</strong></p></li>
+</ol>
+<p>Adding other dimensions (e.g., via color) when plotting MDS can be a great way to see structure (such as clusters) in the data</p>
 </div>
 <div class="fragment">
-<div style="font-size: 75%;">
+<div style="font-size: 80%;">
 <ul>
-<li><p><strong>HW1 is due TONIGHT and you have Lab 3 on Friday!</strong></p></li>
-<li><p><strong>Next time</strong>: Visualizing 1D quantitative data</p></li>
-<li><p>Recommended reading: <a href="https://clauswilke.com/dataviz/nested-proportions.html">CW Chapter 11 Visualizing nested proportions</a></p></li>
+<li><p><strong>HW5 is due Wednesday March 19th and you have lab this Friday!</strong></p></li>
+<li><p><strong>Next time</strong>: Dendrograms to visualize distances and clusters</p></li>
+<li><p><strong>Review more code in lecture demos!</strong></p></li>
 </ul>
 </div>
 
