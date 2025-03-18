@@ -19,5 +19,6 @@ title: "Lectures"
 | 13        | Mar 10  | Nonlinear Regression and Pairs Plots | [slides](lectures/13-nonlinear-pairs.qmd)        |
 | 14        | Mar 12  | Contour Plots, Heat Maps, and Into High-Dimensional Data | [slides](lectures/14-contours-heatmaps.qmd)        |
 | 15        | Mar 17  | Visualizing Distances for High-Dimensional Data | [slides](lectures/15-distance-mds.qmd)        |
+| 16        | Mar 19  | Dendrograms for Visualizing Distances and Clusters | [slides](lectures/16-clustering.qmd)        |
 
 

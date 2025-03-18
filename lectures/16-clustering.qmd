@@ -1,0 +1,394 @@
+---
+title: "Dendrograms for Visualizing Distances and Clusters"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-03-19
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 75%;"}
+
+**HW5 is due TONIGHT by 11:59 PM ET**
+
+**You have Lab 7 this Friday**
+
+**HW6 is due next Wednesday March 26th by 11:59 PM ET**
+
+:::
+
+. . .
+
+::: {style="font-size: 75%;"}
+
+**Last time:** General approach for visualizing distance matrices
+
+- Puts $n$ observations in a $k$-dimensional space such that the distances are preserved as much as possible
+
+  - where $k << p$ typically choose $k = 2$
+  
+MDS attempts to create new point $\boldsymbol{y}_i = (y_{i1}, y_{i2})$ for each unit such that:
+
+$$\sqrt{(y_{i1} - y_{j1})^2 + (y_{i2} - y_{j2})^2} \approx D_{ij}$$
+
+- i.e., distance in 2D MDS world is approximately equal to the actual distance
+
+**Then plot the new $\boldsymbol{y}$s on a scatterplot**
+
+- Use the `scale()` function to ensure variables are comparable
+
+- Make a distance matrix for this dataset
+
+- Visualize it with MDS
+
+:::
+
+
+---
+
+## Demo: [MCU movie data](https://informationisbeautiful.net/visualizations/which-is-the-best-performing-marvel-movie/)
+
+```{r}
+#| warning: false
+#| message: false
+#| attr-output: "style='font-size: 0.5em;'"
+mcu_movies <- read_csv("https://raw.githubusercontent.com/ryurko/DataViz-Class-Data/main/mcu_movies.csv")
+mcu_movies
+```
+
+
+---
+
+## MCU meets MDS
+
+```{r}
+#| output-location: slide
+mcu_quant <- mcu_movies |> dplyr::select(-c(film, category, year))
+
+mcu_quant <- apply(mcu_quant, MARGIN = 2, FUN = function(x) x / sd(x))
+rownames(mcu_quant) <- mcu_movies$film
+
+mcu_dist <- dist(mcu_quant)
+mcu_mds <- cmdscale(d = dist(mcu_quant), k = 2)
+mcu_movies <- mcu_movies |> mutate(mds1 = mcu_mds[,1], mds2 = mcu_mds[,2])
+
+mcu_movies |>
+  ggplot(aes(x = mds1, y = mds2)) +
+  # Use text labels instead of points:
+  geom_text(aes(label = film), alpha = .75) +
+  labs(x = "MDS Coordinate 1", y = "MDS Coordinate 2") +
+  theme_bw()
+```
+
+
+
+---
+
+## Other ways to visualize distances and clusters
+
+MDS can be a great way to visualize distances and identify clusters...
+
+- However, requires picking certain variables that identify clusters well
+
+**Is there a way to automatically identify clusters in the dataset?**
+
+. . .
+
+- Dendrograms are a nice way to visualize distances 
+
+- _Automatically_ clusters different units together based on distance
+
+$$\overbrace{\text{Dendro}}^{\text{tree}}\underbrace{\text{gram}}_{\text{drawing}}$$
+
+First, let's look at dendrograms and learn how to interpret them - then we'll discuss how they're made
+
+---
+
+## [Textbook example](https://bradleyboehmke.github.io/HOML/hierarchical.html)
+
+![](https://bradleyboehmke.github.io/HOML/19-hierarchical_files/figure-html/comparing-dendrogram-to-distances-1.png){fig-align="center" width=100%}
+
+---
+
+## [Textbook example](https://bradleyboehmke.github.io/HOML/hierarchical.html)
+
+![](https://bradleyboehmke.github.io/HOML/19-hierarchical_files/figure-html/comparing-dendrogram-to-distances-1.png){fig-align="center" width=75%}
+
+::: {style="font-size: 80%;"}
+
+- Observations that are _closer_ together are on the same branch
+
+- Doesn't tell you how many clusters there are, but does tell you which observations are clustered together
+
+- For now: What is the computer doing to make dendrograms?
+
+:::
+
+---
+
+## (Agglomerative) [Hierarchical clustering](https://en.wikipedia.org/wiki/Hierarchical_clustering)
+
+Let's pretend all $N$ observations are in their own cluster
+
+Step 1: Compute the pairwise dissimilarities between each cluster
+
+ - e.g., distance matrix on previous slides
+  
+. . .
+  
+Step 2: Identify the pair of clusters that are __least dissimilar__
+
+. . .
+
+Step 3: Fuse these two clusters into a new cluster!
+
+. . .
+
+__Repeat Steps 1 to 3 until all observations are in the same cluster__
+
+__"Bottom-up"__, agglomerative clustering that forms a __tree / hierarchy__ of merging
+
+
+---
+
+## (Agglomerative) [Hierarchical clustering](https://en.wikipedia.org/wiki/Hierarchical_clustering)
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Clusters.svg/250px-Clusters.svg.png){fig-align="center" width=70%}
+
+---
+
+## Forms a dendrogram
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Hierarchical_clustering_simple_diagram.svg/418px-Hierarchical_clustering_simple_diagram.svg.png){fig-align="center" width=85%}
+
+
+---
+
+## How do we define dissimilarity between clusters?
+
+::: {style="font-size: 80%;"}
+
+We know how to compute distance / dissimilarity between two observations
+
+__But how do we handle clusters?__
+
+  - Dissimilarity between a cluster and an observation, or between two clusters
+  
+:::
+  
+. . .
+
+::: {style="font-size: 80%;"}
+
+We need to choose a __linkage function__! Clusters are built up by __linking them together__
+
+Compute all pairwise dissimilarities between observations in cluster 1 with observations in cluster 2
+
+i.e. Compute the distance matrix between observations, $d(x_i, x_j)$ for $i \in C_1$ and $j \in C_2$
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
+  - __Complete linkage__: Use the __maximum__ value of these dissimilarities: $\underset{i \in C_1, j \in C_2}{\text{max}} d(x_i, x_j)$
+
+  - __Single linkage__: Use the __minimum__ value: $\underset{i \in C_1, j \in C_2}{\text{min}} d(x_i, x_j)$
+
+  - __Average linkage__: Use the __average__ value: $\frac{1}{|C_1| \cdot |C_2|} \sum_{i \in C_1} \sum_{j \in C_2} d(x_i, x_j)$
+
+
+Define dissimilarity between two clusters __based on our initial dissimilarity matrix between observations__
+
+:::
+
+
+---
+
+```{r}
+#| fig-height: 7
+hc_complete <- hclust(mcu_dist, method = "complete")
+plot(hc_complete, ylab = "Pairwise Distance", main = "Complete Linkage", xlab = "MCU Movies")
+```
+
+
+---
+
+```{r}
+#| fig-height: 7
+hc_single <- hclust(mcu_dist, method = "single")
+plot(hc_single, ylab = "Pairwise Distance", main = "Single Linkage", xlab = "MCU Movies")
+```
+
+
+---
+
+## [`ggdendro` version](https://cran.r-project.org/web/packages/ggdendro/vignettes/ggdendro.html)
+
+```{r}
+library(ggdendro)
+ggdendrogram(hc_complete, theme_dendro = FALSE) + #<<
+  labs(y = "Cluster Dissimilarity (based on complete linkage)", 
+       title = "Which MCU movies are similar to each other?") + 
+  coord_flip() + theme_bw() + theme(axis.title.y = element_blank())
+```
+
+
+---
+
+## Display MDS plot with dendrogram side-by-side
+
+```{r}
+#| output-location: slide
+library(patchwork)
+hc_complete_ggdendro <- ggdendrogram(hc_complete, theme_dendro = FALSE) +
+  labs(y = "Cluster Dissimilarity (based on complete linkage)", 
+       title = "Which MCU movies are similar to each other?") + 
+  coord_flip() +
+  theme_bw() +
+  # Remove the y-axis title (changed from x to y since we flipped it!)
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_text(size = 6),
+        plot.title = element_text(size = 10))
+
+mcu_mds_plot <- mcu_movies |>
+  ggplot(aes(x = mds1, y = mds2)) +
+  geom_text(aes(label = film),
+            alpha = .75, size = 2) +
+  labs(x = "MDS Coordinate 1", y = "MDS Coordinate 2") +
+  theme_bw()
+
+mcu_mds_plot + hc_complete_ggdendro
+```
+
+
+---
+
+## How do we assign cluster labels?
+
+**We cut the dendrogram to return cluster labels**
+
+Two ways to specify how to cut the tree using the `cutree` function:
+
+1) via the height using `h`, e.g., cut the tree at height = 10
+
+```{r}
+#| eval: false
+cutree(hc_complete, h = 10)
+```
+
+. . .
+
+2) via the desired number of clusters `k` - and let the computer figure out the height for us, e.g., `k = 2`
+
+```{r}
+#| eval: false
+cutree(hc_complete, k = 2)
+```
+
+
+---
+
+```{r}
+#| attr-output: "style='font-size: 0.5em;'"
+mcu_clusters <- cutree(hc_complete, h = 10)
+mcu_clusters
+```
+
+---
+
+## View results with cut on dendrogram
+
+```{r}
+#| output-location: slide
+cut_dendro <- hc_complete_ggdendro +
+  # This is a horizontal line since its considered before the flip:
+  geom_hline(yintercept = 10, linetype = "dashed", 
+             color = "darkred")
+
+cluster_mcu_mds_plot <- mcu_movies |>
+  mutate(cluster = as.factor(mcu_clusters)) |>
+  ggplot(aes(x = mds1, y = mds2,
+             color = cluster)) +
+  geom_text(aes(label = film),
+            alpha = .75, size = 2) +
+  ggthemes::scale_color_colorblind() +
+  labs(x = "MDS Coordinate 1", y = "MDS Coordinate 2") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+cluster_mcu_mds_plot + cut_dendro
+```
+
+
+---
+
+## [`factoextra` package](https://rpkgs.datanovia.com/factoextra/index.html) version
+
+```{r}
+#| warning: false
+#| message: false
+library(factoextra)
+fviz_dend(hc_complete, cex = 0.5, k = 3, color_labels_by_k = TRUE)
+```
+
+
+---
+
+## Recap and next steps
+
+::: {style="font-size: 80%;"}
+
++ Dendrograms are a great way to visualize distances and the clustering structure in the dataset
+
++ However there are several decisions to be made! 
+
++ *What type of linkage is appropriate for the problem?*
+
++ *How do we [choose the number of clusters](https://www.datanovia.com/en/lessons/determining-the-optimal-number-of-clusters-3-must-know-methods/)?*
+
+**There is NOT a one size fits all solution to any of this!**
+
+:::
+
+. . .
+
+::: {style="font-size: 80%;"}
+
++ **HW5 is due TONIGHT and you have lab this Friday!**
+
++ **HW6 is posted and due next Wednesday March 26th**
+
++ **Next time**: PCA
+
++ **Review more code in lecture demos!**
+
+:::
+
+
