@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Demo 08: Principal Component Analysis – Statistical Graphics and Visualization 36-315 Spring 25</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-51f09ead35d5b96974be4249e4526bd0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
+      Statistical Graphics and Visualization 36-315 Spring 25
+      </li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-center sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Statistical Graphics and Visualization 36-315 Spring 25</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/ryurko/statds-36315-spring25" title="GitHub" class="quarto-navigation-tool px-1" aria-label="GitHub"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lectures</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../demos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Demos</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#principal-components-of-starbucks" id="toc-principal-components-of-starbucks" class="nav-link active" data-scroll-target="#principal-components-of-starbucks">Principal Components of Starbucks</a></li>
+  <li><a href="#one-biplot-to-rule-them-all" id="toc-one-biplot-to-rule-them-all" class="nav-link" data-scroll-target="#one-biplot-to-rule-them-all">One Biplot to Rule Them All</a></li>
+  <li><a href="#creating-and-interpreting-scree-plots" id="toc-creating-and-interpreting-scree-plots" class="nav-link" data-scroll-target="#creating-and-interpreting-scree-plots">Creating and Interpreting Scree Plots</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Demo 08: Principal Component Analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="principal-components-of-starbucks" class="level2">
+<h2 class="anchored" data-anchor-id="principal-components-of-starbucks">Principal Components of Starbucks</h2>
+<p>Throughout this demo we will again use the dataset about Starbucks drinks available in the <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-12-21/readme.md">#TidyTuesday project</a>.</p>
+<p>You can read in and manipulate various columns in the dataset with the following code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>starbucks <span class="ot">&lt;-</span> </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-12-21/starbucks.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert columns to numeric that were saved as character</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">trans_fat_g =</span> <span class="fu">as.numeric</span>(trans_fat_g),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">fiber_g =</span> <span class="fu">as.numeric</span>(fiber_g))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We will apply <strong>principal component analysis (PCA)</strong> to the quantitative variables in this dataset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select the variables of interest:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>starbucks_quant_data <span class="ot">&lt;-</span> starbucks <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(serv_size_m_l<span class="sc">:</span>caffeine_mg)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(starbucks_quant_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1147   11</code></pre>
+</div>
+</div>
+<p>As seen above, there are 11 quantitative variables in the dataset, and it’s difficult to visualize 11 quantitative variables simultaneously. Maybe we can “get away” with just plotting two dimensions that make up the majority of the variation among these 11 variables (i.e., the first two principal components).</p>
+<p>To conduct PCA, you must center and standardize your variables. We can either do that manually with the <code>scale()</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>scaled_starbucks_quant_data <span class="ot">&lt;-</span> <span class="fu">scale</span>(starbucks_quant_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Or we can tell <code>R</code> do that for us before performing PCA using the <code>prcomp()</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># perform PCA</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>starbucks_pca <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(starbucks_quant_data, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                        <span class="co"># Center and scale variables:</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale. =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># This is equivalent to the following commented out code:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># starbucks_pca &lt;- prcomp(scaled_starbucks_quant_data, </span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#                         center = FALSE, scale. = FALSE)</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># View the summary</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(starbucks_pca)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Importance of components:
+                          PC1    PC2    PC3     PC4     PC5     PC6    PC7
+Standard deviation     2.4748 1.3074 1.0571 0.97919 0.67836 0.56399 0.4413
+Proportion of Variance 0.5568 0.1554 0.1016 0.08716 0.04183 0.02892 0.0177
+Cumulative Proportion  0.5568 0.7122 0.8138 0.90093 0.94276 0.97168 0.9894
+                           PC8     PC9    PC10    PC11
+Standard deviation     0.28123 0.16874 0.08702 0.04048
+Proportion of Variance 0.00719 0.00259 0.00069 0.00015
+Cumulative Proportion  0.99657 0.99916 0.99985 1.00000</code></pre>
+</div>
+</div>
+<p>There are 11 variables in this dataset, and thus there are 11 principal components. However, we can see that the first principal component accounts for over half of the variation in the dataset(!), while the second accounts for about 15% of the variation. As we can see, the variation accounted by each component adds up to the total variation in the data (i.e., the “cumulative proportion” equals 100% in the PC11 column). Also, in the first row, we can see that <span class="math inline">\(\text{Var}(Z_1) &gt; \text{Var}(Z_2) &gt; \cdots &gt; \text{Var}(Z_{11})\)</span>, as expected given what we talked about in lecture.</p>
+<p>We haven’t actually computed the principal components <span class="math inline">\(Z_1,\dots,Z_{11}\)</span> yet. In brief, PCA provides a <span class="math inline">\(p \times p\)</span> “rotation matrix,” and the matrix <span class="math inline">\(\boldsymbol{Z} = (Z_1,\dots,Z_{11})\)</span> is equal to the original data matrix <span class="math inline">\(X\)</span> times the rotation matrix. The <code>prcomp()</code> function returns us the result of this matrix multiplication: the matrix of the <strong>principal component scores</strong> <span class="math inline">\(\boldsymbol{Z} = (Z_1,\dots,Z_{11})\)</span> which can be accessed in the following way:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>starbucks_pc_matrix <span class="ot">&lt;-</span> starbucks_pca<span class="sc">$</span>x</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(starbucks_pc_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           PC1        PC2        PC3           PC4         PC5         PC6
+[1,] -3.766852 -1.0023657  0.2482698 -0.1521871448  0.24739830 -0.11365847
+[2,] -3.633234 -0.6946439  1.2059943 -0.3720566566  0.06052789 -0.06406410
+[3,] -3.518063 -0.3981399  2.2165170 -0.5967175941 -0.13122572 -0.01937237
+[4,] -3.412061 -0.1067045  3.3741594 -0.8490378243 -0.26095965 -0.00899485
+[5,] -3.721426 -0.9868147 -1.0705094  0.0949330091 -0.27181508  0.17491809
+[6,] -3.564899 -0.6712499 -0.7779083 -0.0003019903 -0.72054963  0.37005543
+             PC7         PC8        PC9        PC10         PC11
+[1,] -0.02812472 0.006489978 0.05145094 -0.06678083 -0.019741873
+[2,]  0.05460952 0.021148978 0.07094211 -0.08080545 -0.023480029
+[3,]  0.09050806 0.031575955 0.08901403 -0.09389227 -0.028669251
+[4,]  0.11585507 0.037521689 0.11287190 -0.11582260 -0.034691142
+[5,]  0.07009414 0.037736197 0.02892317 -0.03631676 -0.005775410
+[6,]  0.20236484 0.068154160 0.03705252 -0.03497690 -0.002469611</code></pre>
+</div>
+</div>
+<p>We could have manually computed this using the returned <code>rotation</code> matrix and the original data (but centered and scaled). You perform matrix multiplication in <code>R</code> using the <code>%*%</code> operator:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>manual_starbucks_pc_matrix <span class="ot">&lt;-</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>(scaled_starbucks_quant_data) <span class="sc">%*%</span> starbucks_pca<span class="sc">$</span>rotation</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(manual_starbucks_pc_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           PC1        PC2        PC3           PC4         PC5         PC6
+[1,] -3.766852 -1.0023657  0.2482698 -0.1521871448  0.24739830 -0.11365847
+[2,] -3.633234 -0.6946439  1.2059943 -0.3720566566  0.06052789 -0.06406410
+[3,] -3.518063 -0.3981399  2.2165170 -0.5967175941 -0.13122572 -0.01937237
+[4,] -3.412061 -0.1067045  3.3741594 -0.8490378243 -0.26095965 -0.00899485
+[5,] -3.721426 -0.9868147 -1.0705094  0.0949330091 -0.27181508  0.17491809
+[6,] -3.564899 -0.6712499 -0.7779083 -0.0003019903 -0.72054963  0.37005543
+             PC7         PC8        PC9        PC10         PC11
+[1,] -0.02812472 0.006489978 0.05145094 -0.06678083 -0.019741873
+[2,]  0.05460952 0.021148978 0.07094211 -0.08080545 -0.023480029
+[3,]  0.09050806 0.031575955 0.08901403 -0.09389227 -0.028669251
+[4,]  0.11585507 0.037521689 0.11287190 -0.11582260 -0.034691142
+[5,]  0.07009414 0.037736197 0.02892317 -0.03631676 -0.005775410
+[6,]  0.20236484 0.068154160 0.03705252 -0.03497690 -0.002469611</code></pre>
+</div>
+</div>
+<p>As you can see from just the first so many rows, these matrices match. If we view the dimensionality of this matrix (just the one returned to us by <code>prcomp</code>), we can seee that it matches the dimensionality of the original dataset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(starbucks_pc_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1147   11</code></pre>
+</div>
+</div>
+<p>Indeed, it is literally an 11-dimensional rotation of our dataset. However, the first column of this matrix accounts for over half of the variation in the data and the second column accounts for over 15% of the variation, so maybe we can “get away” with plotting just those first two dimensions.</p>
+<p>To recreate what the <code>summary</code> output of <code>prcomp</code> function gave us above, the following line of code computes the standard deviation of each <span class="math inline">\(Z\)</span> (the numbers match what’s given in the first row of numbers above):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(starbucks_pc_matrix, <span class="at">MARGIN =</span> <span class="dv">2</span>, <span class="at">FUN =</span> sd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       PC1        PC2        PC3        PC4        PC5        PC6        PC7 
+2.47478380 1.30742010 1.05712064 0.97918632 0.67836258 0.56399067 0.44130936 
+       PC8        PC9       PC10       PC11 
+0.28122634 0.16874262 0.08701525 0.04048139 </code></pre>
+</div>
+</div>
+<p>This corresponds to the <em>singular values</em>, i.e., <span class="math inline">\(\sqrt{\lambda_j}\)</span>. We can then compute the proportion of variance explained by each component (also displayed in the <code>summary</code> output) by squaring these values and dividing by the number of columns:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Note that I can just replace the sd function above with the var function</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(starbucks_pc_matrix, <span class="at">MARGIN =</span> <span class="dv">2</span>, <span class="at">FUN =</span> var) <span class="sc">/</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ncol</span>(starbucks_pc_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         PC1          PC2          PC3          PC4          PC5          PC6 
+0.5567777142 0.1553952108 0.1015912775 0.0871641674 0.0418341630 0.0289168610 
+         PC7          PC8          PC9         PC10         PC11 
+0.0177049043 0.0071898413 0.0025885519 0.0006883321 0.0001489766 </code></pre>
+</div>
+</div>
+<p>The plot below displays the first two PCs <span class="math inline">\(Z_1\)</span> and <span class="math inline">\(Z_2\)</span>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First add these columns to the original dataset:</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>starbucks <span class="ot">&lt;-</span> starbucks <span class="sc">|&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pc1 =</span> starbucks_pc_matrix[,<span class="dv">1</span>], </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">pc2 =</span> starbucks_pc_matrix[,<span class="dv">2</span>])</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>starbucks <span class="sc">|&gt;</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pc1, <span class="at">y =</span> pc2)) <span class="sc">+</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"PC 1"</span>, <span class="at">y =</span> <span class="st">"PC 2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="08-pca_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>This matches what we saw returned by MDS!</strong></p>
+</section>
+<section id="one-biplot-to-rule-them-all" class="level2">
+<h2 class="anchored" data-anchor-id="one-biplot-to-rule-them-all">One Biplot to Rule Them All</h2>
+<p>However, the components by themselves aren’t very interpretable - how do they relate to original variables? At this point, it’s important to remember that <strong>the principal components are linear combinations of the original variables</strong>. So, there is a (deterministic) linear relationship between the original variables and the principal components that we are plotting here.</p>
+<p>Using the popular <code>R</code> package <a href="http://www.sthda.com/english/wiki/factoextra-r-package-easy-multivariate-data-analyses-and-elegant-visualization"><code>factoextra</code></a>, we can plot these linear relationships on top of the scatterplot. We can do so using what’s called a <strong>biplot</strong>, which is essentially just a fancy expression for “scatterplots with arrows on top”. After installing the <code>factoextra</code> package, we can create the biplot using the <code>fviz_pca_biplot()</code> function on the <code>prcomp</code> output directly (but with the observation labels turned off!):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("factoextra")</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Welcome! Want to learn more? See two factoextra-related books at https://goo.gl/ve3WBa</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Designate to only label the variables:</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_pca_biplot</span>(starbucks_pca, <span class="at">label =</span> <span class="st">"var"</span>, </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Change the alpha for the observations - </span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                <span class="co"># which is represented by ind</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">alpha.ind =</span> .<span class="dv">25</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Modify the alpha for the variables (var):</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">alpha.var =</span> .<span class="dv">75</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Modify the color of the variables</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>                <span class="at">col.var =</span> <span class="st">"darkblue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="08-pca_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The above plot tells us a lot of information:</p>
+<ul>
+<li><p>The direction of a particular arrow is indicative of “as this variable increases….” For example, the far left arrow for <code>caffeine_mg</code> suggests that, as <code>caffeine_mg</code> increases, <span class="math inline">\(Z_1\)</span> and <span class="math inline">\(Z_2\)</span> tend to decrease (in other words, within the definition of <span class="math inline">\(Z_1\)</span> and <span class="math inline">\(Z_2\)</span>, the coefficient for <code>caffeine_mg</code> is negative; this is verified below). You can contrast this with <code>serv_size_m_l</code> which is pointing to the upper right, indicating that as <code>serv_size_m_l</code> increases then both <span class="math inline">\(Z_1\)</span> and <span class="math inline">\(Z_2\)</span> tend to increase.</p></li>
+<li><p>The angle of the different vectors is also indicative of the correlation between different variables. If two vectors are at a right angle (90 degrees), that suggests that they are uncorrelated, e.g., <code>serv_size_m_l</code> and <code>saturated_fag_g</code>. If two vectors are in similar directions (i.e., their angle is less than 90 degrees), that suggests that they are positively correlated, e.g., <code>sugar_g</code> and <code>total_carbs_g</code>. If two vectors are in different directions (i.e., their angle is greater than 90 degrees), that suggests that they are negatively correlated, e.g., <code>caffeine_mg</code> and <code>calories</code>.</p></li>
+<li><p>The length of the lines also indicate how strongly related the principal components are with the individual variables. For example, <code>serv_size_m_l</code> has a fairly long line because it has a large positive coefficient for <span class="math inline">\(Z_1\)</span> in the rotation matrix (see below). Meanwhile, <code>caffeine_mg</code> has a relatively short arrow because its coefficients are relatively small.</p></li>
+</ul>
+<p>For reference, the below code shows the rotation matrix we used to create the <span class="math inline">\(Z\)</span>s. You’ll see that the directions of the vectors in the above plot are the first two columns of this matrix.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>starbucks_pca<span class="sc">$</span>rotation</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                        PC1         PC2         PC3          PC4         PC5
+serv_size_m_l    0.20078297  0.44103545  0.35053466 -0.117331692 -0.71633828
+calories         0.39488151  0.10314156 -0.01048587  0.055814030  0.11487225
+total_fat_g      0.35254969 -0.31687231  0.06598414  0.046196797  0.07677253
+saturated_fat_g  0.33929914 -0.30565133  0.05310592 -0.003731227  0.16145662
+trans_fat_g      0.29974182 -0.39855899  0.01855869 -0.092804122 -0.35695525
+cholesterol_mg   0.33049434 -0.37077805  0.01219867 -0.105617624 -0.18815364
+sodium_mg        0.33573598  0.24647412 -0.09107538 -0.083512068  0.34969486
+total_carbs_g    0.34858318  0.34483762 -0.09623296  0.002842153  0.12386718
+fiber_g          0.11351848  0.04137855  0.17814948  0.956078124 -0.04719036
+sugar_g          0.34234584  0.35100839 -0.13314389 -0.109371714  0.12108189
+caffeine_mg     -0.03085327 -0.01056235  0.89572768 -0.167846419  0.35265479
+                        PC6         PC7         PC8         PC9         PC10
+serv_size_m_l    0.30806678  0.13668394  0.04039275  0.01194522 -0.001076764
+calories        -0.01331210 -0.18521073  0.09836135 -0.45551398  0.744248239
+total_fat_g      0.37698224 -0.03833030  0.03871096 -0.58859673 -0.518643989
+saturated_fat_g  0.57285718 -0.06553378 -0.26369346  0.56257742  0.209355859
+trans_fat_g     -0.50043224  0.15197176 -0.58086994 -0.05398876  0.032105721
+cholesterol_mg  -0.26449384 -0.04594580  0.74615325  0.27703165 -0.032124871
+sodium_mg       -0.06228905  0.82317144  0.06292570  0.04230447 -0.037304757
+total_carbs_g   -0.17619489 -0.34490217 -0.08588651  0.12501079 -0.148886253
+fiber_g         -0.11365528  0.06192955  0.01207815  0.10654914 -0.061378250
+sugar_g         -0.16729497 -0.33345131 -0.10758116  0.14408095 -0.321644156
+caffeine_mg     -0.19600402 -0.06671121 -0.02122274  0.01530108 -0.020691492
+                         PC11
+serv_size_m_l    0.0053899973
+calories        -0.1070327163
+total_fat_g      0.0489644534
+saturated_fat_g -0.0152794817
+trans_fat_g      0.0069417249
+cholesterol_mg  -0.0004710159
+sodium_mg        0.0185545403
+total_carbs_g    0.7347049650
+fiber_g         -0.0730283725
+sugar_g         -0.6635335478
+caffeine_mg     -0.0094861578</code></pre>
+</div>
+</div>
+<p>In the above example, we plotted the first two principal components; thus, implicitly, we have chosen <span class="math inline">\(k = 2\)</span>, the only reason being that it is easy to visualize. However, how many principal components should we actually be using?</p>
+</section>
+<section id="creating-and-interpreting-scree-plots" class="level2">
+<h2 class="anchored" data-anchor-id="creating-and-interpreting-scree-plots">Creating and Interpreting Scree Plots</h2>
+<p>There is a common visual used to answer this question, but first let’s build some intuition. We already know that <span class="math inline">\(Z_1\)</span> accounts for the most variation in our data, <span class="math inline">\(Z_2\)</span> accounts for the next most, and so on. Thus, each time we add a new principal component dimension, we capture a “higher proportion of the information in the data,” but that increase in proportion <em>decreases</em> for each new dimension we add. (You may have to read those last two sentences a few times to get what I mean.) Thus, in practice, it is recommended to keep adding principal components until the marginal gain “levels off,” i.e., decreases to the point that it isn’t too beneficial to add another dimension to the data.</p>
+<p>This trade-off between dimensions and marginal gain in information is often inspected visually using a <a href="https://en.wikipedia.org/wiki/Scree">scree</a> plot, or what is more commonly known as an elbow plot. In an elbow plot, the x-axis has the numbers <span class="math inline">\(1,2,\dots,p\)</span> (i.e., the dimensions in the data), and the y-axis has the proportion of variation that the particular principal component <span class="math inline">\(Z_j\)</span> accounts for. We can construct the scree plot using the <code>fviz_screeplot()</code> function from `factoextra</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_eig</span>(starbucks_pca, <span class="at">addlabels =</span> <span class="cn">TRUE</span>) <span class="co"># Add the labels </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="08-pca_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The graphical rule-of-thumb is to then look for the “elbow,” i.e., where the proportion of variation starts to become flat. Unfortunately there is not a definitive “this is the elbow for sure” rule, and it is up to your judgment. Another useful rule-of-thumb is to consider drawing a horizontal line at 1 divided by the number of variables in your original dataset. <strong>Why do you think that is a useful rule?</strong> We easily do this because <code>factoextra</code> generates <code>ggplot</code> objects, so we can add another geometric layer corresponding to our reference:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_eig</span>(starbucks_pca, <span class="at">addlabels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Have to multiply by 100 to get on percent scale</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">100</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> <span class="fu">ncol</span>(starbucks_quant_data)),</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"darkred"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="08-pca_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Based on this plot, I think there’s a strong argument to stop at <span class="math inline">\(k = 3\)</span> (but maybe go up to <span class="math inline">\(k = 5\)</span> for another substantial drop in the elbow).</p>
+<p>Let’s say we decide <span class="math inline">\(k = 3\)</span>. This means that we should use the first three principal components in our graphics and other analyses in order for a “satisfactory” amount of the variation in the data to be captured. Our above visual only plots the first two principal components, and so we are “hiding” some data information that we are better off plotting in some way if possible (specifically, we are hiding about 30% of the information, i.e., the total amount of information captured by principal components 3, 4, …, 11, and about a third of this remaining information is captured by that third component that we are not plotting). This means that, theoretically, we should plot three quantitative variables, and we’ve discussed a bit about how to do this - you could use the size of points, transparency, or even a 3D scatterplot if you wanted to - but we are not going to explore that further here. Alternatively, you could just make three scatterplots (one for each pair of principal components).</p>
+<p>If you’re having issues with the <code>factoextra</code> package then you can easily remake the scree plot manually. All we need to do is grab the proportion of variance explained by each component, turn it into a table, and then display it in some way. We already computed these values earlier in the demo, but we also just grab the singular values directly provided to us by <code>R</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Manual creation of elbow plot, start by computing the eigenvalues and dividing by</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the total variance in the data:</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">prop_var =</span> (starbucks_pca<span class="sc">$</span>sdev)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="fu">ncol</span>(starbucks_quant_data)) <span class="sc">|&gt;</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add a column for the PC index:</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pc_index =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Now make the plot!</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pc_index, <span class="at">y =</span> prop_var)) <span class="sc">+</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">alpha =</span> <span class="fl">0.75</span>) <span class="sc">+</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add the horizontal reference line:</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> (<span class="dv">1</span> <span class="sc">/</span> <span class="fu">ncol</span>(starbucks_quant_data)),</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"darkred"</span>) <span class="sc">+</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># And label:</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Dimensions"</span>, <span class="at">y =</span> <span class="st">"Proportion of explained variance"</span>) <span class="sc">+</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="08-pca_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Making a biplot from scratch is much more difficult… Instead, you can try the <a href="https://cran.r-project.org/web/packages/ggfortify/vignettes/plot_pca.html"><code>ggfortify</code> package</a> (which is useful for making model diagnostic plots). The following code demonstrates how to do this (after you installed <code>ggfortify</code>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("ggfortify")</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggfortify)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'ggfortify' was built under R version 4.2.3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(starbucks_pca, </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> starbucks_quant_data,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">alpha =</span> <span class="fl">0.25</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">loadings =</span> <span class="cn">TRUE</span>, <span class="at">loadings.colour =</span> <span class="st">'darkblue'</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">loadings.label.colour =</span> <span class="st">'darkblue'</span>,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">loadings.label =</span> <span class="cn">TRUE</span>, <span class="at">loadings.label.size =</span> <span class="dv">3</span>,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">loadings.label.repel =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="08-pca_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/ryurko\.github\.io\/statds-36315-spring25\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

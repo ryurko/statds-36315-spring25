@@ -10,8 +10,8 @@
   <meta name="generator" content="quarto-1.6.42">
 
   <meta name="author" content="Prof Ron Yurko">
-  <meta name="dcterms.date" content="2025-01-29">
-  <title>Statistical Graphics and Visualization 36-315 Spring 25 – Visualizations and Inference for 2D Categorical Data</title>
+  <meta name="dcterms.date" content="2025-03-24">
+  <title>Statistical Graphics and Visualization 36-315 Spring 25 – Principal Component Analysis</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -195,7 +195,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Visualizations and Inference for 2D Categorical Data</h1>
+  <h1 class="title">Principal Component Analysis</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -205,355 +205,326 @@ Prof Ron Yurko
 </div>
 </div>
 
-  <p class="date">2025-01-29</p>
+  <p class="date">2025-03-24</p>
 </section>
 <section id="announcements-previously-and-today" class="slide level2">
 <h2>Announcements, previously, and today…</h2>
-<div style="font-size: 80%;">
-<ul>
-<li><p><strong>HW1 is due TONIGHT by 11:59 PM</strong></p></li>
-<li><p><strong>You have Lab 3 again on Friday</strong></p></li>
-</ul>
-<p>Office hours schedule:</p>
-<ul>
-<li><p>My office hours (BH 132D): Wednesdays and Thursdays @ 2 PM</p></li>
-<li><p>Anna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM</p></li>
-</ul>
+<div style="font-size: 75%;">
+<p><strong>HW6 is due Wednesday March 26th by 11:59 PM ET</strong></p>
+<p><strong>You have Lab 8 this Friday</strong></p>
+<p><strong>We do NOT have in-class lecture on Wednesday! I will post a recording</strong></p>
 </div>
 <div class="fragment">
-<div style="font-size: 80%;">
+<div style="font-size: 75%;">
+<p>Common workflow:</p>
 <ul>
-<li><p>Discussed how similar looking graphics can have very different statistical results (thinking about power)</p></li>
-<li><p>Discussed the challenges of multiple testing</p></li>
+<li><p>Reduce the data to a few “useful” dimensions</p></li>
+<li><p>Plot those “useful” dimensions</p></li>
 </ul>
-</div>
-</div>
-<div class="fragment">
-<div style="font-size: 80%;">
-<p><strong>TODAY:</strong></p>
-<ul>
-<li><p>Visuals for 2D categorical data</p></li>
-<li><p>How do we visualize inference for 2D categorical data?</p></li>
-</ul>
+<p>Last two classes:</p>
+<ol type="1">
+<li><p>Reduce the data by summarizing pairs of subjects with one distance.</p></li>
+<li><p>Visualize distances using multi-dimensional scaling or dendrograms.</p></li>
+</ol>
+<p>How can we reduce the data without distances?</p>
+<p><strong>Principal Component Analysis (PCA) is by far the most popular way</strong></p>
 </div>
 </div>
 </section>
-<section id="d-categorical-basics" class="slide level2">
-<h2>2D categorical basics</h2>
+<section id="dimension-reduction---searching-for-variance" class="slide level2">
+<h2>Dimension reduction - searching for variance</h2>
+<p><strong>GOAL</strong>: Focus on reducing dimensionality of feature space while <strong>retaining</strong> most of the information in a lower dimensional space</p>
+<ul>
+<li><span class="math inline">\(n \times p\)</span> matrix <span class="math inline">\(\rightarrow\)</span> dimension reduction technique <span class="math inline">\(\rightarrow\)</span> <span class="math inline">\(n \times k\)</span> matrix</li>
+</ul>
+<div class="fragment">
+<p>Special case we just discussed: <strong>MDS</strong></p>
+<ul>
+<li><span class="math inline">\(n \times n\)</span> <strong>distance</strong> matrix <span class="math inline">\(\rightarrow\)</span> MDS <span class="math inline">\(\rightarrow\)</span> <span class="math inline">\(n \times k\)</span> matrix (usually <span class="math inline">\(k = 2\)</span>)</li>
+</ul>
+<ol type="1">
+<li><p>Reduce data to a distance matrix</p></li>
+<li><p>Reduce distance matrix to <span class="math inline">\(k = 2\)</span> dimensions</p></li>
+</ol>
+</div>
 </section>
-<section id="d-categorical-basics-1" class="slide level2">
-<h2>2D categorical basics</h2>
+<section id="principal-component-analysis-pca" class="slide level2">
+<h2>Principal Component Analysis (PCA)</h2>
+<p><span class="math display">\[
+\begin{pmatrix}
+&amp; &amp; \text{really} &amp; &amp; \\
+&amp; &amp; \text{wide} &amp; &amp; \\
+&amp; &amp; \text{matrix} &amp; &amp;
+\end{pmatrix}
+\rightarrow \text{matrix algebra stuff} \rightarrow
+\begin{pmatrix}
+\text{much}  \\
+\text{thinner}  \\
+\text{matrix}
+\end{pmatrix}
+\]</span></p>
+<ul>
+<li>Start with <span class="math inline">\(n \times p\)</span> matrix of <strong>correlated</strong> variables <span class="math inline">\(\rightarrow\)</span> <span class="math inline">\(n \times k\)</span> matrix of <strong>uncorrelated</strong> variables</li>
+</ul>
+<div class="fragment">
+<ul>
+<li><p>Each of the <span class="math inline">\(k\)</span> columns in the right-hand matrix are <strong>principal components</strong>, all uncorrelated with each other</p></li>
+<li><p>First column accounts for most variation in the data, second column for second-most variation, and so on</p></li>
+</ul>
+<p><strong>Intuition: first few principal components account for most of the variation in the data</strong></p>
+</div>
+</section>
+<section id="what-are-principal-components" class="slide level2">
+<h2>What are principal components?</h2>
+<ul>
+<li><p>Assume <span class="math inline">\(\boldsymbol{X}\)</span> is a <span class="math inline">\(n \times p\)</span> matrix that is <strong>centered</strong> and <strong>stardardized</strong></p></li>
+<li><p><em>Total variation</em> <span class="math inline">\(= p\)</span>, since Var( <span class="math inline">\(\boldsymbol{x}_j\)</span> ) = 1 for all <span class="math inline">\(j = 1, \dots, p\)</span></p></li>
+<li><p>PCA will give us <span class="math inline">\(p\)</span> principal components that are <span class="math inline">\(n\)</span>-length columns - call these <span class="math inline">\(Z_1, \dots, Z_p\)</span></p></li>
+</ul>
+<div class="fragment">
+<p><strong>First principal component</strong> (aka PC1):</p>
+<p><span class="math display">\[Z_1 = \phi_{11} X_1 + \phi_{21} X_2 + \dots + \phi_{p1} X_p\]</span></p>
+</div>
+<div class="fragment">
+<ul>
+<li><p><span class="math inline">\(\phi_{j1}\)</span> are the weights indicating contributions of each variable <span class="math inline">\(j \in 1, \dots, p\)</span></p></li>
+<li><p>Weights are normalized <span class="math inline">\(\sum_{j=1}^p \phi_{j1}^2 = 1\)</span></p></li>
+<li><p><span class="math inline">\(\phi_{1} = (\phi_{11}, \phi_{21}, \dots, \phi_{p1})\)</span> is the <strong>loading vector</strong> for PC1</p></li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li><span class="math inline">\(Z_1\)</span> is a linear combination of the <span class="math inline">\(p\)</span> variables that has the <strong>largest variance</strong></li>
+</ul>
+</div>
+</section>
+<section id="what-are-principal-components-1" class="slide level2">
+<h2>What are principal components?</h2>
+<p><strong>Second principal component</strong>:</p>
+<p><span class="math display">\[Z_2 = \phi_{12} X_1 + \phi_{22} X_2 + \dots + \phi_{p2} X_p\]</span></p>
+<ul>
+<li><p><span class="math inline">\(\phi_{j2}\)</span> are the weights indicating the contributions of each variable <span class="math inline">\(j \in 1, \dots, p\)</span></p></li>
+<li><p>Weights are normalized <span class="math inline">\(\sum_{j=1}^p \phi_{j1}^2 = 1\)</span></p></li>
+<li><p><span class="math inline">\(\phi_{2} = (\phi_{12}, \phi_{22}, \dots, \phi_{p2})\)</span> is the <strong>loading vector</strong> for PC2</p></li>
+<li><p><span class="math inline">\(Z_2\)</span> is a linear combination of the <span class="math inline">\(p\)</span> variables that has the <strong>largest variance</strong></p>
+<ul>
+<li><strong>Subject to constraint it is uncorrelated with <span class="math inline">\(Z_1\)</span></strong></li>
+</ul></li>
+</ul>
+</section>
+<section id="what-are-principal-components-2" class="slide level2">
+<h2>What are principal components?</h2>
+<p>We repeat this process to create <span class="math inline">\(p\)</span> principal components</p>
+<ul>
+<li><p><strong>Uncorrelated</strong>: Each (<span class="math inline">\(Z_j, Z_{j'}\)</span>) is uncorrelated with each other</p></li>
+<li><p><strong>Ordered Variance</strong>: Var( <span class="math inline">\(Z_1\)</span> ) <span class="math inline">\(&gt;\)</span> Var( <span class="math inline">\(Z_2\)</span> ) <span class="math inline">\(&gt; \dots &gt;\)</span> Var( <span class="math inline">\(Z_p\)</span> )</p></li>
+<li><p><strong>Total Variance</strong>: <span class="math inline">\(\sum_{j=1}^p \text{Var}(Z_j) = p\)</span></p></li>
+</ul>
+<p><strong>Intuition: pick some <span class="math inline">\(k &lt;&lt; p\)</span> such that if <span class="math inline">\(\sum_{j=1}^k \text{Var}(Z_j) \approx p\)</span>, then just using <span class="math inline">\(Z_1, \dots, Z_k\)</span></strong></p>
+</section>
+<section id="visualizing-pca-in-two-dimensions" class="slide level2">
+<h2><a href="https://www.stevejburr.com/post/scatter-plots-and-best-fit-lines/">Visualizing PCA</a> in two dimensions</h2>
+
+<img data-src="17-pca_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="visualizing-pca-in-two-dimensions-1" class="slide level2">
+<h2><a href="https://www.stevejburr.com/post/scatter-plots-and-best-fit-lines/">Visualizing PCA</a> in two dimensions</h2>
+
+<img data-src="17-pca_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="visualizing-pca-in-two-dimensions-2" class="slide level2">
+<h2><a href="https://www.stevejburr.com/post/scatter-plots-and-best-fit-lines/">Visualizing PCA</a> in two dimensions</h2>
+
+<img data-src="17-pca_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="visualizing-pca-in-two-dimensions-3" class="slide level2">
+<h2><a href="https://www.stevejburr.com/post/scatter-plots-and-best-fit-lines/">Visualizing PCA</a> in two dimensions</h2>
+
+<img data-src="17-pca_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="visualizing-pca-in-two-dimensions-4" class="slide level2">
+<h2><a href="https://www.stevejburr.com/post/scatter-plots-and-best-fit-lines/">Visualizing PCA</a> in two dimensions</h2>
+
+<img data-src="17-pca_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="so-what-do-we-do-with-the-principal-components" class="slide level2">
+<h2>So what do we do with the principal components?</h2>
+<p><strong>The point</strong>: given a dataset with <span class="math inline">\(p\)</span> variables, we can find <span class="math inline">\(k\)</span> variables <span class="math inline">\((k &lt;&lt; p)\)</span> that account for most of the variation in the data</p>
+<div class="fragment">
+<p>Note that the principal components are NOT easy to interpret - these are combinations of all variables</p>
+<p>PCA is similar to MDS with these main differences:</p>
+<ol type="1">
+<li><p>MDS reduces a <em>distance</em> matrix while PCA reduces a <em>data</em> matrix</p></li>
+<li><p>PCA has a principled way to choose <span class="math inline">\(k\)</span></p></li>
+<li><p>Can visualize how the principal components are related to variables in data</p></li>
+</ol>
+</div>
+</section>
+<section id="working-with-pca-on-starbucks-drinks" class="slide level2">
+<h2>Working with PCA on Starbucks drinks</h2>
+<p>Use the <code>prcomp()</code> function (based on SVD) for PCA on <strong>centered</strong> and <strong>scaled</strong> data</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">addmargins</span>(<span class="fu">table</span>(<span class="st">"Species"</span> <span class="ot">=</span> penguins<span class="sc">$</span>species, <span class="st">"Island"</span> <span class="ot">=</span> penguins<span class="sc">$</span>island))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>starbucks_pca <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(dplyr<span class="sc">::</span><span class="fu">select</span>(starbucks, serv_size_m_l<span class="sc">:</span>caffeine_mg),</span>
+<span id="cb1-2"><a></a>                        <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale. =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-3"><a></a><span class="fu">summary</span>(starbucks_pca)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>           Island
-Species     Biscoe Dream Torgersen Sum
-  Adelie        44    56        52 152
-  Chinstrap      0    68         0  68
-  Gentoo       124     0         0 124
-  Sum          168   124        52 344</code></pre>
+<pre><code>Importance of components:
+                          PC1    PC2    PC3     PC4     PC5     PC6    PC7
+Standard deviation     2.4748 1.3074 1.0571 0.97919 0.67836 0.56399 0.4413
+Proportion of Variance 0.5568 0.1554 0.1016 0.08716 0.04183 0.02892 0.0177
+Cumulative Proportion  0.5568 0.7122 0.8138 0.90093 0.94276 0.97168 0.9894
+                           PC8     PC9    PC10    PC11
+Standard deviation     0.28123 0.16874 0.08702 0.04048
+Proportion of Variance 0.00719 0.00259 0.00069 0.00015
+Cumulative Proportion  0.99657 0.99916 0.99985 1.00000</code></pre>
 </div>
-</div>
-<ul>
-<li><p>Column and row sums: marginal distributions</p></li>
-<li><p>Values within rows: conditional distribution for <code>Island</code> given <code>Species</code></p></li>
-<li><p>Values within columns: conditional distribution for <code>Species</code> given <code>Island</code></p></li>
-<li><p>Bottom right: total number of observations</p></li>
-</ul>
-</section>
-<section id="connecting-distributions-to-visualizations" class="slide level2">
-<h2>Connecting distributions to visualizations</h2>
-<p>Five distributions for two categorical variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>:</p>
-<ul>
-<li><p><strong>Marginals</strong>: <span class="math inline">\(P(A)\)</span> and <span class="math inline">\(P(B)\)</span></p></li>
-<li><p><strong>Conditionals</strong>: <span class="math inline">\(P(A | B)\)</span> and <span class="math inline">\(P(B|A)\)</span></p></li>
-<li><p><strong>Joint</strong>: <span class="math inline">\(P(A, B)\)</span></p></li>
-</ul>
-<p>We use bar charts to visualize marginal distributions for categorical variables…</p>
-<div class="fragment">
-<p><strong>And we’ll use more bar charts to visualize conditional and joint distributions!</strong></p>
 </div>
 </section>
-<section id="stacked-bar-charts---a-bar-chart-of-spine-charts" class="slide level2">
-<h2>Stacked bar charts - a bar chart of spine charts</h2>
+<section id="computing-principal-components" class="slide level2">
+<h2>Computing Principal Components</h2>
+<p>Extract the matrix of principal components <span class="math inline">\(\boldsymbol{Z} = XV\)</span> (dimension of <span class="math inline">\(\boldsymbol{Z}\)</span> will match original data)</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span></span>
-<span id="cb3-3"><a></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span> </span>
-<span id="cb3-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>starbucks_pc_matrix <span class="ot">&lt;-</span> starbucks_pca<span class="sc">$</span>x</span>
+<span id="cb3-2"><a></a><span class="fu">head</span>(starbucks_pc_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           PC1        PC2        PC3           PC4         PC5         PC6
+[1,] -3.766852 -1.0023657  0.2482698 -0.1521871448  0.24739830 -0.11365847
+[2,] -3.633234 -0.6946439  1.2059943 -0.3720566566  0.06052789 -0.06406410
+[3,] -3.518063 -0.3981399  2.2165170 -0.5967175941 -0.13122572 -0.01937237
+[4,] -3.412061 -0.1067045  3.3741594 -0.8490378243 -0.26095965 -0.00899485
+[5,] -3.721426 -0.9868147 -1.0705094  0.0949330091 -0.27181508  0.17491809
+[6,] -3.564899 -0.6712499 -0.7779083 -0.0003019903 -0.72054963  0.37005543
+             PC7         PC8        PC9        PC10         PC11
+[1,] -0.02812472 0.006489978 0.05145094 -0.06678083 -0.019741873
+[2,]  0.05460952 0.021148978 0.07094211 -0.08080545 -0.023480029
+[3,]  0.09050806 0.031575955 0.08901403 -0.09389227 -0.028669251
+[4,]  0.11585507 0.037521689 0.11287190 -0.11582260 -0.034691142
+[5,]  0.07009414 0.037736197 0.02892317 -0.03631676 -0.005775410
+[6,]  0.20236484 0.068154160 0.03705252 -0.03497690 -0.002469611</code></pre>
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
-<ul>
-<li><p>Easy to see marginal of <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Harder to see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
-</ul>
 </div>
+<p>Columns are uncorrelated, such that Var( <span class="math inline">\(Z_1\)</span> ) <span class="math inline">\(&gt;\)</span> Var( <span class="math inline">\(Z_2\)</span> ) <span class="math inline">\(&gt; \dots &gt;\)</span> Var( <span class="math inline">\(Z_p\)</span> ) - can start with a scatterplot of <span class="math inline">\(Z_1, Z_2\)</span></p>
 </section>
-<section id="side-by-side-bar-charts" class="slide level2">
-<h2>Side-by-side bar charts</h2>
+<section id="starbucks-drinks-pc1-and-pc2" class="slide level2">
+<h2>Starbucks drinks: PC1 and PC2</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb4-3"><a></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb4-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>starbucks <span class="ot">&lt;-</span> starbucks <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a></a>  <span class="fu">mutate</span>(<span class="at">pc1 =</span> starbucks_pc_matrix[,<span class="dv">1</span>], <span class="at">pc2 =</span> starbucks_pc_matrix[,<span class="dv">2</span>])</span>
+<span id="cb5-3"><a></a>starbucks <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pc1, <span class="at">y =</span> pc2)) <span class="sc">+</span></span>
+<span id="cb5-5"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb5-6"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"PC 1"</span>, <span class="at">y =</span> <span class="st">"PC 2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
-<ul>
-<li><p>Easy to see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
-</ul>
+<img data-src="17-pca_files/figure-revealjs/pca-plot-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="making-pcs-interpretable-with-biplots-factoextra" class="slide level2">
+<h2>Making PCs interpretable with biplots (<a href="http://www.sthda.com/english/wiki/factoextra-r-package-easy-multivariate-data-analyses-and-elegant-visualization"><code>factoextra</code></a>)</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">library</span>(factoextra)</span>
+<span id="cb6-2"><a></a><span class="co"># Designate to only label the variables:</span></span>
+<span id="cb6-3"><a></a><span class="fu">fviz_pca_biplot</span>(starbucks_pca, </span>
+<span id="cb6-4"><a></a>                <span class="at">label =</span> <span class="st">"var"</span>,</span>
+<span id="cb6-5"><a></a>                <span class="co"># Change the alpha for observations which is represented by ind</span></span>
+<span id="cb6-6"><a></a>                <span class="at">alpha.ind =</span> .<span class="dv">25</span>,</span>
+<span id="cb6-7"><a></a>                <span class="co"># Modify the alpha for variables (var):</span></span>
+<span id="cb6-8"><a></a>                <span class="at">alpha.var =</span> .<span class="dv">75</span>,</span>
+<span id="cb6-9"><a></a>                <span class="at">col.var =</span> <span class="st">"darkblue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+
 </section>
-<section id="side-by-side-bar-charts-1" class="slide level2">
-<h2>Side-by-side bar charts</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb5-3"><a></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">preserve =</span> <span class="st">"single"</span>)) <span class="sc">+</span></span>
-<span id="cb5-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
-<ul>
-<li><p>Easy to see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
-</ul>
-</div>
-</section>
-<section id="complete-missing-values-to-preserve-location" class="slide level2">
-<h2><a href="https://tidyr.tidyverse.org/reference/complete.html">Complete</a> missing values to preserve location</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6" data-code-line-numbers="2-6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a></a>  <span class="fu">count</span>(species, island) <span class="sc">|&gt;</span></span>
-<span id="cb6-3"><a></a>  <span class="fu">complete</span>(<span class="at">species =</span> <span class="fu">unique</span>(species), <span class="at">island =</span> <span class="fu">unique</span>(island), </span>
-<span id="cb6-4"><a></a>           <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">n =</span> <span class="dv">0</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">y =</span> n, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb6-6"><a></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb6-7"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="what-do-you-prefer" class="slide level2">
-<h2>What do you prefer?</h2>
-<div>
-
-</div>
-<div class="cell quarto-layout-panel" data-layout-align="center" data-layout-ncol="2">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<section id="making-pcs-interpretable-with-biplots-factoextra-output" class="slide level2 output-location-slide"><h2>Making PCs interpretable with biplots (<a href="http://www.sthda.com/english/wiki/factoextra-r-package-easy-multivariate-data-analyses-and-elegant-visualization"><code>factoextra</code></a>)</h2><div class="cell output-location-slide" data-layout-align="center">
+<div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+<p><img data-src="17-pca_files/figure-revealjs/pca-biplot-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-7-2.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="chi-squared-test-for-1d-categorical-data" class="slide level2">
-<h2>Chi-squared test for 1D categorical data:</h2>
-<div style="font-size: 75%;">
+</div></section><section id="how-many-principal-components-to-use" class="slide level2">
+<h2>How many principal components to use?</h2>
+<p><strong>Intuition: Additional principal components will add smaller and smaller variance</strong></p>
 <ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: <span class="math inline">\(p_1 = p_2 = \dots = p_K\)</span>, compute the test statistic:</li>
+<li>Keep adding components until the added variance <em>drops off</em></li>
 </ul>
-<p><span class="math display">\[
-\chi^2 = \sum_{j=1}^K \frac{(O_j - E_j)^2}{E_j}
-\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_j\)</span>: observed counts in category <span class="math inline">\(j\)</span></p></li>
-<li><p><span class="math inline">\(E_j\)</span>: expected counts under <span class="math inline">\(H_0\)</span>, i.e., each category is equally to occur <span class="math inline">\(n / K = p_1 = p_2 = \dots = p_K\)</span></p></li>
-</ul>
-</div>
-<div class="fragment">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">summary</span>(starbucks_pca)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-    Chi-squared test for given probabilities
-
-data:  table(penguins$species)
-X-squared = 31.907, df = 2, p-value = 1.179e-07</code></pre>
-</div>
-</div>
-</div>
-</section>
-<section id="inference-for-2d-categorical-data" class="slide level2">
-<h2>Inference for 2D categorical data</h2>
-<div style="font-size: 75%;">
-<p>Again we use the <strong>chi-squared test</strong>:</p>
-<ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent, compute the test statistic:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_{ij}\)</span>: observed counts in contingency table</p></li>
-<li><p><span class="math inline">\(E_{ij}\)</span>: expected counts under <span class="math inline">\(H_0\)</span></p></li>
-</ul>
-<p><span class="math display">\[
-\begin{aligned}
-E_{ij} &amp;= n \cdot P(A = a_i, B = b_j) \\
-&amp;= n \cdot P(A = a_i) P(B = b_j) \\
-&amp;= n \cdot \left( \frac{n_{i \cdot}}{n} \right) \left( \frac{ n_{\cdot j}}{n} \right)
-\end{aligned}
-\]</span></p>
-</div>
-</section>
-<section id="inference-for-2d-categorical-data-1" class="slide level2">
-<h2>Inference for 2D categorical data</h2>
-<div style="font-size: 75%;">
-<p>Again we use the <strong>chi-squared test</strong>:</p>
-<ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent, compute the test statistic:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_{ij}\)</span>: observed counts in contingency table</p></li>
-<li><p><span class="math inline">\(E_{ij}\)</span>: expected counts under <span class="math inline">\(H_0\)</span></p></li>
-</ul>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Pearson's Chi-squared test
-
-data:  table(penguins$species, penguins$island)
-X-squared = 299.55, df = 4, p-value &lt; 2.2e-16</code></pre>
+<pre><code>Importance of components:
+                          PC1    PC2    PC3     PC4     PC5     PC6    PC7
+Standard deviation     2.4748 1.3074 1.0571 0.97919 0.67836 0.56399 0.4413
+Proportion of Variance 0.5568 0.1554 0.1016 0.08716 0.04183 0.02892 0.0177
+Cumulative Proportion  0.5568 0.7122 0.8138 0.90093 0.94276 0.97168 0.9894
+                           PC8     PC9    PC10    PC11
+Standard deviation     0.28123 0.16874 0.08702 0.04048
+Proportion of Variance 0.00719 0.00259 0.00069 0.00015
+Cumulative Proportion  0.99657 0.99916 0.99985 1.00000</code></pre>
 </div>
 </div>
 </section>
-<section id="visualize-independence-test-with-mosaic-plots" class="slide level2">
-<h2>Visualize independence test with mosaic plots</h2>
-<div style="font-size: 75%;">
-<p>Two variables are <strong>independent</strong> if knowing the level of one tells us nothing about the other</p>
-<ul>
-<li>i.e.&nbsp;<span class="math inline">\(P(A | B) = P(A)\)</span>, and that <span class="math inline">\(P(A, B) = P(A) \times P(B)\)</span></li>
-</ul>
-<p>Create a <strong>mosaic</strong> plot using <strong>base <code>R</code></strong></p>
-</div>
+<section id="create-scree-plot-aka-elbow-plot-to-choose" class="slide level2">
+<h2>Create scree plot (aka “elbow plot”) to choose</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">fviz_eig</span>(starbucks_pca, <span class="at">addlabels =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb9-2"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">100</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> <span class="fu">ncol</span>(starbucks_pca<span class="sc">$</span>x)), <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"darkred"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="shade-by-pearson-residuals" class="slide level2">
-<h2>Shade by <em>Pearson residuals</em></h2>
-<div style="font-size: 75%;">
-<ul>
-<li>The <strong>test statistic</strong> is:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li>Define the <em>Pearson residuals</em> as:</li>
-</ul>
-<p><span class="math display">\[r_{ij} = \frac{O_{ij} - E_{ij}}{\sqrt{E_{ij}}}\]</span></p>
-<ul>
-<li>Side-note: In general, Pearson residuals are <span class="math inline">\(\frac{\text{residuals}}{\sqrt{\text{variance}}}\)</span></li>
-</ul>
-</div>
-<div class="fragment">
-<div style="font-size: 75%;">
-<ul>
-<li><p><span class="math inline">\(r_{ij} \approx 0 \rightarrow\)</span> observed counts are close to expected counts</p></li>
-<li><p><span class="math inline">\(|r_{ij}| &gt; 2 \rightarrow\)</span> “significant” at level <span class="math inline">\(\alpha = 0.05\)</span>.</p></li>
-<li><p>Very positive <span class="math inline">\(r_{ij} \rightarrow\)</span> more than expected, while very negative <span class="math inline">\(r_{ij} \rightarrow\)</span> fewer than expected</p></li>
-<li><p><strong>Color by Pearson residuals</strong> to tell us which combos are much bigger/smaller than expected.</p></li>
-</ul>
-</div>
-</div>
-</section>
-<section class="slide level2">
-
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island), <span class="at">shade =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section class="slide level2">
-
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>island, penguins<span class="sc">$</span>sex), <span class="at">shade =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb13-2"><a></a>           <span class="at">main =</span> <span class="st">"Distribution of penguins' sex does not vary across islands"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="titanic-dataset-example" class="slide level2">
-<h2>Titanic Dataset Example</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>titanic <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/ryurko/DataViz-Class-Data/main/titanic.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><strong>Question</strong>: Does survival (yes/no) depend on cabin (1st/2nd/3rd)?</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">table</span>(<span class="st">"Survived?"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Survived, <span class="st">"Class"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Pclass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>         Class
-Survived?   1   2   3
-        0  64  90 270
-        1 120  83  85</code></pre>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(<span class="st">"Survived?"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Survived, <span class="st">"Class"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Pclass))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Pearson's Chi-squared test
-
-data:  table(`Survived?` = titanic$Survived, Class = titanic$Pclass)
-X-squared = 91.081, df = 2, p-value &lt; 2.2e-16</code></pre>
-</div>
-</div>
-<p><strong>Conclusion</strong>: Class and survival are dependent - but how?</p>
-</div>
-</section>
-<section class="slide level2">
-
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(titanic<span class="sc">$</span>Pclass, titanic<span class="sc">$</span>Survived), <span class="at">shade =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb19-2"><a></a>           <span class="at">xlab =</span> <span class="st">"Passenger Class"</span>, <span class="at">ylab =</span> <span class="st">"Survived?"</span>, <span class="at">main =</span> <span class="st">"How are they related?"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="guardian-1000-songs-to-hear-before-you-die" class="slide level2">
-<h2><a href="https://www.theguardian.com/news/datablog/2009/mar/20/1">Guardian</a>: 1000 songs to hear before you die</h2>
-
-<img data-src="https://upload.wikimedia.org/wikipedia/commons/8/84/Mosaic-big.png?20090726044211" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
-<section class="slide level2">
-
-
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<img data-src="17-pca_files/figure-revealjs/scree-plot-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="recap-and-next-steps" class="slide level2">
 <h2>Recap and next steps</h2>
-<div style="font-size: 75%;">
 <ul>
-<li><p>For 2D categorical data we create visualizations for marginal, conditional, and joint distributions</p></li>
-<li><p>Can create stacked and side-by-side bar charts to visualize 2D categorical data</p></li>
-<li><p>Perform 2D Chi-squared test to test if two categorical variables are associated with each other</p></li>
-<li><p>Create mosaic plots to visualize 2D categorical data</p></li>
-<li><p>Shade mosaic plot tiles by Pearson residuals to see what drives association between two categorical variables (if any)</p></li>
+<li><p>Walked through PCA for dimension reduction</p></li>
+<li><p>PCA is a very common way to define “most important dimensions”</p></li>
+<li><p>Especially useful to plot principal components with a biplot (e.g., with <code>factoextra</code>)</p></li>
+</ul>
+<div class="fragment">
+<ul>
+<li><p><strong>HW6 is due Wednesday March 26th and you have lab on Friday!</strong></p></li>
+<li><p><strong>I will not have office hours on Wednesday</strong></p></li>
+<li><p><strong>We do NOT have lecture this Wednesday - instead I will post a recording</strong></p></li>
 </ul>
 </div>
 <div class="fragment">
-<div style="font-size: 75%;">
 <ul>
-<li><p><strong>HW1 is due TONIGHT and you have Lab 3 on Friday!</strong></p></li>
-<li><p><strong>Next time</strong>: Visualizing 1D quantitative data</p></li>
-<li><p>Recommended reading: <a href="https://clauswilke.com/dataviz/nested-proportions.html">CW Chapter 11 Visualizing nested proportions</a></p></li>
+<li><p><strong>Next time</strong>: Visualizing trends</p></li>
+<li><p>Recommended reading: <a href="https://clauswilke.com/dataviz/visualizing-associations.html">CW Chapter 12 Visualizing associations among two or more quantitative variables</a></p></li>
 </ul>
 </div>
+</section>
+<section id="pca-singular-value-decomposition-svd" class="slide level2">
+<h2>PCA: <a href="https://en.wikipedia.org/wiki/Singular_value_decomposition"><strong>singular value decomposition (SVD)</strong></a></h2>
+<p><span class="math display">\[
+X = U D V^T
+\]</span></p>
+<ul>
+<li><p>Matrices <span class="math inline">\(U\)</span> and <span class="math inline">\(V\)</span> contain the left and right (respectively) <strong>singular vectors of scaled matrix <span class="math inline">\(X\)</span></strong></p></li>
+<li><p><span class="math inline">\(D\)</span> is the diagonal matrix of the <strong>singular values</strong></p></li>
+<li><p>SVD simplifies matrix-vector multiplication as <strong>rotate, scale, and rotate again</strong></p></li>
+</ul>
+<p><span class="math inline">\(V\)</span> is called the <strong>loading matrix</strong> for <span class="math inline">\(X\)</span> with <span class="math inline">\(\phi_{j}\)</span> as columns,</p>
+<ul>
+<li><span class="math inline">\(Z = X  V\)</span> is the PC matrix</li>
+</ul>
+</section>
+<section id="eigenvalue-decomposition-aka-spectral-decomposition" class="slide level2">
+<h2>Eigenvalue decomposition (aka spectral decomposition)</h2>
+<p><span class="math display">\[
+X = U D V^T
+\]</span></p>
+<ul>
+<li><p><span class="math inline">\(V\)</span> are the <strong>eigenvectors</strong> of <span class="math inline">\(X^TX\)</span> (covariance matrix, <span class="math inline">\(^T\)</span> means <em>transpose</em>)</p></li>
+<li><p><span class="math inline">\(U\)</span> are the <strong>eigenvectors</strong> of <span class="math inline">\(XX^T\)</span></p></li>
+<li><p>The singular values (diagonal of <span class="math inline">\(D\)</span>) are square roots of the <strong>eigenvalues</strong> of <span class="math inline">\(X^TX\)</span> or <span class="math inline">\(XX^T\)</span></p></li>
+<li><p>Meaning that <span class="math inline">\(Z = UD\)</span></p></li>
+</ul>
+</section>
+<section id="eigenvalues-guide-dimension-reduction" class="slide level2">
+<h2>Eigenvalues guide dimension reduction</h2>
+<p>We want to choose <span class="math inline">\(p^* &lt; p\)</span> such that we are explaining variation in the data</p>
+<p>Eigenvalues <span class="math inline">\(\lambda_j\)</span> for <span class="math inline">\(j \in 1, \dots, p\)</span> indicate <strong>the variance explained by each component</strong></p>
+<ul>
+<li><p><span class="math inline">\(\sum_j^p \lambda_j = p\)</span>, meaning <span class="math inline">\(\lambda_j \geq 1\)</span> indicates <span class="math inline">\(\text{PC}j\)</span> contains at least one variable’s worth in variability</p></li>
+<li><p><span class="math inline">\(\lambda_j / p\)</span> equals proportion of variance explained by <span class="math inline">\(\text{PC}j\)</span></p></li>
+<li><p>Arranged in descending order so that <span class="math inline">\(\lambda_1\)</span> is largest eigenvalue and corresponds to PC1</p></li>
+<li><p>Can compute the cumulative proportion of variance explained (CVE) with <span class="math inline">\(p^*\)</span> components:</p></li>
+</ul>
+<p><span class="math display">\[\text{CVE}_{p^*} = \frac{\sum_j^{p*} \lambda_j}{p}\]</span></p>
 
 
-</div>
 </section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
