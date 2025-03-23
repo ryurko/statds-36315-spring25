@@ -20,5 +20,7 @@ title: "Lectures"
 | 14        | Mar 12  | Contour Plots, Heat Maps, and Into High-Dimensional Data | [slides](lectures/14-contours-heatmaps.qmd)        |
 | 15        | Mar 17  | Visualizing Distances for High-Dimensional Data | [slides](lectures/15-distance-mds.qmd)        |
 | 16        | Mar 19  | Dendrograms for Visualizing Distances and Clusters | [slides](lectures/16-clustering.qmd)        |
+| 17        | Mar 24  | Principal Component Analysis | [slides](lectures/17-pca.qmd)        |
+| 18        | Mar 26  | Visualizing Trends | [slides](lectures/18-trends.qmd)        |
 
 

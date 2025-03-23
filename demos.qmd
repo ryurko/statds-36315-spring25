@@ -11,4 +11,6 @@ title: "Demos"
 | 5      | Mar 12  | Contour Plots, Heat Maps, and Into High-Dimensional Data | [HTML](demos/05-heatmap-highdim.qmd)  |
 | 6      | Mar 17  | Visualizing Distances for High-Dimensional Data | [HTML](demos/06-mds.qmd)  |
 | 7      | Mar 19  | More MDS and Creating Dendrograms | [HTML](demos/07-clustering.qmd)  |
+| 8      | Mar 24  | Principal Component Analysis | [HTML](demos/08-pca.qmd)  |
+| 9      | Mar 26  | Visualizing Trends | [HTML](demos/09-trends.qmd)  |
 

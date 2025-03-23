@@ -1,0 +1,459 @@
+---
+title: "Visualizing Trends"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-03-26
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+phd_field <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-02-19/phd_by_field.csv")
+stats_phds <- phd_field |>
+  filter(str_detect(tolower(field), "statistics"))
+stat_phd_year_summary <- stats_phds |>
+  group_by(year) |>
+  summarize(n_phds = sum(n_phds))
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 75%;"}
+
+**HW6 is due Wednesday March 26th by 11:59 PM ET**
+
+**You have Lab 8 this Friday**
+
+**We do NOT have in-class lecture on Wednesday! I will post a recording**
+
+:::
+
+. . .
+
+::: {style="font-size: 75%;"}
+
+Common workflow:
+
++ Reduce the data to a few "useful" dimensions
+
++ Plot those "useful" dimensions
+
+
+Last two classes:
+
+1. Reduce the data by summarizing pairs of subjects with one distance.
+
+2. Visualize distances using multi-dimensional scaling or dendrograms.
+
+How can we reduce the data without distances?
+
+**Principal Component Analysis (PCA) is by far the most popular way**
+
+:::
+
+---
+
+## Longitudinal data and time series structure
+
+- Consider a _single observation_ measured across time
+
+| Variable   | $T_1$   | $T_2$   | $\dots$  | $T_J$ |
+| ---------- | -------- | -------- | -------- | -------- |
+| $X_1$ | $x_{11}$ | $x_{12}$ | $\dots$  | $x_{1J}$ |
+| $X_2$ | $x_{21}$ | $x_{22}$ | $\dots$  | $x_{2J}$ |
+| $\vdots$    | $\vdots$  | $\vdots$  | $\dots$  | $\vdots$  |
+| $X_P$ | $x_{P1}$ | $x_{P2}$ | $\dots$  | $x_{PJ}$ |
+
+
+- With $N$ observations we have $N$ of these matrices
+
+- Time may consist of regularly spaced intervals
+
+  - For example, $T_1 = t$, $T_2 = t + h$, $T_3 = t + 2h$, etc.
+  
+- Irregularly spaced intervals, then work with the raw $T_1,T_2,...$
+
+
+---
+
+## Example: Statistics PhDs by year
+
+```{r}
+stat_phd_year_summary |>
+  ggplot(aes(x = year, y = n_phds)) +
+  geom_point() +
+  theme_light() +
+  labs(x = "Year", y = "Number of PhDs", title = "Number of Statistics-related PhDs awarded over time")
+```
+
+
+## Example: Statistics PhDs by year
+
+```{r}
+#| code-line-numbers: "4-5"
+stat_phd_year_summary |>
+  ggplot(aes(x = year, y = n_phds)) +
+  geom_point() +
+  scale_x_continuous(breaks = unique(stat_phd_year_summary$year), 
+                     labels = unique(stat_phd_year_summary$year)) + 
+  theme_light() +
+  labs(x = "Year", y = "Number of PhDs", title = "Number of Statistics-related PhDs awarded over time")
+```
+
+---
+
+## Add lines to emphasize order
+
+
+```{r}
+#| code-line-numbers: "4"
+stat_phd_year_summary |>
+  ggplot(aes(x = year, y = n_phds)) +
+  geom_point() +
+  geom_line() +
+  scale_x_continuous(breaks = unique(stat_phd_year_summary$year),
+                     labels = unique(stat_phd_year_summary$year)) +
+  theme_light() +
+  labs(x = "Year", y = "Number of PhDs",
+       title = "Number of Statistics-related PhDs awarded over time")
+```
+
+
+---
+
+## Drop points to emphasize trends
+
+```{r}
+stat_phd_year_summary |>
+  ggplot(aes(x = year, y = n_phds)) +
+  geom_line() +
+  scale_x_continuous(breaks = unique(stat_phd_year_summary$year),
+                     labels = unique(stat_phd_year_summary$year)) +
+  theme_light() +
+  labs(x = "Year", y = "Number of PhDs",
+       title = "Number of Statistics-related PhDs awarded over time")
+```
+
+---
+
+## Can fill the area under the line
+
+
+```{r}
+#| code-line-numbers: "3"
+stat_phd_year_summary |>
+  ggplot(aes(x = year, y = n_phds)) +
+  geom_area(fill = "darkblue", alpha = 0.5) +
+  geom_line() +
+  scale_x_continuous(breaks = unique(stat_phd_year_summary$year),
+                     labels = unique(stat_phd_year_summary$year)) +
+  theme_light() +
+  labs(x = "Year", y = "Number of PhDs",
+       title = "Number of Statistics-related PhDs awarded over time")
+```
+
+
+---
+
+## Several time series? Do NOT only use points
+
+
+```{r}
+#| code-line-numbers: "2"
+stats_phds |>
+  ggplot(aes(x = year, y = n_phds, color = field)) +
+  geom_point() +
+  scale_x_continuous(breaks = unique(stat_phd_year_summary$year),
+                     labels = unique(stat_phd_year_summary$year)) +
+  theme_light() +
+  theme(legend.position = "bottom", legend.text = element_text(size = 7)) +
+  labs(x = "Year", y = "Number of PhDs",
+       title = "Number of Statistics-related PhDs awarded over time",
+       color = "Field")
+```
+
+
+---
+
+## Several time series? Use lines!
+
+```{r}
+#| code-line-numbers: "2"
+stats_phds |>
+  ggplot(aes(x = year, y = n_phds, color = field)) +
+  geom_line() +
+  scale_x_continuous(breaks = unique(stat_phd_year_summary$year),
+                     labels = unique(stat_phd_year_summary$year)) +
+  theme_light() +
+  theme(legend.position = "bottom") +
+  labs(x = "Year", y = "Number of PhDs", color = "Field",
+       title = "Number of Statistics-related PhDs awarded over time")
+```
+
+---
+
+## Using [`ggrepel`](https://ggrepel.slowkow.com/articles/examples.html) to directly label lines
+
+```{r}
+#| output-location: slide
+#| warning: false
+#| message: false
+stats_phds_2017 <- stats_phds |> filter(year == 2017)
+
+library(ggrepel)
+stats_phds |>
+  ggplot(aes(x = year, y = n_phds, color = field)) +
+  geom_line() +
+  # Add the labels:
+  geom_text_repel(data = stats_phds_2017, aes(label = field),
+                  size = 3, 
+                  # Drop the segment connection:
+                  segment.color = NA, 
+                  # Move labels up or down based on overlap
+                  direction = "y",
+                  # Try to align the labels horizontally on the left hand side
+                  hjust = "left") +
+  scale_x_continuous(breaks = unique(stat_phd_year_summary$year),
+                     labels = unique(stat_phd_year_summary$year),
+                     # Update the limits so that there is some padding on the
+                     # x-axis but don't label the new maximum
+                     limits = c(min(stat_phd_year_summary$year),
+                                max(stat_phd_year_summary$year) + 3)) +
+  theme_light() +
+  theme(legend.position = "none") +
+  labs(x = "Year", y = "Number of PhDs", color = "Field",
+       title = "Number of Statistics-related PhDs awarded over time")
+```
+
+---
+
+## Using [`gghighlight`](https://yutannihilation.github.io/gghighlight/articles/gghighlight.html) instead
+
+```{r}
+#| output-location: slide
+#| warning: false
+#| message: false
+#| code-line-numbers: "1,5"
+library(gghighlight)
+stats_phds |>
+  ggplot(aes(x = year, y = n_phds, color = field)) +
+  geom_line() +
+  gghighlight()  +
+  scale_x_continuous(breaks = unique(stat_phd_year_summary$year),
+                     labels = unique(stat_phd_year_summary$year)) +
+  theme_light() +
+  theme(legend.position = "none") +
+  labs(x = "Year", y = "Number of PhDs", color = "Field",
+       title = "Number of Statistics-related PhDs awarded over time")
+```
+
+---
+
+## Using [`gghighlight`](https://yutannihilation.github.io/gghighlight/articles/gghighlight.html) instead
+
+
+```{r}
+#| output-location: slide
+#| warning: false
+#| message: false
+#| code-line-numbers: "1,5"
+library(gghighlight)
+stats_phds |>
+  ggplot(aes(x = year, y = n_phds, color = field)) +
+  geom_line() +
+  gghighlight(line_label_type = "sec_axis")  +
+  scale_x_continuous(breaks = unique(stat_phd_year_summary$year),
+                     labels = unique(stat_phd_year_summary$year)) +
+  theme_light() +
+  theme(legend.position = "none") +
+  labs(x = "Year", y = "Number of PhDs", color = "Field",
+       title = "Number of Statistics-related PhDs awarded over time")
+```
+
+
+---
+
+## How do we plot many lines? NOT LIKE THIS!
+
+```{r}
+#| output-location: slide
+#| code-line-numbers: "1"
+phd_field |>
+  ggplot(aes(x = year, y = n_phds, color = field)) +
+  geom_line() +
+  scale_x_continuous(breaks = unique(stat_phd_year_summary$year),
+                     labels = unique(stat_phd_year_summary$year)) +
+  theme_light() +
+  theme(legend.position = "none") +
+  labs(x = "Year", y = "Number of PhDs", color = "Field",
+       title = "Number of Statistics-related PhDs awarded over time")
+```
+
+---
+
+## Instead we highlight specific lines
+
+```{r}
+#| output-location: slide
+#| warning: false
+#| message: false
+phd_field |>
+  filter(!(field %in% c("Biometrics and biostatistics", "Statistics (mathematics)"))) |>
+  ggplot() +
+  # Add the background lines - need to specify the group to be the field
+  geom_line(aes(x = year, y = n_phds, group = field),
+            color = "gray", size = .5, alpha = .5) +
+  # Now add the layer with the lines of interest:
+  geom_line(data = filter(phd_field,
+                          # Note this is just the opposite of the above since ! is removed
+                          field %in% c("Biometrics and biostatistics", 
+                                       "Statistics (mathematics)")),
+            aes(x = year, y = n_phds, color = field),
+            # Make the size larger
+            size = .75, alpha = 1) +
+  scale_x_continuous(breaks = unique(stat_phd_year_summary$year),
+                     labels = unique(stat_phd_year_summary$year)) +
+  theme_light() +
+  theme(legend.position = "bottom", 
+        # Drop the panel lines making the gray difficult to see
+        panel.grid = element_blank()) +
+  labs(x = "Year", y = "Number of PhDs", color = "Field",
+       title = "Number of Statistics-related PhDs awarded over time")
+```
+
+
+---
+
+## Or you can use [`gghighlight`](https://yutannihilation.github.io/gghighlight/articles/gghighlight.html) instead
+
+
+```{r}
+#| output-location: slide
+#| warning: false
+#| message: false
+#| code-line-numbers: "4-5"
+phd_field |>
+  ggplot(aes(x = year, y = n_phds, color = field)) +
+  geom_line() +
+  gghighlight(field %in% c("Biometrics and biostatistics", "Statistics (mathematics)"),
+              line_label_type = "sec_axis") +
+  scale_x_continuous(breaks = unique(stat_phd_year_summary$year),
+                     labels = unique(stat_phd_year_summary$year)) +
+  theme_light() +
+  theme(legend.position = "none") +
+  labs(x = "Year", y = "Number of PhDs", color = "Field",
+       title = "Number of Statistics-related PhDs awarded over time")
+```
+
+---
+
+## What about Nightingale's rose diagram?
+
+```{r, echo = FALSE, fig.align='center', out.width = "75%"}
+knitr::include_graphics("https://daily.jstor.org/wp-content/uploads/2020/08/florence_nightingagle_data_visualization_visionary_1050x700.jpg")
+```
+
+---
+
+## What about Nightingale's rose diagram?
+
+```{r}
+#| echo: false
+library(HistData)
+
+crimean_war_data <- Nightingale |>
+  dplyr::select(Date, Month, Year, Disease, Wounds, Other) |>
+  # Now pivot those columns to take up separate rows:
+  pivot_longer(Disease:Other,
+               names_to = "cause", values_to = "count")
+
+crimean_war_data <- crimean_war_data |>
+  mutate(time_period = ifelse(Date <= as.Date("1855-03-01"),
+                              "April 1854 to March 1855", 
+                              "April 1855 to March 1856"))
+crimean_war_data |> 
+  # Manually relevel it to match the original plot
+  mutate(Month = fct_relevel(Month, 
+                             "Jul", "Aug", "Sep", "Oct", "Nov",
+                             "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun")) |>
+  ggplot(aes(x = Month, y = count)) + 
+  geom_col(aes(fill = cause), width = 1, 
+           position = "identity", alpha = 0.5) + 
+  coord_polar() + 
+  facet_wrap(~ time_period, ncol = 2) +
+  scale_fill_manual(values = c("skyblue3", "grey30", "firebrick")) +
+  scale_y_sqrt() +
+  theme_void() +
+  # All of this below is to just customize the theme in a way that we are
+  # close to resembling the original plot (ie lets make it look old!)
+  theme(axis.text.x = element_text(size = 9),
+        strip.text = element_text(size = 11),
+        legend.position = "bottom",
+        plot.background = element_rect(fill = alpha("cornsilk", 0.5)),
+        plot.margin = unit(c(10, 10, 10, 10), "pt"),
+        plot.title = element_text(vjust = 5)) +
+  labs(title = "Diagram of the Causes of Mortality in the Army in the East")
+```
+
+
+---
+
+## What about displaying lines instead?
+
+```{r}
+#| echo: false
+crimean_war_data |> 
+  ggplot(aes(x = Date, y = count, color = cause)) + 
+  geom_line() +
+  # Add a reference line at the cutoff point
+  geom_vline(xintercept = as.Date("1855-03-01"), linetype = "dashed",
+             color = "gray") +
+  scale_color_manual(values = c("skyblue3", "grey30", "firebrick")) +
+  # Format to use abbreviate month %b with year %Y
+  scale_x_date(date_labels = "%b %Y") +
+  theme_light() +
+  theme(legend.position = "bottom") +
+  labs(title = "Diagram of the Causes of Mortality in the Army in the East",
+       y = "Counts", x = "Date")
+```
+
+
+---
+
+## Recap and next steps
+
++ Discussed various aspects of visualizing trends
+
++ When visualizing many lines, often useful to consider highlighting a small subset
+
+. . .
+
++ **HW6 is due TONIGHT and you have lab on Friday!**
+
++ **I will not have office hours today**
+
+. . .
+
++ **Next time**: Time series, autocorrelation, and seasonal decomposition
+
++ Recommended reading: [CW CH 13 Visualizing time series and other functions of an independent variable](https://clauswilke.com/dataviz/time-series.html), [CW CH 14 Visualizing trends](https://clauswilke.com/dataviz/visualizing-trends.html)
