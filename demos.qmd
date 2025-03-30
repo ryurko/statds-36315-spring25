@@ -13,4 +13,5 @@ title: "Demos"
 | 7      | Mar 19  | More MDS and Creating Dendrograms | [HTML](demos/07-clustering.qmd)  |
 | 8      | Mar 24  | Principal Component Analysis | [HTML](demos/08-pca.qmd)  |
 | 9      | Mar 26  | Visualizing Trends | [HTML](demos/09-trends.qmd)  |
+| 10     | Mar 31  | Visualizing time series data | [HTML](demos/10-time-series.qmd)  |
 
