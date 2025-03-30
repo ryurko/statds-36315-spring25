@@ -10,8 +10,8 @@
   <meta name="generator" content="quarto-1.6.42">
 
   <meta name="author" content="Prof Ron Yurko">
-  <meta name="dcterms.date" content="2025-01-29">
-  <title>Statistical Graphics and Visualization 36-315 Spring 25 – Visualizations and Inference for 2D Categorical Data</title>
+  <meta name="dcterms.date" content="2025-03-31">
+  <title>Statistical Graphics and Visualization 36-315 Spring 25 – Time Series, Autocorrelation, and Seasonal Decomposition</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -195,7 +195,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Visualizations and Inference for 2D Categorical Data</h1>
+  <h1 class="title">Time Series, Autocorrelation, and Seasonal Decomposition</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -205,352 +205,260 @@ Prof Ron Yurko
 </div>
 </div>
 
-  <p class="date">2025-01-29</p>
+  <p class="date">2025-03-31</p>
 </section>
 <section id="announcements-previously-and-today" class="slide level2">
 <h2>Announcements, previously, and today…</h2>
-<div style="font-size: 80%;">
-<ul>
-<li><p><strong>HW1 is due TONIGHT by 11:59 PM</strong></p></li>
-<li><p><strong>You have Lab 3 again on Friday</strong></p></li>
-</ul>
-<p>Office hours schedule:</p>
-<ul>
-<li><p>My office hours (BH 132D): Wednesdays and Thursdays @ 2 PM</p></li>
-<li><p>Anna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM</p></li>
-</ul>
+<div style="font-size: 85%;">
+<p><strong>HW7 is due Wednesday March April 2nd by 11:59 PM ET</strong></p>
+<p><strong>Graphics Critique 2 is due TONIGHT!</strong></p>
+<p><strong>You do NOT have lab this week - CARNIVAL!</strong></p>
 </div>
 <div class="fragment">
-<div style="font-size: 80%;">
+<div style="font-size: 85%;">
+<p><strong>Last time:</strong></p>
 <ul>
-<li><p>Discussed how similar looking graphics can have very different statistical results (thinking about power)</p></li>
-<li><p>Discussed the challenges of multiple testing</p></li>
+<li><p>Discussed various aspects of visualizing trends</p></li>
+<li><p>When visualizing many lines, often useful to consider highlighting a small subset</p></li>
 </ul>
+<p><strong>TODAY:</strong> Time series, autocorrelation, and seasonal decomposition</p>
 </div>
 </div>
+</section>
+<section id="things-of-interest-for-time-series-data" class="slide level2">
+<h2>Things of interest for time series data</h2>
+<p>Time series can be characterized by three features:</p>
+<ol type="1">
+<li><p><strong>Trends</strong>: Does the variable increase or decrease over time, on average?</p></li>
+<li><p><strong>Seasonality</strong>: Are there changes in the variable that regularly happen (e.g., every winter, every hour, etc.)? Sometimes called periodicity.</p></li>
+<li><p><strong>Noise</strong>: Variation in the variable beyond average trends and seasonality.</p></li>
+</ol>
+<p><strong>Moving averages are a starting point for visualizing how a trend changes over time</strong></p>
+</section>
+<section class="slide level2">
+
+
+<img data-src="https://www.ft.com/__origami/service/image/v2/images/raw/https%3A%2F%2Fd6c748xw2pzm8.cloudfront.net%2Fprod%2Fc7ce2780-2f14-11eb-8e8a-cdb0723f9e68-standard.png?dpr=1&amp;fit=scale-down&amp;quality=highest&amp;source=next&amp;width=700" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
+<section class="slide level2">
+
+
+<img data-src="https://icharts.coinlore.com/img/simple-moving-averages-ftx-token.jpg?time=1680119681" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="be-responsible-with-your-axes" class="slide level2">
+<h2>Be responsible with your axes!</h2>
+
+<img data-src="https://cdn.sisense.com/wp-content/uploads/National-Review-Climate-Change-770x689.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
+<section id="be-responsible-with-your-axes-1" class="slide level2">
+<h2>Be responsible with your axes!</h2>
+
+<img data-src="http://www.washingtonpost.com/blogs/the-fix/files/2015/12/NRO_Temp_1.jpg" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
+<section id="moving-average-plots" class="slide level2">
+<h2>Moving Average Plots</h2>
+<p>The <em>Financial Times</em> COVID-19 plots displayed a <strong>moving average</strong> (sometimes called a <strong>rolling average</strong>)</p>
+<p><strong>Intuition</strong></p>
+<ol type="1">
+<li><p>Divide your data into small subsets (“windows”)</p></li>
+<li><p>Compute the average within each window</p></li>
+<li><p>Connect the averages together to make a trend line</p></li>
+</ol>
 <div class="fragment">
-<div style="font-size: 80%;">
-<p><strong>TODAY:</strong></p>
-<ul>
-<li><p>Visuals for 2D categorical data</p></li>
-<li><p>How do we visualize inference for 2D categorical data?</p></li>
-</ul>
-</div>
-</div>
-</section>
-<section id="d-categorical-basics" class="slide level2">
-<h2>2D categorical basics</h2>
-</section>
-<section id="d-categorical-basics-1" class="slide level2">
-<h2>2D categorical basics</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">addmargins</span>(<span class="fu">table</span>(<span class="st">"Species"</span> <span class="ot">=</span> penguins<span class="sc">$</span>species, <span class="st">"Island"</span> <span class="ot">=</span> penguins<span class="sc">$</span>island))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>           Island
-Species     Biscoe Dream Torgersen Sum
-  Adelie        44    56        52 152
-  Chinstrap      0    68         0  68
-  Gentoo       124     0         0 124
-  Sum          168   124        52 344</code></pre>
-</div>
-</div>
-<ul>
-<li><p>Column and row sums: marginal distributions</p></li>
-<li><p>Values within rows: conditional distribution for <code>Island</code> given <code>Species</code></p></li>
-<li><p>Values within columns: conditional distribution for <code>Species</code> given <code>Island</code></p></li>
-<li><p>Bottom right: total number of observations</p></li>
-</ul>
-</section>
-<section id="connecting-distributions-to-visualizations" class="slide level2">
-<h2>Connecting distributions to visualizations</h2>
-<p>Five distributions for two categorical variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>:</p>
-<ul>
-<li><p><strong>Marginals</strong>: <span class="math inline">\(P(A)\)</span> and <span class="math inline">\(P(B)\)</span></p></li>
-<li><p><strong>Conditionals</strong>: <span class="math inline">\(P(A | B)\)</span> and <span class="math inline">\(P(B|A)\)</span></p></li>
-<li><p><strong>Joint</strong>: <span class="math inline">\(P(A, B)\)</span></p></li>
-</ul>
-<p>We use bar charts to visualize marginal distributions for categorical variables…</p>
-<div class="fragment">
-<p><strong>And we’ll use more bar charts to visualize conditional and joint distributions!</strong></p>
-</div>
-</section>
-<section id="stacked-bar-charts---a-bar-chart-of-spine-charts" class="slide level2">
-<h2>Stacked bar charts - a bar chart of spine charts</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span></span>
-<span id="cb3-3"><a></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span> </span>
-<span id="cb3-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
-<ul>
-<li><p>Easy to see marginal of <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Harder to see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
-</ul>
-</div>
-</section>
-<section id="side-by-side-bar-charts" class="slide level2">
-<h2>Side-by-side bar charts</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb4-3"><a></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb4-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
-<ul>
-<li><p>Easy to see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
-</ul>
-</div>
-</section>
-<section id="side-by-side-bar-charts-1" class="slide level2">
-<h2>Side-by-side bar charts</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb5-3"><a></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">preserve =</span> <span class="st">"single"</span>)) <span class="sc">+</span></span>
-<span id="cb5-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
-<ul>
-<li><p>Easy to see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
-</ul>
-</div>
-</section>
-<section id="complete-missing-values-to-preserve-location" class="slide level2">
-<h2><a href="https://tidyr.tidyverse.org/reference/complete.html">Complete</a> missing values to preserve location</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6" data-code-line-numbers="2-6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a></a>  <span class="fu">count</span>(species, island) <span class="sc">|&gt;</span></span>
-<span id="cb6-3"><a></a>  <span class="fu">complete</span>(<span class="at">species =</span> <span class="fu">unique</span>(species), <span class="at">island =</span> <span class="fu">unique</span>(island), </span>
-<span id="cb6-4"><a></a>           <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">n =</span> <span class="dv">0</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">y =</span> n, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb6-6"><a></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb6-7"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="what-do-you-prefer" class="slide level2">
-<h2>What do you prefer?</h2>
-<div>
-
-</div>
-<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-7-2.png" class="quarto-figure quarto-figure-center" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="chi-squared-test-for-1d-categorical-data" class="slide level2">
-<h2>Chi-squared test for 1D categorical data:</h2>
-<div style="font-size: 75%;">
-<ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: <span class="math inline">\(p_1 = p_2 = \dots = p_K\)</span>, compute the test statistic:</li>
-</ul>
-<p><span class="math display">\[
-\chi^2 = \sum_{j=1}^K \frac{(O_j - E_j)^2}{E_j}
-\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_j\)</span>: observed counts in category <span class="math inline">\(j\)</span></p></li>
-<li><p><span class="math inline">\(E_j\)</span>: expected counts under <span class="math inline">\(H_0\)</span>, i.e., each category is equally to occur <span class="math inline">\(n / K = p_1 = p_2 = \dots = p_K\)</span></p></li>
-</ul>
-</div>
-<div class="fragment">
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Chi-squared test for given probabilities
-
-data:  table(penguins$species)
-X-squared = 31.907, df = 2, p-value = 1.179e-07</code></pre>
-</div>
-</div>
-</div>
-</section>
-<section id="inference-for-2d-categorical-data" class="slide level2">
-<h2>Inference for 2D categorical data</h2>
-<div style="font-size: 75%;">
-<p>Again we use the <strong>chi-squared test</strong>:</p>
-<ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent, compute the test statistic:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_{ij}\)</span>: observed counts in contingency table</p></li>
-<li><p><span class="math inline">\(E_{ij}\)</span>: expected counts under <span class="math inline">\(H_0\)</span></p></li>
-</ul>
-<p><span class="math display">\[
-\begin{aligned}
-E_{ij} &amp;= n \cdot P(A = a_i, B = b_j) \\
-&amp;= n \cdot P(A = a_i) P(B = b_j) \\
-&amp;= n \cdot \left( \frac{n_{i \cdot}}{n} \right) \left( \frac{ n_{\cdot j}}{n} \right)
-\end{aligned}
-\]</span></p>
-</div>
-</section>
-<section id="inference-for-2d-categorical-data-1" class="slide level2">
-<h2>Inference for 2D categorical data</h2>
-<div style="font-size: 75%;">
-<p>Again we use the <strong>chi-squared test</strong>:</p>
-<ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent, compute the test statistic:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_{ij}\)</span>: observed counts in contingency table</p></li>
-<li><p><span class="math inline">\(E_{ij}\)</span>: expected counts under <span class="math inline">\(H_0\)</span></p></li>
-</ul>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Pearson's Chi-squared test
-
-data:  table(penguins$species, penguins$island)
-X-squared = 299.55, df = 4, p-value &lt; 2.2e-16</code></pre>
-</div>
-</div>
-</section>
-<section id="visualize-independence-test-with-mosaic-plots" class="slide level2">
-<h2>Visualize independence test with mosaic plots</h2>
-<div style="font-size: 75%;">
-<p>Two variables are <strong>independent</strong> if knowing the level of one tells us nothing about the other</p>
-<ul>
-<li>i.e.&nbsp;<span class="math inline">\(P(A | B) = P(A)\)</span>, and that <span class="math inline">\(P(A, B) = P(A) \times P(B)\)</span></li>
-</ul>
-<p>Create a <strong>mosaic</strong> plot using <strong>base <code>R</code></strong></p>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="shade-by-pearson-residuals" class="slide level2">
-<h2>Shade by <em>Pearson residuals</em></h2>
-<div style="font-size: 75%;">
-<ul>
-<li>The <strong>test statistic</strong> is:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li>Define the <em>Pearson residuals</em> as:</li>
-</ul>
-<p><span class="math display">\[r_{ij} = \frac{O_{ij} - E_{ij}}{\sqrt{E_{ij}}}\]</span></p>
-<ul>
-<li>Side-note: In general, Pearson residuals are <span class="math inline">\(\frac{\text{residuals}}{\sqrt{\text{variance}}}\)</span></li>
-</ul>
-</div>
-<div class="fragment">
-<div style="font-size: 75%;">
-<ul>
-<li><p><span class="math inline">\(r_{ij} \approx 0 \rightarrow\)</span> observed counts are close to expected counts</p></li>
-<li><p><span class="math inline">\(|r_{ij}| &gt; 2 \rightarrow\)</span> “significant” at level <span class="math inline">\(\alpha = 0.05\)</span>.</p></li>
-<li><p>Very positive <span class="math inline">\(r_{ij} \rightarrow\)</span> more than expected, while very negative <span class="math inline">\(r_{ij} \rightarrow\)</span> fewer than expected</p></li>
-<li><p><strong>Color by Pearson residuals</strong> to tell us which combos are much bigger/smaller than expected.</p></li>
-</ul>
-</div>
+<p>Sometimes called a <strong>simple moving average</strong></p>
+<p>This is exactly what we did with LOESS… we called this a <em>sliding window</em>, but it’s the same thing</p>
 </div>
 </section>
 <section class="slide level2">
 
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island), <span class="at">shade =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section class="slide level2">
 
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>island, penguins<span class="sc">$</span>sex), <span class="at">shade =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb13-2"><a></a>           <span class="at">main =</span> <span class="st">"Distribution of penguins' sex does not vary across islands"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="titanic-dataset-example" class="slide level2">
-<h2>Titanic Dataset Example</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>titanic <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/ryurko/DataViz-Class-Data/main/titanic.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><strong>Question</strong>: Does survival (yes/no) depend on cabin (1st/2nd/3rd)?</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">table</span>(<span class="st">"Survived?"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Survived, <span class="st">"Class"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Pclass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>         Class
-Survived?   1   2   3
-        0  64  90 270
-        1 120  83  85</code></pre>
-</div>
-</div>
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section class="slide level2">
+
+
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section class="slide level2">
+
+
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section class="slide level2">
+
+
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section class="slide level2">
+
+
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="how-are-moving-averages-computed" class="slide level2">
+<h2>How are moving averages computed?</h2>
+<p><strong>Intuition</strong></p>
+<ol type="1">
+<li><p>Divide your data into small subsets (<em>windows</em>)</p></li>
+<li><p>Compute the average within each window</p></li>
+<li><p>Connect the averages together to make a trend line</p></li>
+</ol>
 <div class="fragment">
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(<span class="st">"Survived?"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Survived, <span class="st">"Class"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Pclass))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Pearson's Chi-squared test
-
-data:  table(`Survived?` = titanic$Survived, Class = titanic$Pclass)
-X-squared = 91.081, df = 2, p-value &lt; 2.2e-16</code></pre>
-</div>
-</div>
-<p><strong>Conclusion</strong>: Class and survival are dependent - but how?</p>
+<p>Mathematically, a moving average can be written as the following:</p>
+<p><span class="math display">\[\mu_k = \frac{\sum_{t=k - h + 1}^k X_t}{h}\]</span></p>
+<ul>
+<li><p>Large <span class="math inline">\(h\)</span>: Smooth line; captures global trends</p></li>
+<li><p>Small <span class="math inline">\(h\)</span>: Jagged/volatile line; captures local trends</p></li>
+</ul>
 </div>
 </section>
-<section class="slide level2">
-
+<section id="working-with-time-series" class="slide level2">
+<h2>Working with Time Series</h2>
+<p><code>co2</code>: Mauna Loa Atmospheric CO2 Concentration dataset (monthly <span class="math inline">\(\text{CO}^2\)</span> concentration 1959 to 1997)</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(titanic<span class="sc">$</span>Pclass, titanic<span class="sc">$</span>Survived), <span class="at">shade =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb19-2"><a></a>           <span class="at">xlab =</span> <span class="st">"Passenger Class"</span>, <span class="at">ylab =</span> <span class="st">"Survived?"</span>, <span class="at">main =</span> <span class="st">"How are they related?"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>co2_tbl <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> obs_i, <span class="at">y =</span> co2_val)) <span class="sc">+</span> </span>
+<span id="cb1-3"><a></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb1-4"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Time index"</span>, <span class="at">y =</span> <span class="st">"CO2 (ppm)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="guardian-1000-songs-to-hear-before-you-die" class="slide level2">
-<h2><a href="https://www.theguardian.com/news/datablog/2009/mar/20/1">Guardian</a>: 1000 songs to hear before you die</h2>
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="formatting-dates" class="slide level2">
+<h2>Formatting Dates</h2>
+<p>Can use <code>as.Date()</code> to create time indexes.</p>
 
-<img data-src="https://upload.wikimedia.org/wikipedia/commons/8/84/Mosaic-big.png?20090726044211" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><p>Default format is Year/Month/Day. For something else, need to specify <code>format</code> in <code>as.Date()</code> (e.g., <code>format = "%m/%d/%Y"</code>)</p>
+</section>
+<section id="use-scale_x_date-to-create-interpretable-axis-labels" class="slide level2">
+<h2>Use <code>scale_x_date()</code> to create interpretable axis labels</h2>
+
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section class="slide level2">
+
+<h3 id="use-ggseas-package-to-plot-moving-averages">Use <a href="https://cran.r-project.org/web/packages/ggseas/vignettes/ggseas.html"><code>ggseas</code></a> package to plot moving averages</h3>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">library</span>(ggseas)</span>
+<span id="cb2-2"><a></a>co2_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> obs_date, <span class="at">y =</span> co2_val)) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span> </span>
+<span id="cb2-4"><a></a>  <span class="fu">stat_rollapplyr</span>(<span class="at">width =</span> <span class="dv">12</span>, <span class="at">align =</span> <span class="st">"right"</span>) <span class="sc">+</span></span>
+<span id="cb2-5"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"CO2 (ppm)"</span>, <span class="at">title =</span> <span class="st">"Width = 12"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section class="slide level2">
 
 
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section class="slide level2">
+
+
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="other-moving-averages" class="slide level2">
+<h2>Other Moving Averages</h2>
+<p>Two other common averages: Cumulative moving averages and weighted moving averages.</p>
+<ul>
+<li><strong>Cumulative moving average</strong>: The average at time <span class="math inline">\(k\)</span> is the average of all points at and before <span class="math inline">\(k\)</span>. Mathematically:</li>
+</ul>
+<p><span class="math display">\[\mu_k^{(CMA)} = \frac{\sum_{t=1}^k X_t}{k}\]</span></p>
+<div class="fragment">
+<ul>
+<li><strong>Weighted moving average</strong>: Same as simple moving average, but different measurements get different weights for the average.</li>
+</ul>
+<p><span class="math display">\[\mu_k^{(WMA)} = \frac{\sum_{t=k - h + 1}^k X_t \cdot w_t}{ \sum_{t=k - h + 1}^k w_t}\]</span></p>
+</div>
+</section>
+<section id="working-with-lags" class="slide level2">
+<h2>Working with lags</h2>
+<p>Time series data is fundamentally different from other data problems we’ve worked with because measurements are <strong>not independent</strong></p>
+<p>Obvious example: The temperature today is correlated with temperature yesterday. (<em>Maybe not in Pittsburgh?</em>)</p>
+<div class="fragment">
+<p>Important term: <strong>lags</strong>. Used to determine if one time point influences future time points.</p>
+<p>Lag 1: Comparing time series at time <span class="math inline">\(t\)</span> with time series at time <span class="math inline">\(t - 1\)</span>.</p>
+<p>Lag 2: Comparing time series at time <span class="math inline">\(t\)</span> with time series at time <span class="math inline">\(t - 2\)</span>.</p>
+<p>And so on…</p>
+</div>
+<div class="fragment">
+<p>Let’s say we have time measurements <span class="math inline">\((X_1, X_2, X_3, X_4, X_5)\)</span>.</p>
+<p>The <span class="math inline">\(\ell = 1\)</span> lag is <span class="math inline">\((X_2, X_3, X_4, X_5)\)</span> vs <span class="math inline">\((X_1, X_2, X_3, X_4)\)</span>.</p>
+</div>
+<div class="fragment">
+<p>The <span class="math inline">\(\ell = 2\)</span> lag is <span class="math inline">\((X_3, X_4, X_5)\)</span> vs <span class="math inline">\((X_1, X_2, X_3)\)</span>.</p>
+<p>Consider: Are previous outcomes (lags) predictive of future outcomes?</p>
+</div>
+</section>
+<section id="autocorrelation" class="slide level2">
+<h2>Autocorrelation</h2>
+<p><strong>Autocorrelation</strong>: Correlation between a time series and a lagged version of itself.</p>
+<p>Define <span class="math inline">\(r_{\ell}\)</span> as the correlation between a time series and Lag <span class="math inline">\(\ell\)</span> of that time series.</p>
+<div class="fragment">
+<p>Lag 1: <span class="math inline">\(r_1\)</span> is correlation between <span class="math inline">\((X_2, X_3, X_4, X_5)\)</span> and <span class="math inline">\((X_1,X_2,X_3,X_4)\)</span></p>
+<p>Lag 2: <span class="math inline">\(r_2\)</span> is correlation between <span class="math inline">\((X_3, X_4, X_5)\)</span> and <span class="math inline">\((X_1,X_2,X_3)\)</span></p>
+<p>And so on…</p>
+</div>
+<div class="fragment">
+<p>Common diagnostic: Plot <span class="math inline">\(\ell\)</span> on x-axis, <span class="math inline">\(r_{\ell}\)</span> on y-axis.</p>
+<p>Tells us if correlations are “significantly large” or “significantly small” for certain lags</p>
+<p>To make an autocorrelation plot, we use the <code>acf()</code> function; the <code>ggplot</code> version uses <code>autoplot()</code></p>
+</div>
+</section>
+<section id="autocorrelation-plots" class="slide level2">
+<h2>Autocorrelation plots</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">library</span>(ggfortify)</span>
+<span id="cb3-2"><a></a>auto_corr <span class="ot">&lt;-</span> <span class="fu">acf</span>(co2_tbl<span class="sc">$</span>co2_val, <span class="at">plot =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-3"><a></a><span class="fu">autoplot</span>(auto_corr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="autocorrelation-plots-and-seasonality" class="slide level2">
+<h2>Autocorrelation Plots and Seasonality</h2>
+<p>With strong global trends, autocorrelations will be very positive.</p>
+<p><strong>Helpful: Visualize autocorrelations after removing the global trend (compute moving average with <code>rollapply()</code>)</strong></p>
+
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="autocorrelation-plots-and-seasonality-1" class="slide level2">
+<h2>Autocorrelation Plots and Seasonality</h2>
+
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="seasonality-decomposition" class="slide level2">
+<h2>Seasonality Decomposition</h2>
+<p>Remember that there are three main components to a time series:</p>
+<ol type="1">
+<li><p>Average trends</p></li>
+<li><p>Seasonality</p></li>
+<li><p>Noise</p></li>
+</ol>
+<div class="fragment">
+<p>Use <code>ggsdc()</code> (from <a href="https://cran.r-project.org/web/packages/ggseas/vignettes/ggseas.html"><code>ggseas</code></a>) to decompose a time series into these three components</p>
+<ul>
+<li><p>Plots the observed time series.</p></li>
+<li><p>Plots a loess curve as the global trend.</p></li>
+<li><p>Plots another loess curve on (observed - trend) as the seasonality.</p></li>
+<li><p>Plots the noise (observed - trend - seasonality).</p></li>
+</ul>
+</div>
+</section>
+<section id="seasonality-decomposition-1" class="slide level2">
+<h2>Seasonality Decomposition</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>co2_tbl <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a></a>  <span class="fu">ggsdc</span>(<span class="fu">aes</span>(obs_date, co2_val), <span class="at">frequency =</span> <span class="dv">12</span>, <span class="at">method =</span> <span class="st">"stl"</span>, <span class="at">s.window =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb4-3"><a></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"CO2 (ppm)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="19-time-series_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="recap-and-next-steps" class="slide level2">
 <h2>Recap and next steps</h2>
-<div style="font-size: 75%;">
 <ul>
-<li><p>For 2D categorical data we create visualizations for marginal, conditional, and joint distributions</p></li>
-<li><p>Can create stacked and side-by-side bar charts to visualize 2D categorical data</p></li>
-<li><p>Perform 2D Chi-squared test to test if two categorical variables are associated with each other</p></li>
-<li><p>Create mosaic plots to visualize 2D categorical data</p></li>
-<li><p>Shade mosaic plot tiles by Pearson residuals to see what drives association between two categorical variables (if any)</p></li>
+<li><p>Fundamental characteristic of time series data: measurements are dependent over time</p></li>
+<li><p>The things to look out for in time series data are: (1) Average trends, (2) Seasonality, (3) Noise</p></li>
+<li><p>Autocorrelation plots are also useful for assessing average trends and seasonality.</p></li>
+</ul>
+<div class="fragment">
+<ul>
+<li><p><strong>HW7 is due Wednesday!</strong></p></li>
+<li><p><strong>Graphics Critique 2 is due TONIGHT!</strong></p></li>
 </ul>
 </div>
 <div class="fragment">
-<div style="font-size: 75%;">
 <ul>
-<li><p><strong>HW1 is due TONIGHT and you have Lab 3 on Friday!</strong></p></li>
-<li><p><strong>Next time</strong>: Visualizing 1D quantitative data</p></li>
-<li><p>Recommended reading: <a href="https://clauswilke.com/dataviz/nested-proportions.html">CW Chapter 11 Visualizing nested proportions</a></p></li>
+<li><p><strong>Next time</strong>: Animations, infographics, and annotations</p></li>
+<li><p>Recommended reading: <a href="https://clauswilke.com/dataviz/time-series.html">CW CH 13 Visualizing time series and other functions of an independent variable</a>, <a href="https://clauswilke.com/dataviz/visualizing-trends.html">CW CH 14 Visualizing trends</a></p></li>
 </ul>
-</div>
 
 
 </div>
