@@ -1,0 +1,422 @@
+---
+title: "Animations, infographics, and annotations"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-04-02
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 85%;"}
+
+**HW7 is due TONIGHT March April 2nd by 11:59 PM ET**
+
+**You do NOT have lab this week - CARNIVAL!**
+
+:::
+
+. . .
+
+::: {style="font-size: 85%;"}
+
+**Last time:**
+
++ Fundamental characteristic of time series data: measurements are dependent over time
+
++ Plotting moving averages is the most common way to visualize time series data
+
++ The things to look out for in time series data are: (1) Average trends, (2) Seasonality, (3) Noise
+
+**TODAY:** Animations, infographics, and annotations
+
+:::
+
+---
+
+## Storytelling with animation...
+
+```{r, echo = FALSE}
+f1_data_ex <- read_csv('https://raw.githubusercontent.com/meghall06/CMU-36-315-site/main/data/constructor_pts.csv') |>
+  filter(name %in% c("McLaren", "Renault", "Racing Point"), year == 2020)
+```
+
+
+```{r}
+f1_data_ex |>
+  ggplot(aes(x = round, y = points, group = name, color = name)) +
+  geom_line(size = 2) +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  labs(title = "The race for third place in the 2020 F1 season",
+       y = "Accumulated points", x = NULL) +
+  theme_bw()
+```
+
+
+---
+
+## Use [`gganimate`](https://gganimate.com/) to add animations
+
+```{r f1-anim}
+#| code-line-numbers: "1,9"
+library(gganimate)
+f1_data_ex |>
+  ggplot(aes(x = round, y = points, group = name, color = name)) +
+  geom_line(size = 2) +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  labs(title = "The race for third place in the 2020 F1 season",
+       y = "Accumulated points", x = NULL) +
+  theme_bw() +
+  transition_reveal(round)
+```
+
+
+---
+
+## Using animation to add a dimension
+
+```{r housing-static}
+#| output-location: slide
+txhousing |> 
+  group_by(city, year) |> 
+  summarize(median = mean(median, na.rm = TRUE),listings = mean(listings, na.rm = TRUE)) |> 
+  ggplot(aes(x = median, y = listings, color = (city == "Houston"), 
+             size = (city == "Houston"))) +
+  geom_point(alpha = 0.5, show.legend = FALSE) +
+  scale_color_manual(values = c("black", "darkred")) +
+  scale_size_manual(values = c(2, 4)) +
+  scale_x_continuous(labels = scales::dollar, name = "Median Price") +
+  scale_y_continuous(labels = scales::label_number(scale_cut = scales::cut_short_scale())) +
+  theme_bw() +
+  labs(x = "Median Price", y = "Avg. of Monthly Listings",
+       subtitle = "Houston in red")
+```
+
+
+---
+
+## Using animation to add a dimension
+
+```{r housing-anim}
+#| code-line-numbers: "13,14"
+#| output-location: slide
+txhousing |> 
+  group_by(city, year) |> 
+  summarize(median = mean(median, na.rm = TRUE), listings = mean(listings, na.rm = TRUE)) |> 
+  ggplot(aes(x = median, y = listings, color = (city == "Houston"),
+             size = (city == "Houston"))) +
+  geom_point(alpha = 0.5, show.legend = FALSE) +
+  scale_color_manual(values = c("black", "darkred")) +
+  scale_size_manual(values = c(2, 4)) +
+  scale_x_continuous(labels = scales::dollar, name = "Median Price") +
+  scale_y_continuous(labels = scales::label_number(scale_cut = scales::cut_short_scale())) +
+  theme_bw() +
+  labs(x = "Median Price", y = "Avg. of Monthly Listings",
+       subtitle = "Houston in red", title = "Year: {frame_time}") + 
+  transition_time(year) 
+```
+
+
+---
+
+## Reminders about animation
+
+Some key points to think about before adding animation to a visualization:
+
+1. Always make and describe the original / base graphic first that does NOT include animation.
+
+. . .
+
+2. Before adding animation to the graph, ask yourself: How would animation give you additional insights about the data **that you would otherwise not be able to**?
+
+. . .
+
+3. Never add animation just because it's cool! 
+
+. . .
+
+4. When presenting, make sure you explain exactly what is being displayed with animation and what within the animation you want to emphasize. This will help you determine if animation is actually worth including.
+
+---
+
+## Creating compound figures
+
+Two different scenarios we may face:
+
+1. Creating the same type of plot many times
+
++ e.g., using `facet_wrap()` or `facet_grid()`
+
+2. Combining several distinct plots into one cohesive display
+
++ e.g., using flexible arrangement packages like [`cowplot`](https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html) or [`patchwork`](https://patchwork.data-imaginist.com/index.html)
+
+---
+
+## Creating the same type of plot many times
+
+```{r}
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(alpha = 0.5) +
+  facet_wrap(~species) +
+  theme_light()
+```
+
+
+---
+
+## Creating the same type of plot many times
+
+```{r}
+penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(alpha = 0.5) +
+  facet_grid(island ~ species) +
+  theme_light()
+```
+
+
+---
+
+## Creating a single cohesive display of multiple plots
+
+```{r}
+plot1 <- penguins |>
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(alpha = 0.5)
+plot1
+```
+
+
+---
+
+## Creating a single cohesive display of multiple plots
+
+```{r}
+plot2 <- penguins |>
+  ggplot(aes(x = species, y = bill_depth_mm)) +
+  geom_violin(alpha = 0.5)
+plot2
+```
+
+
+---
+
+## Using [`cowplot`](https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html) to arrange plots together
+
+```{r}
+library(cowplot)
+plot_grid(plot1, plot2)
+```
+
+---
+
+## Using [`cowplot`](https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html) to arrange plots together
+
+```{r}
+library(cowplot)
+plot_grid(plot1, plot2, labels = c('A', 'B'), label_size = 12)
+```
+
+
+---
+
+## Using [`patchwork`](https://patchwork.data-imaginist.com/index.html) to arrange plots together
+
+```{r}
+library(patchwork)
+plot1 + plot2
+```
+
+---
+
+## Using [`patchwork`](https://patchwork.data-imaginist.com/index.html) to arrange plots together
+
+```{r}
+plot1 / plot2
+```
+
+
+---
+
+## Using [`patchwork`](https://patchwork.data-imaginist.com/index.html) to arrange plots together
+
+```{r}
+plot1 / plot2 + plot_annotation(tag_levels = "A")
+```
+
+---
+
+## Using [`patchwork`](https://patchwork.data-imaginist.com/index.html) to arrange plots together
+
+```{r}
+#| output-location: slide
+plot3 <- penguins |>
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm,
+             color = species)) +
+  geom_point(alpha = 0.5)
+plot4 <- penguins |>
+  ggplot(aes(x = bill_length_mm, y = body_mass_g,
+             color = species)) +
+  geom_point(alpha = 0.5)
+(plot1 + plot2) / (plot3 + plot4) + plot_layout(guides = 'collect')
+```
+
+
+---
+
+## Using [`patchwork`](https://patchwork.data-imaginist.com/index.html) to arrange plots together
+
+```{r}
+(plot1 + plot2) / (plot3 + plot4) + plot_layout(guides = 'collect') +
+  plot_annotation(tag_levels = "A")
+```
+
+---
+
+## Using [`patchwork`](https://patchwork.data-imaginist.com/index.html) to arrange plots together
+
+```{r}
+(plot1 + plot2) / (plot3 + plot4) + plot_layout(guides = 'collect') +
+  plot_annotation(tag_levels = "A", title = "A plot about penguins",
+                  subtitle = "With subtitle...", caption = "...and caption")
+```
+
+---
+
+## Infographics vs figures in papers/reports
+
++ Infographics should standalone, thus **they must have a title along with a relevant subtitle and caption** (located within the plot)
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("https://clauswilke.com/dataviz/figure_titles_captions_files/figure-html/corruption-development-infographic-1.png")
+```
+
+
+---
+
+## Infographics vs figures in papers/reports
+
++ Figures in papers/reports will have captions containing the information from the standalone title/subtitle/caption, see example:
+
+```{r, echo = FALSE, fig.align='center'}
+#| fig-cap: "Figure 1. **Corruption and human development.** The most developed countries experience the least corruption. Data sources: Transparency International & UN Human Development Report."
+knitr::include_graphics("https://clauswilke.com/dataviz/figure_titles_captions_files/figure-html/corruption-development-1.png")
+```
+
+---
+
+## Thinking about themes...
+
+**See posted demo walking through color scales and customizing themes**
+
+Default choices tend to treat each element with **equal weight**, e.g., axes stand out as much as the data or background elements look the same as the points of emphasis
+
+. . .
+
+You want to design your plot with the **visual hierarchy** in mind:
+
++ Make elements of your plot that are more important **look more important!**
+
++ i.e., customize your plot so that the data is the focus, not the axes and grid lines!
+
++ Match visual weight to focus of the graphic you want to communicate
+
+. . .
+
+I tend to use `theme_bw()` or `theme_light()`, but there are other options from various packages such as [`ggthemes`](https://jrnold.github.io/ggthemes/)
+
+---
+
+## Using [`patchwork`](https://patchwork.data-imaginist.com/index.html) to arrange plots together
+
+```{r}
+#| fig-height: 7
+#| fig-width: 8
+(plot1 + plot2) / (plot3 + plot4) + plot_layout(guides = 'collect') +
+  plot_annotation(tag_levels = "A", title = "A plot about penguins",
+                  subtitle = "With subtitle...", caption = "...and caption") & 
+  theme_minimal_grid()
+```
+
+---
+
+## Annotation
+
++ Using text can be a great way to highlight and explain aspects of a visualization when **you're not there to explain it**
+
++ [`annotate()`](https://ggplot2.tidyverse.org/reference/annotate.html) is an easy way to add text to ggplot objects or add rectangle layers for highlighting displays
+
+```{r}
+mtcars |>
+  ggplot(aes(x = wt, y = mpg)) + 
+  geom_point() + 
+  annotate("text", x = 4, y = 25, label = "Some text") +
+  annotate("rect", xmin = 3, xmax = 4.2, ymin = 12, ymax = 21, alpha = .2)
+```
+
+---
+
+## Annotation tools
+
++ We've discussed [`gghighlight`](https://cran.r-project.org/web/packages/gghighlight/vignettes/gghighlight.html) and [`ggrepel`](https://cran.r-project.org/web/packages/ggrepel/vignettes/ggrepel.html), but [`directlabels`](https://tdhock.github.io/directlabels/) and [`ggforce`](https://ggforce.data-imaginist.com/index.html) are also useful
+
+```{r}
+library(ggforce)
+ggplot(iris, aes(Petal.Length, Petal.Width)) +
+  geom_mark_rect(aes(fill = Species, label = Species)) +
+  geom_point()
+```
+
+
+---
+
+## Saving plots and ggplot extensions
+
++ Default function for saving the last ggplot you created is [`ggsave`](https://ggplot2.tidyverse.org/reference/ggsave.html)
+
++ I tend to use the [`save_plot()`](https://wilkelab.org/cowplot/reference/save_plot.html) function from [`cowplot`](https://wilkelab.org/cowplot/index.html) since it has easier customization for handling panels of multiple figures
+
++ There are a wide number of `ggplot2` extension packages for various different purposes, [you can check them out in this gallery](https://exts.ggplot2.tidyverse.org/gallery/)
+
+---
+
+## Recap and next steps
+
++ Discussed the role of animation in visualizations
+
++ Discussed various aspects of making high-quality graphics and relevant tools
+
+. . .
+
++ **HW7 is due TONIGHT!**
+
++ **ENJOY CARNIVAL!**
+
++ Recommended reading: [`gganimate` package](https://gganimate.com/), [CW Chapter 21 Multi-panel figures](https://clauswilke.com/dataviz/multi-panel-figures.html), [CW Chapter 23 Balance the data and the context](https://clauswilke.com/dataviz/balance-data-context.html), [KH Chapter 8 Refine your plots](https://socviz.co/refineplots.html#change-the-appearance-of-plots-with-themes)

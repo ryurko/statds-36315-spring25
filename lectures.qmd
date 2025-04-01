@@ -23,5 +23,6 @@ title: "Lectures"
 | 17        | Mar 24  | Principal Component Analysis | [slides](lectures/17-pca.qmd)        |
 | 18        | Mar 26  | Visualizing Trends | [slides](lectures/18-trends.qmd)        |
 | 19        | Mar 31  | Time Series, Autocorrelation, and Seasonal Decomposition | [slides](lectures/19-time-series.qmd) |
+| 20        | Apr 2  | Animations, infographics, and annotations | [slides](lectures/20-anim-graphics.qmd) |
 
 
