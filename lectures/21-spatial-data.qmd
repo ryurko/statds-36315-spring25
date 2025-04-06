@@ -1,0 +1,553 @@
+---
+title: "Visualizations and Inference for Spatial Data"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-04-07
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+airports <- read_csv("https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat",
+                     col_names = c("ID", "name", "city", "country", "IATA_FAA", 
+                                   "ICAO", "lat", "lon", "altitude", "timezone", "DST"))
+
+routes <- read_csv("https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat",
+                   col_names = c("airline", "airlineID", "sourceAirport", 
+                                 "sourceAirportID", "destinationAirport", 
+                                 "destinationAirportID", "codeshare", "stops",
+                                 "equipment"))
+
+departures <- routes |> 
+  group_by(sourceAirportID) |>
+  summarize(n_depart = n()) |>
+  mutate(sourceAirportID = as.integer(sourceAirportID))
+
+arrivals <- routes |> 
+  group_by(destinationAirportID) |> 
+  summarize(n_arrive = n()) |> 
+  mutate(destinationAirportID = as.integer(destinationAirportID))
+
+airports <- airports |>
+  left_join(departures, by = c("ID" = "sourceAirportID"))
+airports <- airports |>
+  left_join(arrivals, by = c("ID" = "destinationAirportID"))
+
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 95%;"}
+
+**HW8 is due Wednesday April 9th by 11:59 PM ET**
+
+**You do NOT have lab this week**
+
+:::
+
+. . .
+
+::: {style="font-size: 95%;"}
+
+**Last time:**
+
++ Discussed the role of animation in visualizations
+
++ Discussed various aspects of making high-quality graphics and relevant tools
+
+**TODAY:** Visualizations and Inference for Spatial Data
+
+:::
+
+---
+
+## How should we think about spatial data?
+
+Typically location is measured with __latitude__ / __longitude__ (2D)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- __Latitude__: Measures North / South (the "y-axis")
+
+  - Range is $(-90^{\circ}, 90^{\circ})$
+  
+  - Measures degrees from the equator $(0^{\circ})$
+  
+  - $(-90^{\circ}, 0^{\circ})$ = southern hemisphere 
+  
+  - $(0^{\circ}, 90^{\circ})$ = northern hemisphere 
+
+:::
+
+::: {.column width="50%"}
+
+- __Longitude__: Measures East/West (the "x-axis")
+
+  - Range is $(-180^{\circ}, 180^{\circ})$
+  
+  - Measures degrees from the prime meridian $(0^{\circ})$ in Greenwich, England
+  
+  - $(-180^{\circ}, 0^{\circ})$ = eastern hemisphere
+  
+  - $(0^{\circ}, 180^{\circ})$ = western hemisphere
+
+:::
+
+::::
+
+
+---
+
+## Latitude and Longitude
+
+
+```{r, echo = FALSE, fig.align='center', out.width="80%"}
+knitr::include_graphics("https://c.tadst.com/gfx/1200x630/longitude-and-latitude-simple.png?1")
+```
+
+---
+
+## Map Projections
+
+__Map projections__: Transformation of the lat / long coordinates on a sphere (the earth) to a 2D plane
+  
+- There are many different projections - each will distort the map in different ways.
+
+- The most common projections are:
+
+  - [Mercator](https://en.wikipedia.org/wiki/Mercator_projection)
+  
+  - [Robinson](https://en.wikipedia.org/wiki/Robinson_projection)
+  
+  - [Conic](http://www.geo.hunter.cuny.edu/~jochen/gtech201/lectures/lec6concepts/Map%20coordinate%20systems/Conic%20projections.htm#:~:text=Conic%20projections%20are%20created%20by,a%20developable%20map%20projection%20surface.)
+  
+  - [Cylindrical](https://en.wikipedia.org/wiki/Map_projection#Cylindrical)
+  
+  - [Planar](http://www.geo.hunter.cuny.edu/~jochen/gtech201/lectures/lec6concepts/Map%20coordinate%20systems/Planar%20projections.htm)
+  
+  - [Interrupted projections](https://en.wikipedia.org/wiki/Interruption_(map_projection))
+
+
+---
+
+## Mercator Projection (1500s)
+
+
+```{r, echo = FALSE, fig.align='center', out.width="60%"}
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Mercator_projection_Square.JPG/700px-Mercator_projection_Square.JPG")
+```
+
+
+---
+
+## Mercator Projection (Tissot indicatrix)
+
+
+```{r, echo = FALSE, fig.align='center', out.width="60%"}
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Mercator_with_Tissot%27s_Indicatrices_of_Distortion.svg/700px-Mercator_with_Tissot%27s_Indicatrices_of_Distortion.svg.png")
+```
+
+
+---
+
+## Robinson Projection (Standard from 1963-1998)
+
+```{r, echo = FALSE, fig.align='center', out.width="70%"}
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Robinson_projection_SW.jpg/700px-Robinson_projection_SW.jpg")
+```
+
+
+---
+
+## Robinson Projection (Tissot indicatrix)
+
+
+```{r, echo = FALSE, fig.align='center', out.width="70%"}
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Robinson_with_Tissot%27s_Indicatrices_of_Distortion.svg/700px-Robinson_with_Tissot%27s_Indicatrices_of_Distortion.svg.png")
+```
+
+
+---
+
+## Winkel Tripel Projection (proposed 1921, now the standard)
+
+```{r, echo = FALSE, fig.align='center', out.width="60%"}
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Winkel_triple_projection_SW.jpg/660px-Winkel_triple_projection_SW.jpg")
+```
+
+---
+
+## Winkel Tripel Projection (Tissot indicatrix)
+
+```{r, echo = FALSE, fig.align='center', out.width="60%"}
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Winkel_Tripel_with_Tissot%27s_Indicatrices_of_Distortion.svg/660px-Winkel_Tripel_with_Tissot%27s_Indicatrices_of_Distortion.svg.png")
+```
+
+---
+
+## And many more... (see [xkcd comic](https://xkcd.com/977/))
+
+```{r, echo = FALSE, fig.align='center', out.width="60%"}
+knitr::include_graphics("https://i.pinimg.com/originals/2d/03/cf/2d03cffa216afb23fa50fb07fc1221b1.jpg")
+```
+
+
+---
+
+## Visualizing spatial data on maps using [`ggmap`](https://cran.r-project.org/web/packages/ggmap/readme/README.html)
+
+```{r}
+#| output-location: slide
+#| fig-height: 6
+library(ggmap)
+# First, we'll draw a "box" around the US (in terms of latitude and longitude)
+US <- c(left = -125, bottom = 10, right = -67, top = 49)
+map <- get_stadiamap(US, zoom = 5, maptype = "stamen_toner_lite")
+
+# Visualize the basic map
+ggmap(map)
+```
+
+- Draw map based on lat / lon coordinates
+
+- Put the box into `get_stadiamap()` to access [Stamen Maps](http://maps.stamen.com/#terrain/12/37.7706/-122.3782) (__you need an API key!__)
+
+- Draw the map using `ggmap()` to serve as base
+
+
+---
+
+## Three main types of spatial data
+
+
+1. __Point Pattern Data__: lat-long coordinates where events have occurred
+
+2. __Point-Referenced data__: Latitude-longitude (lat-long) coordinates as well as one or more variables specific to those coordinates.
+
+3. __Areal Data__: Geographic regions with one or more variables associated with those regions.
+
+. . .
+
+- Each type is structured differently within a dataset
+
+- Each type requires a different kind of graph(s)
+
+. . .
+
+We're going to review each type of data. Then, we're going to demonstrate how to plot these different data types
+
++ __Today: Point-referenced and point pattern__
+
++ Next time: Areal data
+
+---
+
+## Point-Pattern data
+
+- __Point Pattern Data__: lat-long coordinates where events have occurred
+
+- __Point pattern data simply records the lat-long of events__; thus, there are only two columns
+
+- Again, latitude and longitude are represented with dots, sometimes called a dot or bubble map.
+
+. . .
+
+- The goal is to understand how the __density__ of events varies across space
+
+- The density of the dots can also be visualized (e.g., with contours)
+
+  - __Use methods we've discussed before for visualizing 2D joint distribution__
+
+
+---
+
+```{r, echo = FALSE, fig.align='center', out.width = "80%"}
+knitr::include_graphics("https://static01.nyt.com/images/2020/09/10/learning/TotalCovidMap-LN/TotalCovidMap-LN-superJumbo.png?quality=75&auto=webp")
+```
+
+
+---
+
+## Point-Referenced data
+
+- __Point-Referenced data__: Latitude-longitude (lat-long) coordinates as well as one or more variables specific to those coordinates
+
+- Point-referenced data will have the following form:
+
+```{r}
+airports |> dplyr::select(lat, lon, altitude, n_depart, n_arrive, name) |> slice(1:3)
+```
+
+. . .
+
+- The goal is to understand how the variable(s) (e.g., `altitude`) vary across different spatial locations
+
+- Typically, the latitude and longitude are represented with dots, and the variable(s) are represented with size and/or colors
+
+---
+
+## Adding points to the map as usual
+
+```{r}
+ggmap(map) +
+  geom_point(data = airports, aes(x = lon, y = lat), alpha = 0.25)
+```
+
+---
+
+## Altering points on the map (in the usual way)
+
+```{r}
+#| output-location: slide
+#| fig-height: 6
+ggmap(map) +
+  geom_point(data = airports, 
+             aes(x = lon, y = lat, 
+                 size = sqrt(n_depart), color = sqrt(n_arrive)),
+             alpha = .5) +
+  scale_size_area(breaks = sqrt(c(1, 5, 10, 50, 100, 500)), 
+                  labels = c(1, 5, 10, 50, 100, 500), 
+                  name = "# departures") +
+  scale_color_distiller(palette = "Spectral") +
+  labs(color = "sqrt(# arrivals)") +
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## Inference for Spatial Data
+
+There are whole courses, textbooks, and careers dedicated to this. We're not going to cover everything!
+
+However, there are some straightforward analyses that can be done for spatial data.
+
+**Point-Referenced Data:**
+
++ Divide geography into groups (e.g., north/south/east/west) and use regression to test if there are significant differences.
+
++ Regression of $\text{outcome} \sim \text{latitude} + \text{longitude}$. Smoothing regression (e.g., loess) is particularly useful here.
+
+---
+
+## Visualizing Inference for Point-Reference Data
+
+For basic linear regression:
+
+1. Plot $(x, y)$ as points
+
+2. Fit the regression model $y \sim x$, to give us  $\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 \cdot x$
+
+3. Plot $(x, \hat{y})$ as a line
+
+. . .
+
+For point reference data, we have the following variables:
+
++ Inputs are longitude $x$ and latitude $y$, and outcome variable is $z$
+
+Consider the following linear regression model: $z \sim \text{lat} + \text{long}$
+
+Goal: Make a visual involving $(\text{long}, \text{lat}, \hat{z})$, and possibly $z$.
+
+
+---
+
+## Kriging
+
+Goal: Make a visual involving (long, lat, $\hat{z}$) and possibly $z$
+
+Want $\hat{z}$ for many (long, lat) combos (not just the observed one!)
+
+To do this, follow this procedure:
+
+1. Fit the model $z \sim \text{lat} + \text{long}$
+
+2. Create a grid of $(\text{long}, \text{lat})_{ij}$
+
+3. Generate $\hat{z}_{ij}$ for each $(\text{long}, \text{lat})_{ij}$
+
+4. Plot a heat map or contour plot of (long, lat, $\hat{z}$)
+
++ You can also add the actual $z$ values (e.g., via size) on the heat map
+
+This is known as **kriging**, or _spatial interpolation_
+
+---
+
+## Kriging: airline data example
+
+
+```{r, echo = FALSE}
+airports_subset <- airports |>
+  filter(lat >= 10 & lat <= 49 & lon >= -125 & lon <= -67)
+ggmap(map) +
+  geom_point(data = airports_subset, 
+             aes(x = lon, y = lat, 
+                 size = sqrt(n_depart)), #<<
+             alpha = .5) +
+  scale_size_area(breaks = sqrt(c(1, 5, 10, 50, 100, 500)), 
+                  labels = c(expression(sqrt(1)), expression(sqrt(5)), 
+                             expression(sqrt(10)), expression(sqrt(50)),
+                             expression(sqrt(100)), expression(sqrt(500)))) +
+  labs(size = "sqrt(# departures)") +
+  theme(legend.title = element_text(size = 8))
+```
+
+---
+
+## Kriging: creating the map
+
+```{r, echo = FALSE}
+ggmap(map) 
+```
+
+
+---
+
+## Kriging: generating the grid
+
+
+```{r}
+#| echo: false
+loess_model <- loess(sqrt(n_depart) ~ lon * lat, data = airports_subset,
+                     control = loess.control(surface = "direct"))
+
+# Now we'll predict what the sqrt(n_depart) is for a grid of lat/long points.
+# This code creates a sequence of latitude and longitude points where
+# we want to predict/estimate what sqrt(n_depart) is:
+lat_grid <- seq(10, 49, by = 1)
+lon_grid <- seq(-125, -67, by = 2)
+
+# the following line creates a grid of the lat and long coordinates
+# (To better understand what this line is doing, it'd be helpful to
+# look at the help documentation for expand.grid, which is often used
+# in computational statistics. Note we named the columns to match the 
+# ones used for the model.)
+lonlat_grid <- expand.grid("lon" = lon_grid, 
+                           "lat" = lat_grid,
+                           # NOTE: We use the following input when using a 
+                           # grid input for the loess model - this ensures
+                           # that the predictions we get will be returned in 
+                           # a long column versus a grid (see what happens when
+                           # you comment out the following line for yourself)
+                           KEEP.OUT.ATTRS = FALSE)
+
+# predicted values of sqrt(n_depart) along the grid
+loess_pred <- predict(loess_model, lonlat_grid)
+
+# Now we need to attach these predicted values to the grid of points that we created earlier:
+loess_pred_tbl <- lonlat_grid |>
+  # Convert to tibble:
+  as_tibble() |>
+  # Add this column:
+  mutate(pred_n_depart = loess_pred)
+
+
+ggmap(map) +
+  geom_point(data = loess_pred_tbl, 
+             aes(x = lon, y = lat)) 
+```
+
+---
+
+
+## Kriging: generating predicted values
+
+
+```{r}
+#| echo: false
+ggmap(map) +
+  geom_point(data = loess_pred_tbl, 
+             aes(x = lon, y = lat, 
+                 color = loess_pred)) +
+  scale_color_distiller(palette = "Spectral") +
+  labs(color = "Estimated sqrt(# flights)") +
+  theme(legend.title = element_text(size = 8))
+```
+
+
+---
+
+## Kriging: plotting heat map of predicted values
+
+
+```{r}
+#| echo: false
+ggmap(map) +
+  geom_point(data = airports, 
+             aes(x = lon, y = lat, size = sqrt(n_depart)), 
+             alpha = .5) +
+  geom_contour_filled(data = loess_pred_tbl, binwidth = 1,
+                      aes(x = lon, y = lat, z = loess_pred, 
+                          color = after_stat(level)),
+                      alpha = 0.2) +
+  scale_size_area(breaks = sqrt(c(1, 5, 10, 50, 100, 500)), 
+                  labels = c(expression(sqrt(1)), expression(sqrt(5)), 
+                             expression(sqrt(10)), expression(sqrt(50)),
+                             expression(sqrt(100)), expression(sqrt(500)))) +
+  labs(size = "sqrt(# departures)", 
+       color = "level", fill = "level") +
+  theme(legend.title = element_text(size = 8))
+```
+
+
+---
+
+## Kriging overview
+
+
+The steps used to create this map are...
+
+1. Fit an interactive regression model using `loess()`
+
+2. Make a grid of lat/long coordinates, using `seq()` and `expand.grid()`
+
+3. Get estimated outcomes across the grid using `predict()`
+
+4. Use `geom_contour_filled()` to color map by estimated outcomes
+
+
+---
+
+## Recap and next steps
+
++ Spatial data is most commonly encoded in a 2D plane (latitude/longitude), i.e., maps
+
++ Decisions to make: what projection to use? do we need all specific geolocations, or just general areas (e.g., states)?
+
++ What kind of data do we have?
+
+  + Point pattern: Scatterplots with density contours.
+
+  + Point-referenced: Scatterplots with color/size, use regression/loess for inference.
+
+. . .
+
++ **HW8 is due Wednesday! You do NOT have lab this week**
+
++ **Next time**: Areal data
+
++ Recommended reading: [CW Chapter 15 Visualizing geospatial data](https://clauswilke.com/dataviz/geospatial-data.html), [KH Chapter 7 Draw Maps](https://socviz.co/maps.html#maps)
