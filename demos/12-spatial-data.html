@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.43">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Demo 12: Visualizations and inference for spatial data – Statistical Graphics and Visualization 36-315 Spring 25</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-d4d76bf8491c20bad77d141916dc28e1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-51f09ead35d5b96974be4249e4526bd0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
+      Statistical Graphics and Visualization 36-315 Spring 25
+      </li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-center sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Statistical Graphics and Visualization 36-315 Spring 25</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/ryurko/statds-36315-spring25" title="GitHub" class="quarto-navigation-tool px-1" aria-label="GitHub"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lectures</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../demos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Demos</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#create-a-stadia-maps-account" id="toc-create-a-stadia-maps-account" class="nav-link active" data-scroll-target="#create-a-stadia-maps-account">Create a Stadia Maps account</a></li>
+  <li><a href="#creating-maps-with-ggmap" id="toc-creating-maps-with-ggmap" class="nav-link" data-scroll-target="#creating-maps-with-ggmap">Creating Maps with <code>ggmap</code></a>
+  <ul class="collapse">
+  <li><a href="#example-plotting-airline-flight-data-across-the-us" id="toc-example-plotting-airline-flight-data-across-the-us" class="nav-link" data-scroll-target="#example-plotting-airline-flight-data-across-the-us">Example: Plotting Airline Flight Data across the US</a></li>
+  <li><a href="#load-flight-data-from-github" id="toc-load-flight-data-from-github" class="nav-link" data-scroll-target="#load-flight-data-from-github">Load flight data from GitHub</a></li>
+  <li><a href="#manipulating-the-data-to-get-some-custom-tibbles" id="toc-manipulating-the-data-to-get-some-custom-tibbles" class="nav-link" data-scroll-target="#manipulating-the-data-to-get-some-custom-tibbles">Manipulating the data to get some custom tibbles</a></li>
+  <li><a href="#mapping-the-data-we-created" id="toc-mapping-the-data-we-created" class="nav-link" data-scroll-target="#mapping-the-data-we-created">Mapping the data we created</a></li>
+  </ul></li>
+  <li><a href="#facetting-maps" id="toc-facetting-maps" class="nav-link" data-scroll-target="#facetting-maps">Facetting Maps</a></li>
+  <li><a href="#statistical-analyses-for-point-reference-data" id="toc-statistical-analyses-for-point-reference-data" class="nav-link" data-scroll-target="#statistical-analyses-for-point-reference-data">Statistical Analyses for Point-Reference Data</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Demo 12: Visualizations and inference for spatial data</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="create-a-stadia-maps-account" class="level1">
+<h1>Create a Stadia Maps account</h1>
+<p>Before moving on to the code below, you’ll first need to create a free Stadia Maps account in order to access the map styles to use with <code>ggmap</code>. You can find the directions about the process <a href="https://docs.stadiamaps.com/guides/migrating-from-stamen-map-tiles/#ggmap">here</a>. After you click on the “Create an Account” button, follow the steps by entering in your relevant information. Then select Mobile/Native App version to generate an API key. You’ll then find your API key in the displayed Stadia-hosted URLs, displayed at the end of the URLs after <code>api_key=</code>. Once you have the API key saved somewhere, after you install the <code>ggmap</code> package you can then run the following code to save your API key once and then never have to run this step again:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># You first need to install the ggmap R package</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("ggmap")</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ggmap<span class="sc">:</span><span class="fu">register_stadiamaps</span>(<span class="st">"YOUR-API-KEY-HERE"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                          <span class="co"># write = TRUE saves this once</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">write =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="creating-maps-with-ggmap" class="level1">
+<h1>Creating Maps with <code>ggmap</code></h1>
+<p>We can create maps (maps of different type such as “terrain”, “stamen_toner_lite”, etc.) with the <code>ggmap</code> package, as shown below. Making a basic map with <code>ggmap</code> follows three main steps:</p>
+<ul>
+<li><p>Specify the coordinates of the “box” that you’ll draw your map in. This corresponds to the <code>left</code>, <code>bottom</code>, <code>right</code>, and <code>top</code> coordinates. The <code>left</code> and <code>right</code> coordinates are longitude coordinates; the <code>bottom</code> and <code>top</code> coordinates are latitude coordinates.</p></li>
+<li><p>Put the “box” you specified into <code>get_stadiamap()</code>. Also within <code>get_stadiamap()</code>, specify the <code>maptype</code>, which determines the “terrain” that is displayed on the map, as well as <code>zoom</code>, which determines how much “local detail” is displayed on the map.</p></li>
+<li><p>Draw the map using <code>ggmap()</code>.</p></li>
+</ul>
+<p>As an example, the following code draws a map of Pittsburgh. To do this, I first found the latitude/longitude coordinates of center of Pittsburgh. Then, I draw a “box” around Pittsburgh by adding and subtracting two latitude/longitude from the central coordinates. Finally, I used <code>get_stadiamap()</code> and <code>ggmap()</code> to plot the map.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggmap)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># step 1: draw the box</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>pitt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">left =</span> <span class="sc">-</span><span class="fl">79.9959</span> <span class="sc">-</span> <span class="dv">2</span>, <span class="at">bottom =</span> <span class="fl">40.4406</span> <span class="sc">-</span> <span class="dv">2</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">right =</span> <span class="sc">-</span><span class="fl">79.9959</span> <span class="sc">+</span> <span class="dv">2</span>, <span class="at">top =</span> <span class="fl">40.4406</span> <span class="sc">+</span> <span class="dv">2</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># step 2: use get_stadiamap to specify maptype/zoom</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>map_base <span class="ot">&lt;-</span> <span class="fu">get_stadiamap</span>(pitt, <span class="at">maptype =</span> <span class="st">"stamen_toner_lite"</span>, <span class="at">zoom =</span> <span class="dv">8</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># step 3: draw the map with ggmap</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>map_object <span class="ot">&lt;-</span> <span class="fu">ggmap</span>(map_base, <span class="at">extent =</span> <span class="st">"device"</span>, </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ylab =</span> <span class="st">"Latitude"</span>, <span class="at">xlab =</span> <span class="st">"Longitude"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>map_object</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-spatial-data_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="example-plotting-airline-flight-data-across-the-us" class="level2">
+<h2 class="anchored" data-anchor-id="example-plotting-airline-flight-data-across-the-us">Example: Plotting Airline Flight Data across the US</h2>
+<p>Here, we’ll work with airline data from <a href="https://github.com/jpatokal/openflights">this GitHub repository</a>. You can find out more about this dataset <a href="https://openflights.org/data.html">here</a>.</p>
+<p>Before we begin, note that this is just one example of how you can add interesting information to maps with <code>ggmap</code>. As long as you have latitude and longitude information, you should be able to add data to maps. For more interesting examples and for an in-depth description of <code>ggmap</code>, see the short paper by David Kahle and Hadley Wickham <a href="http://stat405.had.co.nz/ggmap.pdf">here</a>. (This paper may be helpful for teams that will be working with spatial data for the group project.)</p>
+</section>
+<section id="load-flight-data-from-github" class="level2">
+<h2 class="anchored" data-anchor-id="load-flight-data-from-github">Load flight data from GitHub</h2>
+<p>Here we will use a large dataset on GitHub about airline flights across the world. After loading in the raw data, we’ll do some data manipulation to create useful variables for this dataset.</p>
+<p>First, we’ll load a dataset on airports across the world:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#  Load and format airports data</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>airports <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"name"</span>, <span class="st">"city"</span>, <span class="st">"country"</span>, <span class="st">"IATA_FAA"</span>, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                                   <span class="st">"ICAO"</span>, <span class="st">"lat"</span>, <span class="st">"lon"</span>, <span class="st">"altitude"</span>, <span class="st">"timezone"</span>, <span class="st">"DST"</span>))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Here's what the data look like:</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>airports</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7,698 × 14
+      ID name   city  country IATA_FAA ICAO    lat   lon altitude timezone DST  
+   &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;
+ 1     1 Gorok… Goro… Papua … GKA      AYGA  -6.08 145.      5282 10       U    
+ 2     2 Madan… Mada… Papua … MAG      AYMD  -5.21 146.        20 10       U    
+ 3     3 Mount… Moun… Papua … HGU      AYMH  -5.83 144.      5388 10       U    
+ 4     4 Nadza… Nadz… Papua … LAE      AYNZ  -6.57 147.       239 10       U    
+ 5     5 Port … Port… Papua … POM      AYPY  -9.44 147.       146 10       U    
+ 6     6 Wewak… Wewak Papua … WWK      AYWK  -3.58 144.        19 10       U    
+ 7     7 Narsa… Nars… Greenl… UAK      BGBW  61.2  -45.4      112 -3       E    
+ 8     8 Godth… Godt… Greenl… GOH      BGGH  64.2  -51.7      283 -3       E    
+ 9     9 Kange… Sond… Greenl… SFJ      BGSF  67.0  -50.7      165 -3       E    
+10    10 Thule… Thule Greenl… THU      BGTL  76.5  -68.7      251 -4       E    
+# ℹ 7,688 more rows
+# ℹ 3 more variables: X12 &lt;chr&gt;, X13 &lt;chr&gt;, X14 &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>Then, we’ll load a dataset on airline flight routes across the world:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#  Load and format routes data</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>routes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"airline"</span>, <span class="st">"airlineID"</span>, <span class="st">"sourceAirport"</span>, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">"sourceAirportID"</span>, <span class="st">"destinationAirport"</span>, </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">"destinationAirportID"</span>, <span class="st">"codeshare"</span>, <span class="st">"stops"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">"equipment"</span>))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Here's what the data look like:</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>routes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 67,663 × 9
+   airline airlineID sourceAirport sourceAirportID destinationAirport
+   &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;         &lt;chr&gt;           &lt;chr&gt;             
+ 1 2B      410       AER           2965            KZN               
+ 2 2B      410       ASF           2966            KZN               
+ 3 2B      410       ASF           2966            MRV               
+ 4 2B      410       CEK           2968            KZN               
+ 5 2B      410       CEK           2968            OVB               
+ 6 2B      410       DME           4029            KZN               
+ 7 2B      410       DME           4029            NBC               
+ 8 2B      410       DME           4029            TGK               
+ 9 2B      410       DME           4029            UUA               
+10 2B      410       EGO           6156            KGD               
+# ℹ 67,653 more rows
+# ℹ 4 more variables: destinationAirportID &lt;chr&gt;, codeshare &lt;chr&gt;, stops &lt;dbl&gt;,
+#   equipment &lt;chr&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="manipulating-the-data-to-get-some-custom-tibbles" class="level2">
+<h2 class="anchored" data-anchor-id="manipulating-the-data-to-get-some-custom-tibbles">Manipulating the data to get some custom tibbles</h2>
+<p>Here, we’ll do some data manipulation to obtain the number of arrivals/departures per airport.</p>
+<p>The following code does two tasks that very commonly come up with spatial data:</p>
+<ul>
+<li><p>Count the number of events at a particular location.</p></li>
+<li><p>Merge two datasets by a common variable (e.g., an ID or location).</p></li>
+</ul>
+<p>We’ve seen instances of the first task before (e.g., counting the number of subjects belonging to a certain group). We haven’t done the second task before, but it regularly comes up in spatial data: Often, you’ll find multiple datasets that contain different variables about the same spatial location, and you’ll want to merge them together. We’ll do this using the <code>left_join()</code> function within the <code>dplyr</code> package that’s in the <code>tidyverse</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#  Manipulate the routes data to create two new tibbles:</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  one for arrivals, one for departures.  </span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  Each counts the number of flights arriving/departing from each airport.</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>departures <span class="ot">&lt;-</span> routes <span class="sc">|&gt;</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sourceAirportID) <span class="sc">|&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">n_depart =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert the ID to integer since it's a character (need to have matching</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># data types for columns you will join on)</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sourceAirportID =</span> <span class="fu">as.integer</span>(sourceAirportID))</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>arrivals <span class="ot">&lt;-</span> routes <span class="sc">|&gt;</span> </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(destinationAirportID) <span class="sc">|&gt;</span> </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">n_arrive =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">destinationAirportID =</span> <span class="fu">as.integer</span>(destinationAirportID))</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Join both of these summaries to the airports data bsed on the ID column to</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co"># match their respective ID columns</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># First join the departures:</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>airports <span class="ot">&lt;-</span> airports <span class="sc">|&gt;</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># We join the departures so that ID matches sourceAirportID</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(departures, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ID"</span> <span class="ot">=</span> <span class="st">"sourceAirportID"</span>))</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co"># And now join arrivals:</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>airports <span class="ot">&lt;-</span> airports <span class="sc">|&gt;</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Same process - but different ID</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(arrivals, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ID"</span> <span class="ot">=</span> <span class="st">"destinationAirportID"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Thus, each row corresponds to a <em>single</em> airport with columns about the airport along with info about the number of flights (departures and arrivals).</p>
+</section>
+<section id="mapping-the-data-we-created" class="level2">
+<h2 class="anchored" data-anchor-id="mapping-the-data-we-created">Mapping the data we created</h2>
+<p>First, we’ll use <code>ggmap</code> to create a base map of the data. Although the dataset is for the whole world, we’ll focus on the US for simplicity.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First, we'll draw a "box" around the US</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (in terms of latitude and longitude)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>US <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">left =</span> <span class="sc">-</span><span class="dv">125</span>, <span class="at">bottom =</span> <span class="dv">10</span>, <span class="at">right =</span> <span class="sc">-</span><span class="dv">67</span>, <span class="at">top =</span> <span class="dv">49</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>map <span class="ot">&lt;-</span> <span class="fu">get_stadiamap</span>(US, <span class="at">zoom =</span> <span class="dv">5</span>, <span class="at">maptype =</span> <span class="st">"stamen_toner_lite"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  Visualize the basic map</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(map)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-spatial-data_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now we’ll demonstrate how to add points to the map using <code>geom_point()</code>. Thus, this is equivalent to creating a scatterplot, but within the space of a map.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#  Add points to the map of airports</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(map) <span class="sc">+</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> airports, <span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat), <span class="at">alpha =</span> .<span class="dv">25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-spatial-data_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can also add contour lines using <code>stat_density2d()</code>, just like we did with scatterplots. In the code below, we also use the <code>bins</code> argument, which we haven’t seen before in <code>stat_density2d</code>, but intuitively it is the same as when we used <code>bins</code> for histograms: More <code>bins</code> corresponds to more granularity in the data. I’ve found that not specifying <code>bins</code> can give very odd results for spatial data, so I recommend setting <code>bins</code> to a somewhat low value such that you can easily see high- and low-density areas on a map.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(map) <span class="sc">+</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_density2d</span>(<span class="at">data =</span> airports,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat, <span class="at">fill =</span> <span class="fu">after_stat</span>(level)),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">geom =</span> <span class="st">"polygon"</span>, <span class="at">bins =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> airports, <span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat), <span class="at">alpha =</span> .<span class="dv">25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-spatial-data_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now, think about what the above map is displaying. It is density of <em>airports</em> (which correspond to the rows of our dataset), but it is not displaying the density of <em>flights</em> (arrivals or departures). How can we display the density of flights on this map?</p>
+<p>A common option is to make the size of the points proportional to a third variable (in this case <code>departures</code>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#  Add points to the map of airports</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  Each point will be located at the lat/long of the airport</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  The size of the points is proportional to the square root of the number of departures at that airport</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>map_point_depart <span class="ot">&lt;-</span> <span class="fu">ggmap</span>(map) <span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> airports, </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat, <span class="at">size =</span> <span class="fu">sqrt</span>(n_depart)), <span class="at">alpha =</span> .<span class="dv">25</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># In this case, it can be helpful to create your own legend for the plot, so </span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># that you can set which sizes of the correspond to which values in the data:</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>map_point_depart <span class="ot">&lt;-</span> map_point_depart <span class="sc">+</span> </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size_area</span>(<span class="at">breaks =</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>)), </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>), </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">name =</span> <span class="st">"# departures"</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>map_point_depart</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-spatial-data_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>You could also change the color of the points. <strong>However, as we’ve seen previously, just setting <code>color = variable</code> for a continuous variable often gives unsatisfactory results</strong> (because the default colors aren’t great). This is especially true for spatial data, where there is often a wide range of responses across geography.</p>
+<p>In what follows, I demonstrate two ways that you can manually change the colors on a map; one uses <code>scale_color_gradient2()</code>, and one uses <code>scale_color_distiller</code>. The second one is more straightforward, but the first one allows for more flexibility.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># What happens if we just set sqrt(n_depart) equal to color</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(map) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> airports, </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat, <span class="at">color =</span> <span class="fu">sqrt</span>(n_depart)), <span class="at">alpha =</span> .<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-spatial-data_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Using scale_color_gradient2 to manually set the color scale</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(map) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> airports, </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat, <span class="at">color =</span> <span class="fu">sqrt</span>(n_depart)), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Note that you can also set a "mid" color, which is what the color will be </span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># at the midpoint (which you also set). Using limits (or breaks, </span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># which I don't do here) is very useful when your variable has a wide range </span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># and/or is very skewed (which is the case for the n_depart variable).</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_gradient2</span>(<span class="at">low =</span> <span class="st">"blue"</span>, <span class="at">mid =</span> <span class="st">"purple"</span>, <span class="at">high =</span> <span class="st">"red"</span>, </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>                        <span class="at">midpoint =</span> <span class="fl">12.5</span>, <span class="at">limits =</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">500</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-spatial-data_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Using scale_color_distiller to manually set the color scale</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(map) <span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> airports, </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat, <span class="at">color =</span> <span class="fu">sqrt</span>(n_depart)), <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Note that there are many different palettes - see help documentation</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># for scale_color_distiller</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_distiller</span>(<span class="at">palette =</span> <span class="st">"Spectral"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-spatial-data_files/figure-html/unnamed-chunk-10-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We could of course map one variable to size and another to color, e.g., <code>n_depart</code> to size and <code>n_arrive</code> to color. You should NOT map one variable to both aesthetics - that is a redundant display of information.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(map) <span class="sc">+</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> airports, </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat, </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">size =</span> <span class="fu">sqrt</span>(n_depart), <span class="at">color =</span> <span class="fu">sqrt</span>(n_arrive)), </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size_area</span>(<span class="at">breaks =</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>)), </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>), </span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">name =</span> <span class="st">"# departures"</span>) <span class="sc">+</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_distiller</span>(<span class="at">palette =</span> <span class="st">"Spectral"</span>) <span class="sc">+</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="st">"sqrt(# arrivals)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-spatial-data_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Finally, we can (as usual) change the shape of the points according to another variable. The following marks airports that have an altitude higher than 1500 feet (which I don’t think would normally be of scientific interest, but this nonetheless shows you how to change <code>shape</code> in this way):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(map) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> airports, </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat, </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">size =</span> <span class="fu">sqrt</span>(n_depart), <span class="at">color =</span> <span class="fu">sqrt</span>(n_arrive),</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">shape =</span> altitude <span class="sc">&gt;</span> <span class="dv">1500</span>), </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size_area</span>(<span class="at">breaks =</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>)), </span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>), </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">name =</span> <span class="st">"# departures"</span>) <span class="sc">+</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_distiller</span>(<span class="at">palette =</span> <span class="st">"Spectral"</span>) <span class="sc">+</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="st">"sqrt(# arrivals)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-spatial-data_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The above plots are nice ways to show the distribution of the number of flights. However, earlier we used <code>stat_density2d</code> to plot the density of airports. How can we use this function to plot the density of flights?</p>
+<p>This requires a bit of hacking. The <code>stat_density2d</code> will plot the density of points across <em>rows</em> in your dataset. Thus, if we want to look at the density of departures, we can duplicate rows that have multiple departures For example, if an airport has <code>n_depart = 5</code>, we can create 5 rows in a new dataset for that airport. Then, we can use <code>stat_density_2d</code> on this “duplicated” dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First remove the airports with missing n_depart</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>clean_airports <span class="ot">&lt;-</span> airports <span class="sc">|&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(n_depart)) <span class="co"># ! is the negate operator in R, so this only keeps</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># rows where n_depart is NOT missing  </span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>airports_duplicated <span class="ot">&lt;-</span> clean_airports[<span class="fu">rep</span>(<span class="fu">row.names</span>(clean_airports), </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                                          clean_airports<span class="sc">$</span>n_depart),]</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(map) <span class="sc">+</span> <span class="fu">stat_density2d</span>(<span class="at">data =</span> airports_duplicated,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat, <span class="at">fill =</span> <span class="fu">after_stat</span>(level)), </span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>                                <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">geom =</span> <span class="st">"polygon"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-spatial-data_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Unsurprisingly, we see there are higher concentrations of flights at major cities. Arguably, it’s much easier to deduce this from the above density plot than from the color plots. But both types of plots (density plots and color plots) serve a purpose, and preference for one or the other will depend on the application and the questions of interest.</p>
+</section>
+</section>
+<section id="facetting-maps" class="level1">
+<h1>Facetting Maps</h1>
+<p>In the above, we demonstrated how you can change the <code>shape</code> of points to see high- and low-altitude airports. We can also use facetting to compare high- and low-altitude airports.</p>
+<p>Facetting with maps is exactly the same as facetting with other graphs; we just use the <code>facet_wrap()</code> or <code>facet_grid()</code> functions. There is one added bonus when facetting with graphs: In the plot below, not only do we get to compare the distribution of departure and arrivals for high- and low-altitude airports, but also we can more easily see where high- and low-altitude airports are within the US.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(map) <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> airports, </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat, </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">size =</span> <span class="fu">sqrt</span>(n_depart), <span class="at">color =</span> <span class="fu">sqrt</span>(n_arrive)), </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size_area</span>(<span class="at">breaks =</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>)), </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>), </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">name =</span> <span class="st">"# departures"</span>) <span class="sc">+</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_distiller</span>(<span class="at">palette =</span> <span class="st">"Spectral"</span>) <span class="sc">+</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="st">"sqrt(# arrivals)"</span>) <span class="sc">+</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> altitude <span class="sc">&gt;</span> <span class="dv">1500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-spatial-data_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="statistical-analyses-for-point-reference-data" class="level1">
+<h1>Statistical Analyses for Point-Reference Data</h1>
+<p>It can be helpful complement graphs like the oned above with statistical models for predicting the number of <code>sqrt(n_depart)</code> on top of our map. There is a huge literature on how to model spatial outcomes, and we are only going to consider two simple examples in this class that we’ve learned before: linear regression and <code>loess</code>.</p>
+<p>First, we can consider running a linear regression on our data. To perform statistical analyses on the data displayed in the map, we must first “grab” the subset of the data that is being displayed in the map:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>airports_subset <span class="ot">&lt;-</span> airports <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(lat <span class="sc">&gt;=</span> <span class="dv">10</span> <span class="sc">&amp;</span> lat <span class="sc">&lt;=</span> <span class="dv">49</span> <span class="sc">&amp;</span> lon <span class="sc">&gt;=</span> <span class="sc">-</span><span class="dv">125</span> <span class="sc">&amp;</span> lon <span class="sc">&lt;=</span> <span class="sc">-</span><span class="dv">67</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then, we can run a linear regression between our outcome <code>sqrt(n_depart)</code> and latitude and longitude:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">sqrt</span>(n_depart) <span class="sc">~</span> lat <span class="sc">+</span> lon, <span class="at">data =</span> airports_subset))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = sqrt(n_depart) ~ lat + lon, data = airports_subset)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.0399 -2.1437 -1.2636  0.3869 26.6195 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  4.97196    1.03451   4.806 1.98e-06 ***
+lat         -0.01076    0.01635  -0.658    0.511    
+lon          0.01161    0.01072   1.083    0.279    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 3.77 on 561 degrees of freedom
+  (1106 observations deleted due to missingness)
+Multiple R-squared:  0.003578,  Adjusted R-squared:  2.538e-05 
+F-statistic: 1.007 on 2 and 561 DF,  p-value: 0.3659</code></pre>
+</div>
+</div>
+<p>Think about why it’s unsurprising that neither of these terms are significant (but for different reasons). It’ll be helpful to refer back to the map above.</p>
+<p>To address this, it can sometimes be helpful to run multiple models on different subsets of the data. For example, we can divide the data into the eastern and western parts of the US:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The following code divides the data into the eastern and western</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># parts of the US (I Googled "middle of united states longitude")</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>airports_west <span class="ot">&lt;-</span> airports_subset <span class="sc">|&gt;</span> <span class="fu">filter</span>(lon <span class="sc">&lt;=</span> <span class="sc">-</span><span class="fl">98.5795</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>airports_east <span class="ot">&lt;-</span> airports_subset <span class="sc">|&gt;</span> <span class="fu">filter</span>(lon <span class="sc">&gt;</span> <span class="sc">-</span><span class="fl">98.5795</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Now let's perform a linear regression:</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">sqrt</span>(n_depart) <span class="sc">~</span> lat <span class="sc">+</span> lon, <span class="at">data =</span> airports_west))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = sqrt(n_depart) ~ lat + lon, data = airports_west)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.3979 -1.8717 -0.8102  0.3643 17.9495 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept) -3.93970    3.78550  -1.041  0.29947   
+lat         -0.11022    0.03430  -3.214  0.00157 **
+lon         -0.10060    0.03765  -2.672  0.00827 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 3.408 on 171 degrees of freedom
+  (314 observations deleted due to missingness)
+Multiple R-squared:  0.0666,    Adjusted R-squared:  0.05568 
+F-statistic: 6.101 on 2 and 171 DF,  p-value: 0.002759</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">sqrt</span>(n_depart) <span class="sc">~</span> lat <span class="sc">+</span> lon, <span class="at">data =</span> airports_east))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = sqrt(n_depart) ~ lat + lon, data = airports_east)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.9834 -2.2450 -1.4504  0.5261 26.5616 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)  4.62321    2.00581   2.305   0.0217 *
+lat          0.00685    0.01896   0.361   0.7182  
+lon          0.01381    0.02330   0.593   0.5537  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 3.882 on 387 degrees of freedom
+  (792 observations deleted due to missingness)
+Multiple R-squared:  0.001166,  Adjusted R-squared:  -0.003996 
+F-statistic: 0.2259 on 2 and 387 DF,  p-value: 0.7979</code></pre>
+</div>
+</div>
+<p>Compare and contrast these regressions with each other as well as with the “overall” regression we did earlier.</p>
+<p>Now let’s consider using <code>loess</code>. As a reminder, we learned how to plot loess curves when we have one quantitative covariate and one quantitative outcome. For example, the below plot makes a scatterplot of longitude and <code>sqrt(n_depart)</code> with a loess curve on top.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>airports_subset <span class="sc">|&gt;</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> <span class="fu">sqrt</span>(n_depart))) <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-spatial-data_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>You can interpret the above plot as what we would estimate <code>sqrt(n_depart)</code> to be when we move from west to east (left to right), averaged across all latitude values. What’s nice about <code>loess</code> is that it’s a very easy way to fit a flexible regression line. How can we make something similar to the above, but accounting for longitude <em>and</em> latitude in our <code>loess</code> curve? It takes more work than just one line of code to answer this question, but the pay-off is usually worth it (i.e., you’ll get a cool/informative graph).</p>
+<p>Let’s consider a <code>loess</code> model that includes latitude and longitude. The following model includes the main effects for latitude and longitude as well as their interaction, making for a (relatively) flexible model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>loess_model <span class="ot">&lt;-</span> <span class="fu">loess</span>(<span class="fu">sqrt</span>(n_depart) <span class="sc">~</span> lon <span class="sc">*</span> lat, <span class="at">data =</span> airports_subset,</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">control =</span> <span class="fu">loess.control</span>(<span class="at">surface =</span> <span class="st">"direct"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The line <code>control = loess.control(surface = "direct")</code> (which we have not seen before) basically says, “<code>loess</code>, please extrapolate when making predictions from this model.” Usually it’s not a good idea to extrapolate, but also with map data it’s usually clear where extrapolations occur, as we will see shortly.</p>
+<p>Now we have built a “flexible” model for the outcome using <code>loess</code>. A natural question to ask is: Based on the data, what does <code>loess</code> estimate the number of flights is across different areas of the country? To answer this question, we will follow this workflow:</p>
+<ul>
+<li><p>Make a point-referenced map of the outcome variable (as we have done above).</p></li>
+<li><p>In code (not visually), make a grid of latitude and longitude points on your map.</p></li>
+<li><p>Using your <code>loess</code> model, predict what the outcome variable is at each point on the grid.</p></li>
+<li><p>Add the predictions in the third bulletpoint to the point-referenced map in the first bulletpoint using contour lines.</p></li>
+</ul>
+<p>Below is the code to implement this workflow for the airline example. We already completed the first bulletpoint, so now we just need to do the last three bulletpoints (below).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we'll predict what the sqrt(n_depart) is for a grid of lat/long points.</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This code creates a sequence of latitude and longitude points where</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># we want to predict/estimate what sqrt(n_depart) is:</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>lat_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">10</span>, <span class="dv">49</span>, <span class="at">by =</span> <span class="dv">1</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>lon_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">125</span>, <span class="sc">-</span><span class="dv">67</span>, <span class="at">by =</span> <span class="dv">2</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># the following line creates a grid of the lat and long coordinates</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co"># (To better understand what this line is doing, it'd be helpful to</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co"># look at the help documentation for expand.grid, which is often used</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># in computational statistics. Note we named the columns to match the </span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ones used for the model.)</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>lonlat_grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="st">"lon"</span> <span class="ot">=</span> lon_grid, </span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>                           <span class="st">"lat"</span> <span class="ot">=</span> lat_grid,</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>                           <span class="co"># </span><span class="al">NOTE</span><span class="co">: We use the following input when using a </span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>                           <span class="co"># grid input for the loess model - this ensures</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>                           <span class="co"># that the predictions we get will be returned in </span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>                           <span class="co"># a long column versus a grid (see what happens when</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>                           <span class="co"># you comment out the following line for yourself)</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>                           <span class="at">KEEP.OUT.ATTRS =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a><span class="co"># predicted values of sqrt(n_depart) along the grid</span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>loess_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(loess_model, lonlat_grid)</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we need to attach these predicted values to the grid of points that we created earlier:</span></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>loess_pred_tbl <span class="ot">&lt;-</span> lonlat_grid <span class="sc">|&gt;</span></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert to tibble:</span></span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add this column:</span></span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pred_n_depart =</span> loess_pred)</span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Now we'll make the scatterplot map again, but with contours for what loess predicts on top:</span></span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap</span>(map) <span class="sc">+</span></span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> airports, </span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat, <span class="at">size =</span> <span class="fu">sqrt</span>(n_depart)), </span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_contour_filled</span>(<span class="at">data =</span> loess_pred_tbl, <span class="at">binwidth =</span> <span class="dv">1</span>,</span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">aes</span>(<span class="at">x =</span> lon, <span class="at">y =</span> lat, <span class="at">z =</span> loess_pred, </span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>                          <span class="at">color =</span> <span class="fu">after_stat</span>(level)),</span>
+<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>                      <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size_area</span>(<span class="at">breaks =</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>)), </span>
+<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>                  <span class="at">labels =</span> <span class="fu">c</span>(<span class="fu">expression</span>(<span class="fu">sqrt</span>(<span class="dv">1</span>)), <span class="fu">expression</span>(<span class="fu">sqrt</span>(<span class="dv">5</span>)), </span>
+<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">expression</span>(<span class="fu">sqrt</span>(<span class="dv">10</span>)), <span class="fu">expression</span>(<span class="fu">sqrt</span>(<span class="dv">50</span>)),</span>
+<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">expression</span>(<span class="fu">sqrt</span>(<span class="dv">100</span>)), <span class="fu">expression</span>(<span class="fu">sqrt</span>(<span class="dv">500</span>)))) <span class="sc">+</span></span>
+<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">size =</span> <span class="st">"sqrt(# departures)"</span>, </span>
+<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"level"</span>, <span class="at">fill =</span> <span class="st">"level"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 7134 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-spatial-data_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>There are several takeaways from this plot. First, we can see that - unsurprisingly - <code>loess</code> is detecting that higher numbers of flights are occurring in the eastern and western parts of the US. Sure, we already knew this from the previous plot, but now we have a statistical model that verifies that finding. Furthermore, we can see the estimated number of flights is only low for the very northern part of the US and South America, which probably also aligns with your intuition. Finally, the model is suggesting something that definitely should <em>not</em> align with your intuition: It is estimating that there is a high number of flights in the middle of the Pacific Ocean!! However, there is no data out in the Pacific Ocean, so we know that the model is extrapolating outside the range of our data and that we should take these results with a very large grain of salt (i.e., probably not trust it). In this example, <code>loess</code> is probably making the following logic: “Let’s say I start in Nevada and go a little bit west - the number of flights goes up a lot! So, if I keep going west, the number of flights will probably keep going up?” That logic ends up being <strong>incorrect</strong>, and thus results in untrustworthy/unintuitive <strong>extrapolations.</strong></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/ryurko\.github\.io\/statds-36315-spring25\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
