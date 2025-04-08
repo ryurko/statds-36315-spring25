@@ -16,4 +16,5 @@ title: "Demos"
 | 10     | Mar 31  | Visualizing time series data | [HTML](demos/10-time-series.qmd)  |
 | 11     | Apr 2  | Animations, modifying colors and themes | [HTML](demos/11-anim-colors-themes.qmd)  |
 | 12     | Apr 7  | Visualizations and inference for spatial data | [HTML](demos/12-spatial-data.qmd)  |
+| 13     | Apr 9  | Visualizations and inference for areal data | [HTML](demos/13-areal-data.qmd)  |
 

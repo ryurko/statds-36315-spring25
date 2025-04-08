@@ -25,5 +25,6 @@ title: "Lectures"
 | 19        | Mar 31  | Time Series, Autocorrelation, and Seasonal Decomposition | [slides](lectures/19-time-series.qmd) |
 | 20        | Apr 2  | Animations, infographics, and annotations | [slides](lectures/20-anim-graphics.qmd) |
 | 21        | Apr 7  | Visualizations and Inference for Spatial Data | [slides](lectures/21-spatial-data.qmd) |
+| 22        | Apr 9  | Visualizations and Inference for Areal Data | [slides](lectures/22-areal-data.qmd) |
 
 

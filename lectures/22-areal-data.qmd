@@ -1,0 +1,328 @@
+---
+title: "Visualizations and Inference for Areal Data"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-04-09
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(datasets)
+state_names <- rownames(state.x77)
+state_data <- as_tibble(state.x77)
+state_data <- state_data |>
+  mutate(state = state_names) |>
+  mutate(state = tolower(state))
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 95%;"}
+
+**HW8 is due TONIGHT by 11:59 PM ET**
+
+**You do NOT have lab this week**
+
+:::
+
+. . .
+
+::: {style="font-size: 95%;"}
+
+**Last time:**
+
+Three main types of spatial data:
+
+1. __Point Pattern Data__: lat-long coordinates where events have occurred
+
+2. __Point-Referenced data__: Latitude-longitude (lat-long) coordinates as well as one or more variables specific to those coordinates.
+
+3. __Areal Data__: Geographic regions with one or more variables associated with those regions.
+
+Walked through how to plot point-referenced and point pattern data.
+
+
+**TODAY:** Visualizations and Inference for Areal Data
+
+:::
+
+
+---
+
+## Thinking about areal data
+
+- __Areal Data__: Geographic regions associated with one or more variables specific to those regions
+
+- Areal data will have the following form (example US states data from 1970s):
+
+```{r}
+state_data |> dplyr::slice(1:3)
+```
+
+---
+
+## High-level overview of steps
+
+- Need to match the region with the actual geographic boundaries
+
+- Many geographic boundaries/features are stored as "shapefiles"
+
+  - i.e., complicated polygons
+  
+- Can contain the lines, points, etc. to represent any geographic feature
+
+- Shapefiles are readily available for countries, states, counties, etc.
+
+
+---
+
+## Access shapefiles using `map_data()` 
+
+```{r}
+library(maps)
+state_borders <- map_data("state") 
+head(state_borders)
+```
+
+- For example: `map_data("world")`, `map_data("state")`, `map_data("county")` (need to install [`maps` package](https://cran.r-project.org/web/packages/maps/maps.pdf))
+
+- Contains lat/lon coordinates to draw geographic boundaries
+
+---
+
+## Typica workflow for plotting areal data
+
+  1. Get state-specific data
+  
+  2. Get state boundaries
+  
+  3. Merge state-specific data with state boundaries (using `left_join()`)
+  
+```{r}
+state_plot_data <- state_borders |>
+  left_join(state_data, by = c("region" = "state"))
+head(state_plot_data)
+```
+  
+  
+  4. Plot the data
+
+---
+
+## Create a choropleth map with `geom_polygon()`
+
+```{r}
+#| output-location: slide
+state_plot_data |>
+  ggplot() + 
+  geom_polygon(aes(x = long, y = lat, group = group, fill = Illiteracy), 
+               color = "black") + 
+  scale_fill_gradient2(low = "darkgreen", mid = "lightgrey", 
+                       high = "darkorchid4", midpoint = 0.95) +
+  theme_void() +
+  coord_map("polyconic") + 
+  labs(fill = "Illiteracy %") + 
+  theme(legend.position = "bottom")
+```
+
+
+---
+
+## Uniform size with [`statebins`](https://github.com/hrbrmstr/statebins)
+
+```{r}
+library(statebins)
+state_data$new_state <- str_to_title(state_data$state)
+statebins(state_data = state_data, 
+          state_col = "new_state", value_col = "Illiteracy") +
+  theme_statebins()
+```
+
+---
+
+## Many choices for displaying maps...
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("https://socviz.co/assets/ch-07-election-county-share.png")
+```
+
+
+---
+
+## Inference for Areal Data
+
+For areal data, we have the following variables:
+
++ Geographic region: $g$
+
++ Outcome variable: $z$
+
+. . .
+
+$g$ is categorical, so visualization/inference involves categorical data.
+
+If $g$ only has a few categories, can just do ANOVA and side-by-side violins (or other displays we've talked about).
+
+**What to do if there are many regions?**
+
+Two approaches: Dendrograms and randomization tests.
+
+---
+
+## Dendrograms for Areal Data
+
+**Recall: Dendrograms allow you to see which subjects are _similar_ and which are _dissimilar_ in terms of one or more variables**
+
+Intuition: Allows you to see which geographic regions are similar
+
+. . .
+
+To create a dendrogram:
+
+1. Define a distance metric in terms of the outcome.
+
+2. Plot a dendrogram.
+
+3. Make the leaf labels correspond to geographic regions.
+
+---
+
+```{r}
+#| echo: false
+# Remember that we have to scale our data when creating dendrograms
+illit_scaled <- state_data$Illiteracy / sd(state_data$Illiteracy)
+# distance matrix for our dataset
+illit_dist <- dist(illit_scaled)
+# run hierarchical clustering
+illit_hc <- hclust(illit_dist, method = "complete")
+# convert to a dendrogram type object
+illit_dend <- as.dendrogram(illit_hc)
+
+#We'll need the following library to make the dendrogram
+#more graphically pleasing:
+library(dendextend)
+
+# first, let's change the labels according to the state abbreviations
+# (which is available in the datasets library, which we loaded earlier)
+illit_dend <- set(illit_dend, "labels", state.abb, order_value = T)
+
+#We will also color the labels by the region of the state.
+stat_region_colors <- ifelse(state.region == "Northeast", "darkgreen",
+                             ifelse(state.region == "South", "purple",
+                                    ifelse(state.region == "North Central", "orange",
+                                           "blue")))
+#Set the leaf labels according to the above colors:
+illit_dend <- set(illit_dend, "labels_colors", stat_region_colors, order_value = T)
+# plot the dendrogram
+plot(illit_dend)
+```
+
+
+---
+
+## Visual randomization test
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+get_state_map_illit <- function(state_data){
+  plot <- ggplot(state_data) + 
+    geom_polygon(aes(x = long, y = lat, group = group,
+                     fill = Illiteracy), color = "black") +
+    scale_fill_gradient2(low = "darkgreen", mid = "lightgrey", 
+                         high = "darkorchid4", midpoint = 0.95) +
+    theme_void() +
+    coord_map("polyconic")
+  return(plot)
+}
+
+# Now we're going to permute (i.e., "shuffle") the outcomes a few times. 
+# number of randomizations/permutations/shuffles:
+n_shuffles <- 9
+
+plot_list <- list(length = n_shuffles)
+# Will use a for loop to do this
+for(i in 1:n_shuffles){
+  #create a "randomized" dataset
+  state_borders_rand <- state_plot_data
+  #shuffle the outcomes
+  state_borders_rand$Illiteracy <- sample(state_borders_rand$Illiteracy)
+  #create the plot and store it
+  plot_list[[i]] = get_state_map_illit(state_borders_rand)
+}
+
+# pick a random entry of plot_list to be the "real" plot
+plot_list[[sample(1:n_shuffles, size = 1)]] = get_state_map_illit(state_plot_data)
+
+# Plot all the plots together using the cowplot package:
+# install.packages("cowplot")
+library(cowplot)
+plot_grid(plotlist = plot_list, ncol = 3)
+```
+
+
+---
+
+## Visual randomization test
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+# Grab the legend for just the first plot, since they are all the same
+map_legend <- get_legend(plot_list[[1]])
+legend_free_plot_list <- 
+  lapply(1:length(plot_list),
+         function(i) plot_list[[i]] + theme(legend.position = "none"))
+plot_grid(
+  plot_grid(plotlist = legend_free_plot_list, ncol = 3),
+  map_legend, ncol = 2,
+  # Adjust so the maps are much larger:
+  rel_widths = c(4, 1)
+)
+```
+
+
+---
+
+## Recap and next steps
+
++ Create choropleths for areal data: color regions by variable of interest
+
+  + Requires workflow to join region level data with polygon boundaries for regions
+
++ Can perform classical type categorical type inference with areal data
+
++ Use dendrograms to visualize differences between regions based on variable of interest
+
++ Can perform visual randomization test to test signficance of observed data
+
+. . .
+
++ **HW8 is due Wednesday! You do NOT have lab this week**
+
++ **Next time**: Visualizations for text data
+
++ Recommended reading: [CW Chapter 15 Visualizing geospatial data](https://clauswilke.com/dataviz/geospatial-data.html), [KH Chapter 7 Draw Maps](https://socviz.co/maps.html#maps)
