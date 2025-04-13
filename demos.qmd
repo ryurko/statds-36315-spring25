@@ -17,4 +17,5 @@ title: "Demos"
 | 11     | Apr 2  | Animations, modifying colors and themes | [HTML](demos/11-anim-colors-themes.qmd)  |
 | 12     | Apr 7  | Visualizations and inference for spatial data | [HTML](demos/12-spatial-data.qmd)  |
 | 13     | Apr 9  | Visualizations and inference for areal data | [HTML](demos/13-areal-data.qmd)  |
+| 14     | Apr 14  | Tidy Text Data and Sentiment Analysis | [HTML](demos/14-text-data.qmd)  |
 

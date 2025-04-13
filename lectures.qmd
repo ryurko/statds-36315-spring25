@@ -26,5 +26,6 @@ title: "Lectures"
 | 20        | Apr 2  | Animations, infographics, and annotations | [slides](lectures/20-anim-graphics.qmd) |
 | 21        | Apr 7  | Visualizations and Inference for Spatial Data | [slides](lectures/21-spatial-data.qmd) |
 | 22        | Apr 9  | Visualizations and Inference for Areal Data | [slides](lectures/22-areal-data.qmd) |
+| 23        | Apr 14  | Visualizing Text Data | [slides](lectures/23-text-data.qmd) |
 
 
