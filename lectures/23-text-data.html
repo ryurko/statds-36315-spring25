@@ -10,8 +10,8 @@
   <meta name="generator" content="quarto-1.6.43">
 
   <meta name="author" content="Prof Ron Yurko">
-  <meta name="dcterms.date" content="2025-01-29">
-  <title>Statistical Graphics and Visualization 36-315 Spring 25 – Visualizations and Inference for 2D Categorical Data</title>
+  <meta name="dcterms.date" content="2025-04-14">
+  <title>Statistical Graphics and Visualization 36-315 Spring 25 – Visualizing Text Data</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -195,7 +195,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Visualizations and Inference for 2D Categorical Data</h1>
+  <h1 class="title">Visualizing Text Data</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -205,352 +205,374 @@ Prof Ron Yurko
 </div>
 </div>
 
-  <p class="date">2025-01-29</p>
+  <p class="date">2025-04-14</p>
 </section>
 <section id="announcements-previously-and-today" class="slide level2">
 <h2>Announcements, previously, and today…</h2>
-<div style="font-size: 80%;">
-<ul>
-<li><p><strong>HW1 is due TONIGHT by 11:59 PM</strong></p></li>
-<li><p><strong>You have Lab 3 again on Friday</strong></p></li>
-</ul>
-<p>Office hours schedule:</p>
-<ul>
-<li><p>My office hours (BH 132D): Wednesdays and Thursdays @ 2 PM</p></li>
-<li><p>Anna (zoom): Mondays @ 2 PM; and Perry (zoom): Wednesdays @ 11 AM</p></li>
-</ul>
+<div style="font-size: 95%;">
+<p><strong>You should be working on your final projects!</strong></p>
+<p><strong>You must email me the slides for your presentation by 10 AM ET the day of your presentation - either a Google slides link or PDF file</strong></p>
+<p><strong>You do have lab this week!</strong></p>
 </div>
 <div class="fragment">
-<div style="font-size: 80%;">
+<div style="font-size: 95%;">
+<p><strong>Last time:</strong> visualizing areal data</p>
+<p><strong>TODAY:</strong> Text data, starting with:</p>
 <ul>
-<li><p>Discussed how similar looking graphics can have very different statistical results (thinking about power)</p></li>
-<li><p>Discussed the challenges of multiple testing</p></li>
+<li><p>Bag of Words representation of text.</p></li>
+<li><p>Word clouds</p></li>
 </ul>
-</div>
-</div>
-<div class="fragment">
-<div style="font-size: 80%;">
-<p><strong>TODAY:</strong></p>
+<p>Will be able to answer the following questions:</p>
 <ul>
-<li><p>Visuals for 2D categorical data</p></li>
-<li><p>How do we visualize inference for 2D categorical data?</p></li>
+<li><p>Which words are most frequent in a set of documents?</p></li>
+<li><p>How do two (or more) sets of documents compare in their word usage?</p></li>
+<li><p>Which unique words occur most frequently in a set of documents?</p></li>
 </ul>
 </div>
 </div>
 </section>
-<section id="d-categorical-basics" class="slide level2">
-<h2>2D categorical basics</h2>
-</section>
-<section id="d-categorical-basics-1" class="slide level2">
-<h2>2D categorical basics</h2>
+<section id="working-with-raw-text-data" class="slide level2">
+<h2>Working with raw text data</h2>
+<ul>
+<li><p>We’ll work with script from the best episode of <a href="https://en.wikipedia.org/wiki/Dinner_Party_(The_Office)">‘The Office’: Season 4, Episode 13 - ‘Dinner Party’</a></p></li>
+<li><p>We can access the script using the <a href="https://cran.r-project.org/web/packages/schrute/vignettes/theoffice.html"><code>schrute</code> package (yes this is a real thing)</a>:</p></li>
+</ul>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">addmargins</span>(<span class="fu">table</span>(<span class="st">"Species"</span> <span class="ot">=</span> penguins<span class="sc">$</span>species, <span class="st">"Island"</span> <span class="ot">=</span> penguins<span class="sc">$</span>island))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(schrute)</span>
+<span id="cb1-2"><a></a><span class="co"># Create a table from this package just corresponding to the Dinner Party episode:</span></span>
+<span id="cb1-3"><a></a>dinner_party_table <span class="ot">&lt;-</span> theoffice <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a></a>  <span class="fu">filter</span>(season <span class="sc">==</span> <span class="dv">4</span>, episode <span class="sc">==</span> <span class="dv">13</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-5"><a></a>  <span class="co"># Just select columns of interest:</span></span>
+<span id="cb1-6"><a></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(index, character, text)</span>
+<span id="cb1-7"><a></a><span class="fu">head</span>(dinner_party_table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>           Island
-Species     Biscoe Dream Torgersen Sum
-  Adelie        44    56        52 152
-  Chinstrap      0    68         0  68
-  Gentoo       124     0         0 124
-  Sum          168   124        52 344</code></pre>
+<pre><code># A tibble: 6 × 3
+  index character text                                                          
+  &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;                                                         
+1 16791 Stanley   This is ridiculous.                                           
+2 16792 Phyllis   Do you have any idea what time we'll get out of here?         
+3 16793 Michael   Nobody likes to work late, least of all me. Do you have plans…
+4 16794 Jim       Nope I don't, remember when you told us not to make plans 'ca…
+5 16795 Michael   Yes I remember. Mmm, this is B.S. This is B.S. Why are we her…
+6 16796 Dwight    Thank you Michael.                                            </code></pre>
 </div>
 </div>
-<ul>
-<li><p>Column and row sums: marginal distributions</p></li>
-<li><p>Values within rows: conditional distribution for <code>Island</code> given <code>Species</code></p></li>
-<li><p>Values within columns: conditional distribution for <code>Species</code> given <code>Island</code></p></li>
-<li><p>Bottom right: total number of observations</p></li>
-</ul>
 </section>
-<section id="connecting-distributions-to-visualizations" class="slide level2">
-<h2>Connecting distributions to visualizations</h2>
-<p>Five distributions for two categorical variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>:</p>
+<section id="bag-of-words-representation-of-text" class="slide level2">
+<h2>Bag of Words representation of text</h2>
 <ul>
-<li><p><strong>Marginals</strong>: <span class="math inline">\(P(A)\)</span> and <span class="math inline">\(P(B)\)</span></p></li>
-<li><p><strong>Conditionals</strong>: <span class="math inline">\(P(A | B)\)</span> and <span class="math inline">\(P(B|A)\)</span></p></li>
-<li><p><strong>Joint</strong>: <span class="math inline">\(P(A, B)\)</span></p></li>
+<li>Most common way to store text data is with a <strong>document-term matrix</strong> (DTM):</li>
 </ul>
-<p>We use bar charts to visualize marginal distributions for categorical variables…</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th></th>
+<th>Word 1</th>
+<th>Word 2</th>
+<th><span class="math inline">\(\dots\)</span></th>
+<th>Word <span class="math inline">\(J\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Document 1</td>
+<td><span class="math inline">\(w_{11}\)</span></td>
+<td><span class="math inline">\(w_{12}\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(w_{1J}\)</span></td>
+</tr>
+<tr class="even">
+<td>Document 2</td>
+<td><span class="math inline">\(w_{21}\)</span></td>
+<td><span class="math inline">\(w_{22}\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(w_{2J}\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+</tr>
+<tr class="even">
+<td>Document N</td>
+<td><span class="math inline">\(w_{N1}\)</span></td>
+<td><span class="math inline">\(w_{N2}\)</span></td>
+<td><span class="math inline">\(\dots\)</span></td>
+<td><span class="math inline">\(w_{NJ}\)</span></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><span class="math inline">\(w_{ij}\)</span>: count of word <span class="math inline">\(j\)</span> in document <span class="math inline">\(i\)</span>, aka <em>term frequencies</em></li>
+</ul>
 <div class="fragment">
-<p><strong>And we’ll use more bar charts to visualize conditional and joint distributions!</strong></p>
-</div>
-</section>
-<section id="stacked-bar-charts---a-bar-chart-of-spine-charts" class="slide level2">
-<h2>Stacked bar charts - a bar chart of spine charts</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span></span>
-<span id="cb3-3"><a></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span> </span>
-<span id="cb3-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
+<p>Two additional ways to reduce number of columns:</p>
+<ol type="1">
+<li><p><strong>Stop words</strong>: remove extremely common words (e.g., of, the, a)</p></li>
+<li><p><strong>Stemming</strong>: Reduce all words to their “stem”</p></li>
+</ol>
 <ul>
-<li><p>Easy to see marginal of <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Harder to see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
+<li>For example: Reducing = reduc. Reduce = reduc. Reduces = reduc.</li>
 </ul>
 </div>
 </section>
-<section id="side-by-side-bar-charts" class="slide level2">
-<h2>Side-by-side bar charts</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb4-3"><a></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb4-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
+<section id="tokenize-text-into-long-format" class="slide level2">
+<h2>Tokenize text into long format</h2>
 <ul>
-<li><p>Easy to see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
+<li><p>Convert raw text into long, tidy table with one-token-per-document-per-row</p>
+<ul>
+<li>A <strong>token</strong> equals a unit of text - typically a word</li>
+</ul></li>
 </ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">library</span>(tidytext)</span>
+<span id="cb3-2"><a></a>tidy_dinner_party_tokens <span class="ot">&lt;-</span> dinner_party_table <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a></a>  <span class="fu">unnest_tokens</span>(word, text)</span>
+<span id="cb3-4"><a></a><span class="fu">head</span>(tidy_dinner_party_tokens)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  index character word      
+  &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;     
+1 16791 Stanley   this      
+2 16791 Stanley   is        
+3 16791 Stanley   ridiculous
+4 16792 Phyllis   do        
+5 16792 Phyllis   you       
+6 16792 Phyllis   have      </code></pre>
+</div>
+</div>
+<p>Easy to convert text into DTM format using <a href="https://cran.r-project.org/web/packages/tidytext/vignettes/tidytext.html"><code>tidytext</code> package</a></p>
+</section>
+<section id="remove-stop-words" class="slide level2">
+<h2>Remove stop words</h2>
+<ul>
+<li>Load <code>stop_words</code> from <code>tidytext</code></li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">data</span>(stop_words)</span>
+<span id="cb5-2"><a></a></span>
+<span id="cb5-3"><a></a>tidy_dinner_party_tokens <span class="ot">&lt;-</span> tidy_dinner_party_tokens <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a></a>  <span class="fu">filter</span>(<span class="sc">!</span>(word <span class="sc">%in%</span> stop_words<span class="sc">$</span>word))</span>
+<span id="cb5-5"><a></a></span>
+<span id="cb5-6"><a></a><span class="fu">head</span>(tidy_dinner_party_tokens)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  index character word      
+  &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;     
+1 16791 Stanley   ridiculous
+2 16792 Phyllis   idea      
+3 16792 Phyllis   time      
+4 16793 Michael   likes     
+5 16793 Michael   late      
+6 16793 Michael   plans     </code></pre>
+</div>
 </div>
 </section>
-<section id="side-by-side-bar-charts-1" class="slide level2">
-<h2>Side-by-side bar charts</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb5-3"><a></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">preserve =</span> <span class="st">"single"</span>)) <span class="sc">+</span></span>
-<span id="cb5-4"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><div style="font-size: 75%;">
+<section id="apply-stemming" class="slide level2">
+<h2>Apply stemming</h2>
 <ul>
-<li><p>Easy to see conditional of <code>island</code> | <code>species</code>, i.e., <span class="math inline">\(P(\)</span> <code>fill</code> | <code>x</code> <span class="math inline">\()\)</span></p></li>
-<li><p>Can see conditional of <code>species</code> | <code>island</code>, i.e., <span class="math inline">\(P(\)</span> <code>x</code> | <code>fill</code> <span class="math inline">\()\)</span></p></li>
+<li>Can use <a href="https://cran.r-project.org/web/packages/SnowballC/SnowballC.pdf"><code>SnowballC</code> package</a> to perform stemming</li>
 </ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">library</span>(SnowballC)</span>
+<span id="cb7-2"><a></a></span>
+<span id="cb7-3"><a></a>tidy_dinner_party_tokens <span class="ot">&lt;-</span> tidy_dinner_party_tokens <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a></a>  <span class="fu">mutate</span>(<span class="at">stem =</span> <span class="fu">wordStem</span>(word))</span>
+<span id="cb7-5"><a></a></span>
+<span id="cb7-6"><a></a><span class="fu">head</span>(tidy_dinner_party_tokens)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  index character word       stem   
+  &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;  
+1 16791 Stanley   ridiculous ridicul
+2 16792 Phyllis   idea       idea   
+3 16792 Phyllis   time       time   
+4 16793 Michael   likes      like   
+5 16793 Michael   late       late   
+6 16793 Michael   plans      plan   </code></pre>
+</div>
 </div>
 </section>
-<section id="complete-missing-values-to-preserve-location" class="slide level2">
-<h2><a href="https://tidyr.tidyverse.org/reference/complete.html">Complete</a> missing values to preserve location</h2>
+<section id="create-word-cloud-using-term-frequencies" class="slide level2">
+<h2>Create word cloud using term frequencies</h2>
+<p><strong>Word Cloud</strong>: Displays all words mentioned across documents, where more common words are larger</p>
+<ul>
+<li>To do this, you must compute the <em>total</em> word counts:</li>
+</ul>
+<p><span class="math display">\[w_{\cdot 1} = \sum_{i=1}^N w_{i1} \hspace{0.1in} \dots \hspace{0.1in} w_{\cdot J} = \sum_{i=1}^N w_{iJ}\]</span></p>
+<ul>
+<li>Then, the size of Word <span class="math inline">\(j\)</span> is proportional to <span class="math inline">\(w_{\cdot j}\)</span></li>
+</ul>
+<div class="fragment">
+<p>Create word clouds in <code>R</code> using <a href="https://cran.r-project.org/web/packages/wordcloud/wordcloud.pdf"><code>wordcloud</code> package</a></p>
+<p>Takes in two main arguments to create word clouds:</p>
+<ol type="1">
+<li><p><code>words</code>: vector of unique words</p></li>
+<li><p><code>freq</code>: vector of frequencies</p></li>
+</ol>
+</div>
+</section>
+<section id="create-word-cloud-using-term-frequencies-1" class="slide level2">
+<h2>Create word cloud using term frequencies</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6" data-code-line-numbers="2-6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a></a>  <span class="fu">count</span>(species, island) <span class="sc">|&gt;</span></span>
-<span id="cb6-3"><a></a>  <span class="fu">complete</span>(<span class="at">species =</span> <span class="fu">unique</span>(species), <span class="at">island =</span> <span class="fu">unique</span>(island), </span>
-<span id="cb6-4"><a></a>           <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">n =</span> <span class="dv">0</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">y =</span> n, <span class="at">fill =</span> island)) <span class="sc">+</span> </span>
-<span id="cb6-6"><a></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb6-7"><a></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>token_summary <span class="ot">&lt;-</span> tidy_dinner_party_tokens <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a></a>  <span class="fu">group_by</span>(stem) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a></a>  <span class="fu">count</span>() <span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a></a>  <span class="fu">ungroup</span>() </span>
+<span id="cb9-5"><a></a></span>
+<span id="cb9-6"><a></a><span class="fu">library</span>(wordcloud)</span>
+<span id="cb9-7"><a></a><span class="fu">wordcloud</span>(<span class="at">words =</span> token_summary<span class="sc">$</span>stem, </span>
+<span id="cb9-8"><a></a>          <span class="at">freq =</span> token_summary<span class="sc">$</span>n, </span>
+<span id="cb9-9"><a></a>          <span class="at">random.order =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb9-10"><a></a>          <span class="at">max.words =</span> <span class="dv">100</span>, </span>
+<span id="cb9-11"><a></a>          <span class="at">colors =</span> <span class="fu">brewer.pal</span>(<span class="dv">8</span>, <span class="st">"Dark2"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="what-do-you-prefer" class="slide level2">
-<h2>What do you prefer?</h2>
-<div>
 
-</div>
-<div class="cell quarto-layout-panel" data-layout-align="center" data-layout-ncol="2">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li><p>Set <code>random.order = FALSE</code> to place biggest words in center</p></li>
+<li><p>Can customize to display limited # words (<code>max.words</code>)</p></li>
+<li><p>Other options as well like <code>colors</code></p></li>
+</ul>
+</section>
+<section id="create-word-cloud-using-term-frequencies-1-output" class="slide level2 output-location-slide"><h2>Create word cloud using term frequencies</h2><div class="cell output-location-slide" data-layout-align="center">
+<div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+<p><img data-src="23-text-data_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+</div></section><section id="comparison-clouds" class="slide level2">
+<h2>Comparison clouds</h2>
+<p>Imagine we have two different collections of documents, <span class="math inline">\(\mathcal{A}\)</span> and <span class="math inline">\(\mathcal{B}\)</span>, that we wish to visually compare.</p>
+<div class="fragment">
+<p>Imagine we create the word clouds for the two collections of documents. Then this means we constructed vectors of total words for each collection:</p>
+<ul>
+<li><p><span class="math inline">\(\mathbf{w}^{\mathcal{A}} = (w_{\cdot 1}^{\mathcal{A}}, \dots, w_{\cdot J}^{\mathcal{A}})\)</span></p></li>
+<li><p><span class="math inline">\(\mathbf{w}^{\mathcal{B}} = (w_{\cdot 1}^{\mathcal{B}}, \dots, w_{\cdot J}^{\mathcal{B}})\)</span></p></li>
+</ul>
+<p>Consider the <span class="math inline">\(j\)</span>th word, let’s pretend it’s “dinner”:</p>
+<ul>
+<li><p>If <span class="math inline">\(w_{\cdot j}^{\mathcal{A}}\)</span> is large, then “dinner” is large in the word cloud for <span class="math inline">\(\mathcal{A}\)</span>.</p></li>
+<li><p>If <span class="math inline">\(w_{\cdot j}^{\mathcal{B}}\)</span> is large, then “dinner” is large in the word cloud for <span class="math inline">\(\mathcal{B}\)</span>.</p></li>
+<li><p>But if both are large, this doesn’t tell us whether <span class="math inline">\(w_{\cdot j}^{\mathcal{A}}\)</span> or <span class="math inline">\(w_{\cdot j}^{\mathcal{B}}\)</span> is bigger.</p></li>
+</ul>
+</div>
+</section>
+<section id="comparison-clouds-1" class="slide level2">
+<h2>Comparison clouds</h2>
+<p>This motivates the construction of <strong>comparison word clouds</strong>:</p>
+<ol type="1">
+<li><p>For word <span class="math inline">\(j\)</span>, compute <span class="math inline">\(\bar{w}_{\cdot j} = \text{average}(w_{\cdot j}^{\mathcal{A}}, w_{\cdot j}^{\mathcal{B}})\)</span></p></li>
+<li><p>Compute <span class="math inline">\(w_{\cdot j}^{\mathcal{A}} - \bar{w}_{\cdot j}\)</span> and <span class="math inline">\(w_{\cdot j}^{\mathcal{B}} - \bar{w}_{\cdot j}\)</span></p></li>
+<li><p>If <span class="math inline">\(w_{\cdot j}^{\mathcal{A}} - \bar{w}_{\cdot j}\)</span> is very positive, make it large for the <span class="math inline">\(\mathcal{A}\)</span> word cloud. If <span class="math inline">\(w_{\cdot j}^{\mathcal{B}} - \bar{w}_{\cdot j}\)</span> is very positive, make it large for the <span class="math inline">\(\mathcal{B}\)</span> word cloud.</p></li>
+</ol>
+</section>
+<section id="comparison-clouds-2" class="slide level2">
+<h2>Comparison clouds</h2>
+
+<img data-src="23-text-data_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="tf-idf-weighting" class="slide level2">
+<h2>TF-IDF weighting</h2>
+<ul>
+<li>We saw that <code>michael</code> was the largest word, but what if I’m interested in comparing text across characters (i.e., documents)?</li>
+</ul>
+<div class="fragment">
+<ul>
+<li><p>It’s arguably of more interest to understand which words are frequently used in one set of texts but not the other, i.e., which words are unique?</p></li>
+<li><p>Many text analytics methods will <strong>down-weight</strong> words that occur frequently across all documents</p></li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li><p><strong>Inverse document frequency (IDF)</strong>: for word <span class="math inline">\(j\)</span> we compute <span class="math inline">\(\text{idf}_j = \log \frac{N}{N_j}\)</span></p>
+<ul>
+<li>where <span class="math inline">\(N\)</span> is number of documents, <span class="math inline">\(N_j\)</span> is number of documents with word <span class="math inline">\(j\)</span></li>
+</ul></li>
+<li><p>Compute <strong>TF-IDF</strong> <span class="math inline">\(= w_{ij} \times \text{idf}_j\)</span></p></li>
+</ul>
+</div>
+</section>
+<section id="tf-idf-example-with-characters" class="slide level2">
+<h2>TF-IDF example with characters</h2>
+<p>Compute and join TF-IDF using <code>bind_tf_idf()</code>:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>character_token_summary <span class="ot">&lt;-</span> tidy_dinner_party_tokens <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a></a>  <span class="fu">group_by</span>(character, stem) <span class="sc">|&gt;</span> </span>
+<span id="cb10-3"><a></a>  <span class="fu">count</span>() <span class="sc">|&gt;</span></span>
+<span id="cb10-4"><a></a>  <span class="fu">ungroup</span>() </span>
+<span id="cb10-5"><a></a></span>
+<span id="cb10-6"><a></a>character_token_summary <span class="ot">&lt;-</span> character_token_summary <span class="sc">|&gt;</span></span>
+<span id="cb10-7"><a></a>  <span class="fu">bind_tf_idf</span>(stem, character, n) </span>
+<span id="cb10-8"><a></a>character_token_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 597 × 6
+   character stem        n     tf   idf tf_idf
+   &lt;chr&gt;     &lt;chr&gt;   &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+ 1 All       cheer       1 1      2.77  2.77  
+ 2 Andy      anim        1 0.0476 2.77  0.132 
+ 3 Andy      bet         1 0.0476 2.08  0.0990
+ 4 Andy      capit       1 0.0476 2.77  0.132 
+ 5 Andy      dinner      1 0.0476 0.981 0.0467
+ 6 Andy      flower      2 0.0952 2.77  0.264 
+ 7 Andy      hei         1 0.0476 1.39  0.0660
+ 8 Andy      helena      1 0.0476 2.77  0.132 
+ 9 Andy      hump        2 0.0952 2.77  0.264 
+10 Andy      michael     1 0.0476 0.981 0.0467
+# ℹ 587 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="top-10-words-by-tf-idf-for-each-character" class="slide level2">
+<h2>Top 10 words by TF-IDF for each character</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>character_token_summary <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a></a>  <span class="fu">filter</span>(character <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Michael"</span>, <span class="st">"Jan"</span>, <span class="st">"Jim"</span>, <span class="st">"Pam"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a></a>  <span class="fu">group_by</span>(character) <span class="sc">|&gt;</span></span>
+<span id="cb12-4"><a></a>  <span class="fu">slice_max</span>(tf_idf, <span class="at">n =</span> <span class="dv">10</span>, <span class="at">with_ties =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-5"><a></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb12-6"><a></a>  <span class="fu">mutate</span>(<span class="at">stem =</span> <span class="fu">reorder_within</span>(stem, tf_idf, character)) <span class="sc">|&gt;</span></span>
+<span id="cb12-7"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> tf_idf, <span class="at">x =</span> stem),</span>
+<span id="cb12-8"><a></a>         <span class="at">fill =</span> <span class="st">"darkblue"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb12-9"><a></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb12-10"><a></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb12-11"><a></a>  <span class="fu">scale_x_reordered</span>() <span class="sc">+</span></span>
+<span id="cb12-12"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> character, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
+<span id="cb12-13"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"TF-IDF"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+</section>
+<section id="top-10-words-by-tf-idf-for-each-character-output" class="slide level2 output-location-slide"><h2>Top 10 words by TF-IDF for each character</h2><div class="cell output-location-slide" data-layout-align="center">
+<div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-7-2.png" class="quarto-figure quarto-figure-center" width="960"></p>
+<p><img data-src="23-text-data_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
-</div>
-</div>
-</section>
-<section id="chi-squared-test-for-1d-categorical-data" class="slide level2">
-<h2>Chi-squared test for 1D categorical data:</h2>
-<div style="font-size: 75%;">
+</div></section><section id="other-functions-of-text" class="slide level2">
+<h2>Other functions of text</h2>
 <ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: <span class="math inline">\(p_1 = p_2 = \dots = p_K\)</span>, compute the test statistic:</li>
+<li><p>We’ve just focused on word counts - <strong>but there are many functions of text</strong></p></li>
+<li><p>For example: <strong>number of unique words</strong> is often used to measure vocabulary</p></li>
 </ul>
-<p><span class="math display">\[
-\chi^2 = \sum_{j=1}^K \frac{(O_j - E_j)^2}{E_j}
-\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_j\)</span>: observed counts in category <span class="math inline">\(j\)</span></p></li>
-<li><p><span class="math inline">\(E_j\)</span>: expected counts under <span class="math inline">\(H_0\)</span>, i.e., each category is equally to occur <span class="math inline">\(n / K = p_1 = p_2 = \dots = p_K\)</span></p></li>
-</ul>
-</div>
-<div class="fragment">
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Chi-squared test for given probabilities
 
-data:  table(penguins$species)
-X-squared = 31.907, df = 2, p-value = 1.179e-07</code></pre>
-</div>
-</div>
-</div>
-</section>
-<section id="inference-for-2d-categorical-data" class="slide level2">
-<h2>Inference for 2D categorical data</h2>
-<div style="font-size: 75%;">
-<p>Again we use the <strong>chi-squared test</strong>:</p>
-<ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent, compute the test statistic:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_{ij}\)</span>: observed counts in contingency table</p></li>
-<li><p><span class="math inline">\(E_{ij}\)</span>: expected counts under <span class="math inline">\(H_0\)</span></p></li>
-</ul>
-<p><span class="math display">\[
-\begin{aligned}
-E_{ij} &amp;= n \cdot P(A = a_i, B = b_j) \\
-&amp;= n \cdot P(A = a_i) P(B = b_j) \\
-&amp;= n \cdot \left( \frac{n_{i \cdot}}{n} \right) \left( \frac{ n_{\cdot j}}{n} \right)
-\end{aligned}
-\]</span></p>
-</div>
-</section>
-<section id="inference-for-2d-categorical-data-1" class="slide level2">
-<h2>Inference for 2D categorical data</h2>
-<div style="font-size: 75%;">
-<p>Again we use the <strong>chi-squared test</strong>:</p>
-<ul>
-<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent, compute the test statistic:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li><p><span class="math inline">\(O_{ij}\)</span>: observed counts in contingency table</p></li>
-<li><p><span class="math inline">\(E_{ij}\)</span>: expected counts under <span class="math inline">\(H_0\)</span></p></li>
-</ul>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Pearson's Chi-squared test
-
-data:  table(penguins$species, penguins$island)
-X-squared = 299.55, df = 4, p-value &lt; 2.2e-16</code></pre>
-</div>
-</div>
-</section>
-<section id="visualize-independence-test-with-mosaic-plots" class="slide level2">
-<h2>Visualize independence test with mosaic plots</h2>
-<div style="font-size: 75%;">
-<p>Two variables are <strong>independent</strong> if knowing the level of one tells us nothing about the other</p>
-<ul>
-<li>i.e.&nbsp;<span class="math inline">\(P(A | B) = P(A)\)</span>, and that <span class="math inline">\(P(A, B) = P(A) \times P(B)\)</span></li>
-</ul>
-<p>Create a <strong>mosaic</strong> plot using <strong>base <code>R</code></strong></p>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="shade-by-pearson-residuals" class="slide level2">
-<h2>Shade by <em>Pearson residuals</em></h2>
-<div style="font-size: 75%;">
-<ul>
-<li>The <strong>test statistic</strong> is:</li>
-</ul>
-<p><span class="math display">\[\chi^2 = \sum_{i}^{K_A} \sum_{j}^{K_B} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]</span></p>
-<ul>
-<li>Define the <em>Pearson residuals</em> as:</li>
-</ul>
-<p><span class="math display">\[r_{ij} = \frac{O_{ij} - E_{ij}}{\sqrt{E_{ij}}}\]</span></p>
-<ul>
-<li>Side-note: In general, Pearson residuals are <span class="math inline">\(\frac{\text{residuals}}{\sqrt{\text{variance}}}\)</span></li>
-</ul>
-</div>
-<div class="fragment">
-<div style="font-size: 75%;">
-<ul>
-<li><p><span class="math inline">\(r_{ij} \approx 0 \rightarrow\)</span> observed counts are close to expected counts</p></li>
-<li><p><span class="math inline">\(|r_{ij}| &gt; 2 \rightarrow\)</span> “significant” at level <span class="math inline">\(\alpha = 0.05\)</span>.</p></li>
-<li><p>Very positive <span class="math inline">\(r_{ij} \rightarrow\)</span> more than expected, while very negative <span class="math inline">\(r_{ij} \rightarrow\)</span> fewer than expected</p></li>
-<li><p><strong>Color by Pearson residuals</strong> to tell us which combos are much bigger/smaller than expected.</p></li>
-</ul>
-</div>
-</div>
-</section>
-<section class="slide level2">
-
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>species, penguins<span class="sc">$</span>island), <span class="at">shade =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section class="slide level2">
-
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(penguins<span class="sc">$</span>island, penguins<span class="sc">$</span>sex), <span class="at">shade =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb13-2"><a></a>           <span class="at">main =</span> <span class="st">"Distribution of penguins' sex does not vary across islands"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="titanic-dataset-example" class="slide level2">
-<h2>Titanic Dataset Example</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>titanic <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/ryurko/DataViz-Class-Data/main/titanic.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><strong>Question</strong>: Does survival (yes/no) depend on cabin (1st/2nd/3rd)?</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">table</span>(<span class="st">"Survived?"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Survived, <span class="st">"Class"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Pclass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>         Class
-Survived?   1   2   3
-        0  64  90 270
-        1 120  83  85</code></pre>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">chisq.test</span>(<span class="fu">table</span>(<span class="st">"Survived?"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Survived, <span class="st">"Class"</span> <span class="ot">=</span> titanic<span class="sc">$</span>Pclass))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Pearson's Chi-squared test
-
-data:  table(`Survived?` = titanic$Survived, Class = titanic$Pclass)
-X-squared = 91.081, df = 2, p-value &lt; 2.2e-16</code></pre>
-</div>
-</div>
-<p><strong>Conclusion</strong>: Class and survival are dependent - but how?</p>
-</div>
-</section>
-<section class="slide level2">
-
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">mosaicplot</span>(<span class="fu">table</span>(titanic<span class="sc">$</span>Pclass, titanic<span class="sc">$</span>Survived), <span class="at">shade =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb19-2"><a></a>           <span class="at">xlab =</span> <span class="st">"Passenger Class"</span>, <span class="at">ylab =</span> <span class="st">"Survived?"</span>, <span class="at">main =</span> <span class="st">"How are they related?"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
-<section id="guardian-1000-songs-to-hear-before-you-die" class="slide level2">
-<h2><a href="https://www.theguardian.com/news/datablog/2009/mar/20/1">Guardian</a>: 1000 songs to hear before you die</h2>
-
-<img data-src="https://upload.wikimedia.org/wikipedia/commons/8/84/Mosaic-big.png?20090726044211" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
-<section class="slide level2">
-
-
-<img data-src="05-2dcat_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<img data-src="https://pbs.twimg.com/media/DxCgsrxWwAAOWO3.jpg" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
 <section id="recap-and-next-steps" class="slide level2">
 <h2>Recap and next steps</h2>
-<div style="font-size: 75%;">
 <ul>
-<li><p>For 2D categorical data we create visualizations for marginal, conditional, and joint distributions</p></li>
-<li><p>Can create stacked and side-by-side bar charts to visualize 2D categorical data</p></li>
-<li><p>Perform 2D Chi-squared test to test if two categorical variables are associated with each other</p></li>
-<li><p>Create mosaic plots to visualize 2D categorical data</p></li>
-<li><p>Shade mosaic plot tiles by Pearson residuals to see what drives association between two categorical variables (if any)</p></li>
+<li><p>Most common representation: Bag of words and term frequencies (possibly weighted by TF-IDF)</p></li>
+<li><p>Word clouds are the most common way to visualize the most frequent words in a set of documents</p></li>
+<li><p>TF-IDF weighting allows you to detect words that are uniquely used in certain documents</p></li>
 </ul>
-</div>
 <div class="fragment">
-<div style="font-size: 75%;">
 <ul>
-<li><p><strong>HW1 is due TONIGHT and you have Lab 3 on Friday!</strong></p></li>
-<li><p><strong>Next time</strong>: Visualizing 1D quantitative data</p></li>
-<li><p>Recommended reading: <a href="https://clauswilke.com/dataviz/nested-proportions.html">CW Chapter 11 Visualizing nested proportions</a></p></li>
+<li><p><strong>You have lab on Friday!</strong></p></li>
+<li><p><strong>Next time</strong>: Sentiment analysis and topics models</p></li>
+<li><p>Recommended Reading: <a href="https://www.tidytextmining.com/">Text Mining With R</a>, <a href="https://smltar.com/">Supervised Machine Learning for Text Analysis in R</a></p></li>
 </ul>
-</div>
 
 
 </div>
