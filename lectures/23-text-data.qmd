@@ -86,6 +86,34 @@ head(dinner_party_table)
 
 ---
 
+## Reducing the dimensionality of text
+
+How can we *quantify* text data such that it can be used in statistical models, analyses, and graphs?
+
+. . .
+
+**Bag of Words** representation of text is the most common representation
+
++ In a document, grammar and order of words don't matter
+
++ All that matters is the number of times each word occurs
+
+> "Do I need to be liked? Absolutely not. I like to be liked. I enjoy being liked. I have to be liked, but it's not like this compulsive need to be liked, like my need to be praised." - Michael Scott
+
+. . .
+
++ Do = 1, I = 4, need = 3, to = 5, be = 5, liked = 5
+
++ Absolutely = 1, not = 2, like = 3, enjoy = 1
+
++ being = 1, have = 1, but = 1, it's = 1, this = 1
+
++ compulsive = 1, my = 1, praised = 2
+
+
+
+---
+
 ## Bag of Words representation of text
 
 - Most common way to store text data is with a __document-term matrix__ (DTM):
