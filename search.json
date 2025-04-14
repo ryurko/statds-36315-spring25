@@ -1001,6 +1001,13 @@
     "text": "Working with raw text data\n\nWe’ll work with script from the best episode of ‘The Office’: Season 4, Episode 13 - ‘Dinner Party’\nWe can access the script using the schrute package (yes this is a real thing):\n\n\nlibrary(schrute)\n# Create a table from this package just corresponding to the Dinner Party episode:\ndinner_party_table &lt;- theoffice |&gt;\n  filter(season == 4, episode == 13) |&gt;\n  # Just select columns of interest:\n  dplyr::select(index, character, text)\nhead(dinner_party_table)\n\n# A tibble: 6 × 3\n  index character text                                                          \n  &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;                                                         \n1 16791 Stanley   This is ridiculous.                                           \n2 16792 Phyllis   Do you have any idea what time we'll get out of here?         \n3 16793 Michael   Nobody likes to work late, least of all me. Do you have plans…\n4 16794 Jim       Nope I don't, remember when you told us not to make plans 'ca…\n5 16795 Michael   Yes I remember. Mmm, this is B.S. This is B.S. Why are we her…\n6 16796 Dwight    Thank you Michael."
   },
   {
+    "objectID": "lectures/23-text-data.html#reducing-the-dimensionality-of-text",
+    "href": "lectures/23-text-data.html#reducing-the-dimensionality-of-text",
+    "title": "Visualizing Text Data",
+    "section": "Reducing the dimensionality of text",
+    "text": "Reducing the dimensionality of text\nHow can we quantify text data such that it can be used in statistical models, analyses, and graphs?\n\nBag of Words representation of text is the most common representation\n\nIn a document, grammar and order of words don’t matter\nAll that matters is the number of times each word occurs\n\n\n“Do I need to be liked? Absolutely not. I like to be liked. I enjoy being liked. I have to be liked, but it’s not like this compulsive need to be liked, like my need to be praised.” - Michael Scott\n\n\n\n\nDo = 1, I = 4, need = 3, to = 5, be = 5, liked = 5\nAbsolutely = 1, not = 2, like = 3, enjoy = 1\nbeing = 1, have = 1, but = 1, it’s = 1, this = 1\ncompulsive = 1, my = 1, praised = 2"
+  },
+  {
     "objectID": "lectures/23-text-data.html#bag-of-words-representation-of-text",
     "href": "lectures/23-text-data.html#bag-of-words-representation-of-text",
     "title": "Visualizing Text Data",

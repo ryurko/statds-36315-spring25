@@ -258,6 +258,28 @@ Prof Ron Yurko
 </div>
 </div>
 </section>
+<section id="reducing-the-dimensionality-of-text" class="slide level2">
+<h2>Reducing the dimensionality of text</h2>
+<p>How can we <em>quantify</em> text data such that it can be used in statistical models, analyses, and graphs?</p>
+<div class="fragment">
+<p><strong>Bag of Words</strong> representation of text is the most common representation</p>
+<ul>
+<li><p>In a document, grammar and order of words don’t matter</p></li>
+<li><p>All that matters is the number of times each word occurs</p></li>
+</ul>
+<blockquote>
+<p>“Do I need to be liked? Absolutely not. I like to be liked. I enjoy being liked. I have to be liked, but it’s not like this compulsive need to be liked, like my need to be praised.” - Michael Scott</p>
+</blockquote>
+</div>
+<div class="fragment">
+<ul>
+<li><p>Do = 1, I = 4, need = 3, to = 5, be = 5, liked = 5</p></li>
+<li><p>Absolutely = 1, not = 2, like = 3, enjoy = 1</p></li>
+<li><p>being = 1, have = 1, but = 1, it’s = 1, this = 1</p></li>
+<li><p>compulsive = 1, my = 1, praised = 2</p></li>
+</ul>
+</div>
+</section>
 <section id="bag-of-words-representation-of-text" class="slide level2">
 <h2>Bag of Words representation of text</h2>
 <ul>
