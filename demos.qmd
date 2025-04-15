@@ -18,4 +18,5 @@ title: "Demos"
 | 12     | Apr 7  | Visualizations and inference for spatial data | [HTML](demos/12-spatial-data.qmd)  |
 | 13     | Apr 9  | Visualizations and inference for areal data | [HTML](demos/13-areal-data.qmd)  |
 | 14     | Apr 14  | Tidy Text Data and Sentiment Analysis | [HTML](demos/14-text-data.qmd)  |
+| 15     | Apr 16  | Topic Models | [HTML](demos/15-topic-models.qmd)  |
 

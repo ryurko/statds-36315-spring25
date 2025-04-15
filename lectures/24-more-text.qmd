@@ -1,0 +1,624 @@
+---
+title: "Sentiment Analysis and Topic Models"
+author: "Prof Ron Yurko"
+footer:  "[statds-36315-spring25](https://ryurko.github.io/statds-36315-spring25/)"
+date: 2025-04-16
+engine: knitr
+format:
+  revealjs:
+    theme: theme.scss
+    chalkboard: true
+    pdf-separate-fragments: true
+    slide-number: c/t
+    smaller: true
+    code-line-numbers: true
+    linestretch: 1.25
+    html-math-method:
+      method: mathjax
+      url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+```
+
+## Announcements, previously, and today...
+
+::: {style="font-size: 95%;"}
+
+**You should be working on your final projects!**
+
+**You must email me the slides for your presentation by 10 AM ET the day of your presentation - either a Google slides link or PDF file**
+
+**You do have lab this week!**
+
+:::
+
+. . .
+
+::: {style="font-size: 95%;"}
+
+**Last time:** introduction to text data and word clouds
+
+
+**TODAY:** More text data!
+
+
+:::
+
+
+---
+
+## Reminder: The Office text analysis
+
+- We starting working with the script from the best episode of ['The Office': Season 4, Episode 13 - 'Dinner Party'](https://en.wikipedia.org/wiki/Dinner_Party_(The_Office))
+
+- We can access the script using the [`schrute` package (yes this is a real thing)](https://cran.r-project.org/web/packages/schrute/vignettes/theoffice.html):
+
+```{r}
+library(schrute)
+# Create a table from this package just corresponding to the Dinner Party episode:
+dinner_party_table <- theoffice |>
+  filter(season == 4, episode == 13) |>
+  # Just select columns of interest:
+  dplyr::select(index, character, text)
+head(dinner_party_table)
+```
+
+
+---
+
+## Tokenize text into long format
+
+- Convert raw text into long, tidy table with one-token-per-document-per-row
+
+  - A __token__ equals a unit of text - typically a word
+  
+```{r}
+library(tidytext)
+tidy_dinner_party_tokens <- dinner_party_table |>
+  unnest_tokens(word, text)
+head(tidy_dinner_party_tokens)
+```
+
+Easy to convert text into DTM format using [`tidytext` package](https://cran.r-project.org/web/packages/tidytext/vignettes/tidytext.html)
+
+---
+
+## Remove stop words
+
+- Load `stop_words` from `tidytext`
+
+```{r}
+data(stop_words)
+
+tidy_dinner_party_tokens <- tidy_dinner_party_tokens |>
+  filter(!(word %in% stop_words$word))
+
+head(tidy_dinner_party_tokens)
+```
+
+---
+
+## Apply stemming
+
+- Can use [`SnowballC` package](https://cran.r-project.org/web/packages/SnowballC/SnowballC.pdf) to perform stemming
+
+```{r}
+library(SnowballC)
+
+tidy_dinner_party_tokens <- tidy_dinner_party_tokens |>
+  mutate(stem = wordStem(word))
+
+head(tidy_dinner_party_tokens)
+```
+
+---
+
+## TF-IDF weighting
+
+- We saw that `michael` was the largest word, but what if I'm interested in comparing text across characters (i.e., documents)?
+
+. . .
+
+- It’s arguably of more interest to understand which words are frequently used in one set of texts but not the other, i.e., which words are unique?
+
+- Many text analytics methods will __down-weight__ words that occur frequently across all documents
+
+. . .
+
+- __Inverse document frequency (IDF)__: for word $j$ we compute $\text{idf}_j = \log \frac{N}{N_j}$
+
+  - where $N$ is number of documents, $N_j$ is number of documents with word $j$
+
+- Compute __TF-IDF__ $= w_{ij} \times \text{idf}_j$
+
+---
+
+## TF-IDF example with characters
+
+Compute and join TF-IDF using `bind_tf_idf()`:
+
+```{r}
+character_token_summary <- tidy_dinner_party_tokens |>
+  group_by(character, stem) |> 
+  count() |>
+  ungroup() 
+
+character_token_summary <- character_token_summary |>
+  bind_tf_idf(stem, character, n) 
+character_token_summary
+```
+
+
+---
+
+## Top 10 words by TF-IDF for each character
+
+```{r}
+#| output-location: slide
+character_token_summary |>
+  filter(character %in% c("Michael", "Jan", "Jim", "Pam")) |>
+  group_by(character) |>
+  slice_max(tf_idf, n = 10, with_ties = FALSE) |>
+  ungroup() |>
+  mutate(stem = reorder_within(stem, tf_idf, character)) |>
+  ggplot(aes(y = tf_idf, x = stem),
+         fill = "darkblue", alpha = 0.5) +
+  geom_col() +
+  coord_flip() +
+  scale_x_reordered() +
+  facet_wrap(~ character, ncol = 2, scales = "free") +
+  labs(y = "TF-IDF", x = NULL)
+```
+
+---
+
+## Other functions of text
+
+- We've just focused on word counts - __but there are many functions of text__
+
+- For example: __number of unique words__ is often used to measure vocabulary
+
+```{r, out.width="70%", echo = FALSE, fig.align='center'}
+knitr::include_graphics("https://pbs.twimg.com/media/DxCgsrxWwAAOWO3.jpg")
+```
+
+---
+
+## Sentiment Analysis
+
+- The visualizations so far only look at word _frequency_ (possibly weighted with TF-IDF), but doesn't tell you _how_ words are used
+  
+. . .
+
+- A common goal in text analysis is to try to understand the overall __sentiment__ or "feeling" of text, i.e., __sentiment analysis__
+
+- Typical approach:
+
+  1.  Find a sentiment dictionary (e.g., "positive" and "negative" words)
+  
+  2. Count the number of words belonging to each sentiment
+  
+  3. Using the counts, you can compute an "average sentiment" (e.g., positive counts - negative counts)
+  
+. . .
+
+- This is called a __dictionary-based approach__
+
+- The __Bing__ dictionary (named after Bing Liu) provides 6,786 words that are either "positive" or "negative"
+
+---
+
+## Character sentiment analysis
+
+
+```{r}
+get_sentiments("bing")
+```
+
+
+---
+
+## Character sentiment analysis
+
+Join sentiment to token table (without stemming)
+
+```{r}
+tidy_all_tokens <- dinner_party_table |>
+  unnest_tokens(word, text)
+
+tidy_sentiment_tokens <- tidy_all_tokens |>
+  inner_join(get_sentiments("bing")) 
+
+head(tidy_sentiment_tokens)
+```
+
+
+---
+
+## Character sentiment analysis
+
+
+```{r}
+#| output-location: slide
+tidy_sentiment_tokens |>
+  group_by(character, sentiment) |>
+  summarize(n_words = n()) |>
+  ungroup() |>
+  group_by(character) |>
+  mutate(total_assigned_words = sum(n_words)) |>
+  ungroup() |>
+  mutate(character = fct_reorder(character, total_assigned_words)) |>
+  ggplot(aes(x = character, y = n_words, fill = sentiment)) + 
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  scale_fill_manual(values = c("red", "blue")) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+---
+
+## Topic Modeling
+
+Everything we've done still involves word counts in some way.
+
+Still have to deal with the high-dimensionality of individual words.
+
+. . .
+
+**Topic modeling: Envisions that there are just a few latent ("hidden") categories for each document**
+
+- These latent categories are called __topics__ 
+
+- Each __topic__ encompasses a bunch of words that tend to occur together
+
+. . .
+
+The workflow for topic modeling is:
+
+> Document-Term Matrix $\rightarrow$ Latent Dirichlet Allocation $\rightarrow$ $k$ topics
+
+**Allows you to find $k$ overall _topics_ that are being discussed across your documents**
+
+---
+
+## Hierarchy of Topic Modeling
+
+::: {style="font-size: 85%;"}
+
+Say we have documents $D_1, \dots, D_N$ and $1000$ words...
+
+Hypothesis behind topic modeling: _Maybe these $N$ documents are really just about $k = 2$ topics (we could make $k$ bigger if we want)_
+
+:::
+
+. . .
+
+::: {style="font-size: 85%;"}
+
+__Topic__: A collection of words with different probabilities of occurring.
+
+- Topic A: $\beta_1^{A} =$ probability of Word 1, $\beta_2^{A} =$ probability of Word 2, etc.
+
+- Topic B: $\beta_1^{B} =$ probability of Word 1, $\beta_2^{B} =$ probability of Word 2, etc.
+
+:::
+
+. . .
+
+::: {style="font-size: 85%;"}
+
+Words may be prominent in both topics (e.g., $\beta_1^{A} = \beta_1^{B} = 0.8$) or rare in both topics. 
+$\sum_{j=1}^{1000} \beta_j^{A} = 1$, but no constraint on $\beta_j^{A} + \beta_j^{B}$ for any $j$.
+
+:::
+
+. . .
+
+::: {style="font-size: 85%;"}
+
+__Document__: A collection of topics with different proportions. 
+
+- Document 1: 
+
+  - $\gamma_A =$ proportion of Topic A, 
+  
+  - $\gamma_B =$ proportion of Topic B.
+  
+For each document, $\gamma_A + \gamma_B = 1$
+
+:::
+
+---
+
+## Generative model for text
+
+For each document (assume number of words is known):
+
++ For each word in the document:
+  
+  + Draw a topic assignment, e.g., pick Topic A with probability $\gamma_A = 60\%$ versus Topic B with $\gamma_B = 40\%$
+    
+  + Given a topic, choose the word with probabilities defined by $\beta^{topic}$, e.g., if Topic A was picked then select a word using $\beta^A$
+
+. . .
+
+The result?
+
+If $\gamma_A = 60\%, \gamma_B = 40\%$ for Document 1, then 60% of the time we'll use the $\beta_1^{A}, \beta_2^{A},\dots,\beta_{1000}^A$ probabilities for generating words, and 40% of the time we'll use the $\beta_1^{B}, \beta_2^{B},\dots,\beta_{1000}^B$
+
+---
+
+## What does topic modeling give us?
+
+For simplicity, let's say that we have two topics, A and B.
+
+After we run topic modeling, we will get the following information:
+
+- For _each document_, we will get topic proportions $\gamma_A$ and $\gamma_B$
+
+- For _each topic_, we will get word probabilities $\beta_1, \dots, \beta_J$
+
+. . .
+
+After running topic modeling, first you should understand what __topics__ have been identified.
+
+Intuition: For each topic, which words are most likely?
+
+Can compute and plot the top $\beta_1, \dots, \beta_J$ for _each_ topic.:
+
+- This can be done with a bar plot, where the $\beta_1,\dots,\beta_J$ are the height of the bars.
+  
+- Can also make a word cloud, where the $\beta_1,\dots,\beta_J$ are the word sizes.
+
+---
+
+## Stranger Things topic model
+
+Demo using [dialogue from Stranger Things](https://github.com/rfordatascience/tidytuesday/tree/master/data/2022/2022-10-18)
+
+```{r}
+#| warning: false
+#| message: false
+library(tidyverse)
+stranger_things_text <-
+  read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-10-18/stranger_things_all_dialogue.csv') |>
+  # Drop any lines with missing dialogue
+  filter(!is.na(dialogue))
+head(stranger_things_text)
+```
+
+See demo for all pre-processing steps
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+stranger_things_text <- stranger_things_text |>
+  # Use the unite function 
+  unite("episode_id", season:episode,
+        # Keep the columns we're merging
+        remove = FALSE,
+        # Use the default separator:
+        sep = "_") |>
+  dplyr::select(season, episode_id, dialogue)
+
+stranger_things_words <- stranger_things_text |>
+  unnest_tokens(word, dialogue)
+
+# load stop words in the tidytext package
+data(stop_words)
+
+# Next we can use the filter function to remove all stop words:
+stranger_things_words <- stranger_things_words |>
+  filter(!(word %in% stop_words$word))
+
+st_episode_word_summary <- stranger_things_words |>
+  # While we technically don't need the season column here, we'll just keep it
+  # for reference to have for later:
+  group_by(season, episode_id, word) |>
+  # Summarize with the count function:
+  count() |>
+  # Ungroup
+  ungroup()
+```
+
+---
+
+## Convert to input for `topicmodels` package
+
+Need to covert `tidytext` output to `DocumentTermMatrix` object:
+
+```{r}
+episode_dtm <- st_episode_word_summary |>
+  # Using the stems
+  cast_dtm(episode_id, word, n) #<<
+
+episode_dtm
+```
+
+
+---
+
+## Fit LDA model with `topicmodels`
+
+Fit LDA model with specified `k` topics:
+
+```{r}
+library(topicmodels)
+
+# set a seed so that the output of the model is predictable
+st_lda <- LDA(episode_dtm, k = 2, control = list(seed = 1234))
+st_lda
+```
+
+. . .
+
+There are two quantities we'll grab from LDA:
+
+- `gamma`: Topic proportions for each document
+
+- `beta`: Word probabilities for each topic
+
+---
+
+## Working with $\beta$s
+
+For any topic $t$, we'll have probabilities $\beta_1^{(t)},\dots,\beta_J^{(t)}$
+
+```{r}
+st_topics <- tidy(st_lda, matrix = "beta")
+st_topics
+```
+
+
+---
+
+## Working with $\beta$s
+
+Using `group_by()` and `top_n()`, can find the top $\beta$s for each topic
+
+```{r}
+#| echo: false
+#| fig-align: center
+# Grab the words with the top ten probabilities (betas), and then organize 
+# the data by topic, decreasing by beta
+st_top_terms <- st_topics |>
+  group_by(topic) |>
+  top_n(10, beta) |>
+  ungroup() |>
+  arrange(topic, -beta)
+
+# Plot the data such that there is a plot for each topic, and the probabilities
+# are in decreasing order. There are many ways to do this, and this is just one:
+st_top_terms |>
+  mutate(term = reorder_within(term, beta, topic)) |>
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  coord_flip() +
+  scale_x_reordered()
+```
+
+
+---
+
+## Finding Important Words
+
+::: {style="font-size: 85%;"}
+
+**Which words are likely in Topic 2 _but not_ Topic 1?**
+
+This is what TF-IDF weights are for, but unfortunately you can't use TF-IDF with topic modeling in this form...
+
+:::
+
+. . .
+
+::: {style="font-size: 85%;"}
+
+Intuition: What $\beta$s are big in Topic 2 _but not_ Topic 1?
+
+- Let $\beta_1^{(1)}, \dots, \beta_J^{(1)}$ be the Topic 1 word probabilities
+
+- Let $\beta_1^{(2)}, \dots, \beta_J^{(2)}$ be the Topic 2 word probabilities
+
+:::
+
+. . .
+
+::: {style="font-size: 95%;"}
+
+Consider the following quantity:
+
+$$
+\begin{align*}
+      \log \frac{\beta_j^{(2)}}{\beta_j^{(1)}}
+\end{align*}
+$$
+<!-- - When $\beta_j^{(2)} \approx \beta_j^{(1)}$, this will be close to 0. -->
+
+<!-- - When $\beta_j^{(2)} >> \beta_j^{(1)}$, this will be very positive. -->
+
+<!-- - When $\beta_j^{(2)} << \beta_j^{(1)}$, this will be very negative. -->
+
+:::
+
+---
+
+## Finding Important Words
+
+Here's a visual of $\log \frac{\beta_j^{(2)}}{\beta_j^{(1)}}$:
+
+```{r}
+#| echo: false
+beta_spread <- st_topics |>
+  mutate(topic = paste0("topic", topic)) |>
+  pivot_wider(names_from = topic, values_from = beta) |>
+  filter(topic1 > .001 | topic2 > .001) |>
+  mutate(log_ratio = log2(topic2 / topic1)) |>
+  arrange(log_ratio)
+
+beta_spread |>
+  group_by(direction = log_ratio > 0) |>
+  top_n(10, abs(log_ratio)) |>
+  ungroup() |>
+  mutate(term = reorder(term, log_ratio)) |>
+  ggplot(aes(term, log_ratio, fill = direction)) +
+  geom_col(show.legend = FALSE) +
+  labs(y = "Log2 ratio of beta in topic 2 / topic 1") +
+  coord_flip()
+
+```
+
+---
+
+## What to do after you've identified topics...
+
+Recall: Each document will have topic proportions $\gamma_1,\dots,\gamma_k$ where for each document $i$, $\sum_{j=1}^k \gamma_j^{(i)} = 1$
+
+```{r}
+st_documents <- tidy(st_lda, matrix = "gamma") #<<
+st_documents |>
+  filter(document %in% c("1_1", "4_1"))
+```
+
+. . .
+
+It can be helpful to see how these $\gamma$ vary across different kinds of documents. For example:
+
+- Plot each $\gamma$ over time (if your documents have a timestamp)
+
+- Examine the $\gamma$ for different authors of documents.
+
+- Project the documents into a 2D space based on topic probabilities (e.g., via [Jensen-Shannon divergence](https://en.wikipedia.org/wiki/Jensen%E2%80%93Shannon_divergence))
+
+---
+
+## Recap and next steps
+
+- Can measure the "sentiment" of text with sentiment-based dictionaries
+
+- Topic modeling gives you two things:
+
+  + Topic Proportions: For each document, what is the proportion of each topic?
+
+  + Word Probabilities: For each topic, what is the probability of a certain word occurring?
+
+. . .
+
++ **Your final lab is on Friday!**
+
++ **Next time**: FINAL PROJECT PRESENTATIONS!
+
++ Recommended Reading: [Text Mining With R](https://www.tidytextmining.com/), [Supervised Machine Learning for Text Analysis in R](https://smltar.com/)

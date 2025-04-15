@@ -27,5 +27,6 @@ title: "Lectures"
 | 21        | Apr 7  | Visualizations and Inference for Spatial Data | [slides](lectures/21-spatial-data.qmd) |
 | 22        | Apr 9  | Visualizations and Inference for Areal Data | [slides](lectures/22-areal-data.qmd) |
 | 23        | Apr 14  | Visualizing Text Data | [slides](lectures/23-text-data.qmd) |
+| 24        | Apr 16  | Sentiment Analysis and Topic Models | [slides](lectures/24-more-text.qmd) |
 
 
